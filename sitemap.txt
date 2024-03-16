@@ -6,12 +6,12 @@ https://yonagi04.github.io/about/index.html
 https://yonagi04.github.io/categories/index.html
 https://yonagi04.github.io/tags/index.html
 https://yonagi04.github.io/
+https://yonagi04.github.io/tags/C/
+https://yonagi04.github.io/tags/%E7%AE%97%E6%B3%95/
+https://yonagi04.github.io/tags/%E8%93%9D%E6%A1%A5%E6%9D%AF/
 https://yonagi04.github.io/tags/VMWare/
 https://yonagi04.github.io/tags/%E9%BB%91%E8%8B%B9%E6%9E%9C/
 https://yonagi04.github.io/tags/MacOS/
 https://yonagi04.github.io/tags/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/
-https://yonagi04.github.io/tags/C/
 https://yonagi04.github.io/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/
-https://yonagi04.github.io/tags/%E7%AE%97%E6%B3%95/
-https://yonagi04.github.io/tags/%E8%93%9D%E6%A1%A5%E6%9D%AF/
 https://yonagi04.github.io/categories/%E6%8A%80%E6%9C%AF/
