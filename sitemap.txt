@@ -1,3 +1,5 @@
+https://yonagi04.github.io/posts/2024/231ea64f7f72/
+https://yonagi04.github.io/posts/2024/29d0daea15cb/
 https://yonagi04.github.io/posts/2024/f2c171f8c68b/
 https://yonagi04.github.io/posts/2024/da1a14d471aa/
 https://yonagi04.github.io/posts/2024/4dc460504403/
@@ -24,5 +26,9 @@ https://yonagi04.github.io/tags/VMWare/
 https://yonagi04.github.io/tags/%E9%BB%91%E8%8B%B9%E6%9E%9C/
 https://yonagi04.github.io/tags/MacOS/
 https://yonagi04.github.io/tags/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/
+https://yonagi04.github.io/tags/%E5%8A%A8%E7%94%BB/
+https://yonagi04.github.io/tags/%E5%8A%A8%E7%94%BB%E5%90%90%E6%A7%BD/
+https://yonagi04.github.io/tags/%E6%96%B0%E7%95%AA/
 https://yonagi04.github.io/categories/%E6%8A%80%E6%9C%AF/
 https://yonagi04.github.io/categories/%E7%94%9F%E6%B4%BB/
+https://yonagi04.github.io/categories/%E5%8A%A8%E7%94%BB/
