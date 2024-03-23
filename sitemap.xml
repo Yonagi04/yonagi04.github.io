@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yonagi04.github.io/posts/2024/3b1a7fdf1825/</loc>
+    
+    <lastmod>2024-03-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yonagi04.github.io/posts/2024/9740dc3d8199/</loc>
     
     <lastmod>2024-03-23</lastmod>
@@ -315,6 +324,20 @@
   
   <url>
     <loc>https://yonagi04.github.io/tags/%E8%93%9D%E6%A1%A5%E6%9D%AF/</loc>
+    <lastmod>2024-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yonagi04.github.io/tags/%E7%94%9F%E6%B4%BB/</loc>
+    <lastmod>2024-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yonagi04.github.io/tags/%E6%97%A5%E5%B8%B8/</loc>
     <lastmod>2024-03-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
