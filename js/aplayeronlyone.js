@@ -1,0 +1,1 @@
+var yonagi_musicPlaying=!1,yonagi_musicFirst=!1;

@@ -1,0 +1,1 @@
+function randomPost(){fetch("/sitemap.xml").then((t=>t.text())).then((t=>(new window.DOMParser).parseFromString(t,"text/xml"))).then((t=>{let e,o,n=t.querySelectorAll("url loc");do{e=n[Math.floor(Math.random()*n.length)].innerHTML,e!=location.href&&(o=e.split("/")[3]||"")}while("posts"!==o);location.href=e}))}
