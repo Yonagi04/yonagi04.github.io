@@ -1,1 +1,0 @@
-function musicBindEvent(){document.querySelector("#nav-music .aplayer-music").addEventListener("click",(function(){yonagi.musicTelescopic()})),document.querySelector("#nav-music .aplayer-button").addEventListener("click",(function(){yonagi.musicToggle(!1)}))}

@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/kindaishi_nihon/"><!-- Primary Meta Tags --><title>大日本帝国是如何被低智商民粹主义反噬的？ | Yonagi&#39;s Sekai</title><meta name="title" content="大日本帝国是如何被低智商民粹主义反噬的？ | Yonagi's Sekai"><meta name="description" content="Article: 大日本帝国是如何被低智商民粹主义反噬的？"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/kindaishi_nihon/"><meta property="og:title" content="大日本帝国是如何被低智商民粹主义反噬的？ | Yonagi's Sekai"><meta property="og:description" content="Article: 大日本帝国是如何被低智商民粹主义反噬的？"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/kindaishi_nihon/"><meta property="twitter:title" content="大日本帝国是如何被低智商民粹主义反噬的？ | Yonagi's Sekai"><meta property="twitter:description" content="Article: 大日本帝国是如何被低智商民粹主义反噬的？"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="animate relative w-full aspect-[2/1] my-6 rounded-lg overflow-hidden"> <img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/640.png" alt="大日本帝国是如何被低智商民粹主义反噬的？" class="w-full h-full object-cover" loading="eager"> </div><div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 大日本帝国是如何被低智商民粹主义反噬的？ </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-12-30T10:44:01.000Z"> 2024年12月30日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 历史 / 近代史 </div> <div class="animate font-base text-sm">
+Tags: 近代史 / 日本史 </div> </div> <article class="animate"> <blockquote>
+<p>转自微信公众号 “种豆包Chong”，视频版发布在 B 站和 Youtube，均为同 ID。</p>
+</blockquote>
+<p>大家好，本期我们来讲讲大日本帝国的低智商民粹主义。</p>
+<p>在20世纪初，为了应对来自海的对面的敌对势力，大日本帝国不惜放任国内媒体和 “网红”大肆发布极具煽动性、误导性、欺骗性的内容，自作聪明的玩弄低智商民粹主义，之后惨遭反噬引发了灾难级后果，后果之严重不亚于二二六兵变。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/640.png" alt="如果爱国能赚钱？"></p>
+<p>低智商民粹主义就和泡沫一样，狂热的极端氛围迟早会有爆的一天，尤其是当爱国被盈利化，靠着爱国就能赚大钱，使得爱国饭、民粹饭、煽动饭、被各路妖魔鬼怪视为香饽饽，利用媒体一个比着一个的看谁更爱国更民粹更极端来吸引关注，其结果只会是害了国家坑了百姓。</p>
+<p>1894年<strong>甲午战争</strong>爆发，大清惨败。作为大日本帝国的第一次对外战争，经过了以皇国史观为核心的臣民化教育、集体主义教育，以及对曾经的顶级东亚霸主在军事制度和政治制度上都取得了压倒性的胜利彻底塑造了日本人的国家意识。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/641.png" alt="低智商民粹主义的惯用手段，极端仇外"></p>
+<p>且甲午战争战前、战时、战后的大日本帝国国内均出现了大量针对清国人的例如“猪尾辫人”等蔑称，对于这么明显的民族歧视舆论的流行，大日本帝国却放任其野蛮发展。</p>
+<p>一种通过贬低对手来达到给民众注入兴奋剂从而增强本国民族主义效果的常用手段，到了现在也很常见啊。这是日本在历史上第一次居高临下的俯视中华帝国，给予了当时的日本民族极强的自豪感，客观上抬高了日本的民族自尊心阈值。</p>
+<p>甲午战争战败后，大清和大日本帝国之间签订马关条约，不得已割让包括了辽东半岛在内的大量领土，并且支付高额赔偿金给大日本帝国。可随后，以沙皇俄国为首的西方列强为了防止大日本帝国独占中国的利益，叫来了德国和法国来一同斡旋甲午战争的战后事宜。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/642.png" alt="他们抢走了我们赢得的，都是他们的错！"></p>
+<p>由此便发生了俄法德介入施压要求大日本帝国放弃索取我国的辽东半岛的史称三国干涉还辽的事件。由于彼时的大日本帝国还不具备反抗西方列强的国力，迫于压力大日本帝国只得放弃索取辽东半岛。话虽如此，这个仇可算是记下了。</p>
+<p>1899年义和团运动爆发，在一年后的1900年6月慈禧太后借着国内激昂的 “扶清灭洋”势头，以光绪皇帝的名义向八国列强宣战。在八国联军入侵我国的过程中日本兵是人数最多的，是绝对主力。（笔者没有将沙俄强占我国东北地区列入八国联军侵华战争之中）</p>
+<p>原因是1900年前后的美国和英国各自在忙着镇压殖民地的叛乱，这两个在东亚有着较大势力的列强暂时腾不出手，除沙俄外的其他列强在东亚的军事力量不太够，从本土调集军队的话又太过于遥远。</p>
+<p>于是英国说服其他列强以类似外包的形式把惩罚大清的任务委托给了大日本帝国，组成了以大日本帝国为主力，沙俄次之，大英帝国再次之的八国联军。</p>
+<p>结果众所周知，八国联军轻轻松松的击败了大清，清廷被迫签订辛丑条约，列强又进一步的瓜分了大清。此时就发生了大日本帝国非常不愿意看到的一幕，由于沙俄趁着义和团运动时期的混乱，派遣大军进入我国东北地区，事实上的占领了东北，随时可能南下的沙俄让大日本帝国倍感紧张，经过一系列复杂事件后，出于限制沙俄的目的大日本帝国和大英帝国缔结同盟条约，大日本帝国和沙俄的关系开始变得微妙起来。</p>
+<p>日俄战争不仅是军事上战争，也是媒体的战争。当时的大日本帝国对沙俄与其说是反俄，不如说是恐俄。</p>
+<p>但【反】和 【恐】实际上都是基于自保本能的情绪，是一体两面的，也都是滋生极端民粹主义的土壤。于是大日本帝国民间对俄出现了两种态度，即主战论和非战论。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/643.png" alt="两个帝国主义国家的邪恶交易"></p>
+<p>起初，因为对大日本帝国政治极具影响力的伊藤博文主张对俄协商，认为不应当反对沙俄独占我国东北地区，应当作为利益交换，主张通过认可沙俄独占东北地区的利益以换取沙俄认可大日本帝国独占朝鲜半岛地区的利益，学术界称之为“满韩交换”。但沙俄压根就没搭理伊藤博文，根本没有把彼时的大日本帝国放眼里。</p>
+<p>1902年4月8日，清日俄三国签订《交收东三省条约》，沙俄在条约中承诺会把驻在东北地区的军队分三批依次撤出。由于沙俄作出了“示弱”姿态，大日本帝国和沙俄之间一下子就“友谊”起来了，主要新闻报纸们也迅速跟进，一起随着总路线摇摆。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/644.png" alt="没有主见，和总路线一起摇摆罢了！"></p>
+<p>新闻报社【日本】、【每日新闻】、【东京日日新闻】、【国民新闻】、还有以对俄强硬而闻名的【黑龙】等新闻媒体都纷纷开始发布非战论日俄友好的社论，特别是日本刊载的诸如</p>
+<p><strong>“日俄两国国民的亲密关系比日英同盟还要坚固”</strong></p>
+<p><strong>“执着于历史遗留问题而忽视大局的那些言论才是我们应该警惕的”</strong></p>
+<p>等社论在日后看来真的很让人绷不住。</p>
+<p>而作为读者画像以城市劳动者，或者说以工人阶级为主的【万朝报】则是在主张日俄非战的基础上依然不放松对沙俄的警惕，认为不能光听其言，要观其行，竟然没跟着总路线摇摆，非常的格格不入。</p>
+<p>1903年4月8日，到了《交收东三省条约》所规定的沙俄第二批撤军期限，沙俄不仅没有从东北撤军，反而在增加兵力，并且跨过了大清与大韩帝国的国境线开始了屯兵驻扎。</p>
+<p>局势又一次错综复杂了起来，然而大日本帝国政府却迟迟没有作出回应，各种小道消息满天飞，出现了一些不信邪的声音，这时候藩阀政府的领头人们桂太郎、伊藤博文、山县有朋等人也都慌了神儿了，聚集在在位于京都的别墅庄园里秘密讨论对俄方针，只可惜辟谣是不存在的，因为沙俄背弃条约，不撤兵反倒增兵就是铁一般的事实。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/645.png" alt="讲个笑话，俄国人的信誉"></p>
+<p>没办法，沙俄对土地的渴望就是这么的吃相难看。日俄关系就此急速恶化，值得注意的是虽然这时的日俄关系非常紧张，但在大日本帝国民间仍然是以东京朝日新闻，时事新报等主流大媒体为代表的**『对俄施压派』**占据绝对主流，对俄施压派反对直接与沙俄开战，主张应当利用日英的同盟关系以及用沙俄亲手白纸黑字签署的《交收东三省条约》向沙俄施加压力，迫使其从东北完全撤军，不战而屈人之兵。</p>
+<p>舆论风向的反转发生在1903年的6月。这里画了一张当时主要在东京地区发行的新闻报纸和偏向的表格，可以参考一下。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/646.png" alt=""></p>
+<p>明治维新后的大日本帝国开放引进了许多西洋技术，其中印刷术在自由民权运动时期，因为民间设立了大量政治社团，这些个社团都需要有自己的机关报纸来向民众表达本社团的思想和意识形态，带动了大日本帝国新闻业的迅猛发展，各大新闻报社你方唱罢我登场。</p>
+<p>进入20世纪开始，各大新闻媒体之间的竞争非常激烈，为了最大化的盈利，也就是为了能卖出更多的报纸。新闻媒体往往需要付钱请那些在社会上具备影响力的人来自己这边写社论，与此同时一些希望获得影响力的人也会主动来找新闻社通过写一些内容比较劲爆的社论来博取关注。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/647.png" alt="你给钱，我办事"></p>
+<p>对于现在的我们来说这种事已经司空见惯，不就是新闻社找来一些专家教授站台背书嘛。但那个时候的大日本帝国是头一次出现了新闻媒体与专业知识人之间互相渗透的现象，对当时的日本人民来说是非常新鲜的现象。跟现在可不一样，现在越是依靠专家教授来背书的才是最不能相信的。</p>
+<p>1903年6月10日发生了**『帝大七博士意见书』**事件。以东京帝国大学法学教授户水宽人为中心，以及中村进午・寺尾亨・高桥作卫・金井延・富井政章・小野塚喜平次，共7位顶尖大学的博士向时任内阁总理大臣的桂太郎提交了有关日俄情势的意见书，史称七博士意见书事件。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/648.png" alt="煽动民粹既能获得威望又能收获财富"></p>
+<p>随后户水宽人在同月24日将意见书全文刊登在了东京朝日新闻上了，意见书中痛斥桂太郎内阁的软弱无能，指责其对俄外交政策令整个大日本帝国感到羞耻，强烈主张中国东北、朝鲜半岛涉及大日本帝国重大安全利益，倘若满韩有失则大日本帝国本土危在旦夕，沙皇俄国必须从中国东北全面撤军，大日本帝国为此应当不惜一战。</p>
+<p>讲的那是一个热血沸腾，对那个时代的日本人民来说，大学的博士应该是一群没日没夜的泡在象牙塔里，仿佛世外仙人一般两耳不闻窗外事，一心钻研学术的人才对，所以在当时大学的教授博士是很受人尊敬的。</p>
+<p>而像户水宽人这样这么年轻就取得博士学位，然后坦坦荡荡的公开自己的对俄态度，主动参与世俗的话题。可以说是非常罕见的。</p>
+<p>户水宽人一下子成为了现象级爆款，开始不断的有新闻媒体邀请户水宽人发表社论举行演讲，其他新闻媒体也在接二连三的报道户水宽人的一言一行相比之下，其他对俄强硬派就显得那么暗淡无光。因为其他对俄强硬派都太不够极端了，所以**【对俄强硬】**这一舆论热点开始集中于户水宽人一人。</p>
+<p>户水宽人这一现象级爆款的出现一举扭转了对俄非战论，也就是对俄施压论在舆论场上的优势，俗话说的好，打不过就加入，毕竟媒体是要赚钱的。在帝大七博士事件后，大日本帝国舆论场开始此起彼伏的涌现各式各样的对俄强硬发言，都开始抢着吃这口爱国饭。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/649.png" alt="怎么全是井外势力啊"></p>
+<p>户水宽人也是不甘示弱，直到日俄宣战前，户水宽人的发言可谓是层层加码，从痛斥藩阀政府的软弱外交到要求不惜一战也要让沙俄势力完全退出满韩地区，再到散播日俄必有一战不可避论，最后到就算沙俄愿意完全退出满韩地区那也要跟沙俄打，打服了为止，要打到沙俄承认大日本帝国在东亚地区的特殊地位才行。</p>
+<p>不停的给日俄情势上强度上价值，整个舆论场也跟着水涨船高，使得低智商民粹主义裹挟了国家政策方向，大量民众开始了无脑的追星式爱国。</p>
+<p>“户水宽人一定就是对的！”</p>
+<p>“户水宽人就是日俄情势方面的权威专家！”</p>
+<p>残酷的战争也变得如同儿戏一般，根本没人在乎战争所带来的士兵伤亡，对外贸易的负面影响，战争的目的是什么以及最重要的军费究竟从哪来。</p>
+<p><strong>把危机四伏的国际情势和战争当儿戏是吧，等着，好日子马上到你家</strong></p>
+<p>就这样事态发展到了藩阀政府压制不住大日本帝国内部的战争狂热，沙俄那边也是根本不打算收敛自己对土地的贪婪丑态，完全不让步。日俄终于还是到了不得不用战争来解决的地步。</p>
+<p>1904年2月4日，大日本帝国政府召开御前会议，会议上作出决议放弃与沙俄的外交交涉，全面备战武力军事行动。既然战争已经不可避免，那么如何筹集军费就变成了一个必须面对的难题。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/650.png" alt="不要敬酒不吃吃罚酒"></p>
+<p>大日本帝国政府计算出来的战争军费预计需要约18亿日元，这是是一笔天文数字级的费用，几乎是甲午战争军费的9倍，是当时大日本帝国政府5年的财政收入的总和。</p>
+<p>所以不用一些非常手段是根本不可能筹集出这么多资金的，由此开始海量举债，经过时任日本银行副总裁高桥是清的交涉，大日本帝国成功在伦敦和纽约等地发行了对外国债。</p>
+<p>另一方面在国内也发行了面向日本人的对内国债，号召日本人民积极踊跃购买国债支持国家。不过号召的方式有点硬核，直接由政府派出“工作人员”挨家挨户上门家访现场“监督”并“指导”日本人民购买国债，说白了就是强制购买，低智商民粹主义拥趸直接傻眼了。</p>
+<p><strong>“爱国不是能赚钱吗？我爱国可不是为了掏钱！”</strong></p>
+<p>仅靠售卖国债仍然不足以支撑日俄战争的预算。于是在1904年4月1日，大日本帝国通过**『非常特别税法案』，大幅提高了地税、营业税、所得税、酒税、砂糖消費税、酱油税、注册税、交易所税、狩猎免许税、矿区税、进口税的税率。**</p>
+<p><strong>新增食盐消费税、毛织物消费税、石油消费税、绢布消费税，提高民事诉讼和商事非诉事务的诉讼印纸价格，可以理解成“诉讼税”，并实行烟草专卖制。</strong></p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/651.png" alt="好日子还在后头呢"></p>
+<p>面对已然失控了的民间舆论环境，退无可退的藩阀政府在同年11月与立宪政友会约定，待到日俄战争结束后，藩阀政府会在元老会议上向明治天皇推荐立宪政友会总裁西园寺公望担任新一届的内阁总理大臣。</p>
+<p>1905年1月1日大日本帝国又实施了第二次非常特别税，<strong>刚才提过的那些税种在第一次非常特别税法案增税后的税率的基础上再次提高了税率，额外提高了售薬営業税、印紙税的税率。新设邮票印紙税、砂金採取地税、通行税、纺织物消費税、米籾进口税，提高行政诉讼手续费。永久性设置遗产继承税，并实行食盐专卖制。</strong></p>
+<p>开启战争后，这好日子是宛如排山倒海一般的滚滚而来。千万不要以为其他人玩弄低智商民粹主义和自己没关系，到时候真出了事是要所有人来一同承担的。日本人民老老实实给天皇当臣民已经够苦的了，然后还天降横祸必须要跟着承受又重又多的苛捐杂税和征兵负担，别忘了，血税也是税。</p>
+<p>低智商民粹主义永远只会站在道德制高点上代表所有人民，同时又视人民如草芥。日俄战争期间顶级网红户水宽人没有发表过一篇主张应该减轻日本人民负担的社论。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/652.png" alt=""></p>
+<p>极端爱国依旧盛行在大日本帝国舆论场之中，新闻媒体疯狂报道各种赢赢赢，诸如我军势如破竹，俄军费拉不堪，完全不提及己方伤亡和当下的财政状况。</p>
+<p>户水宽人还在开战后妄议满洲领有问题，声称沙俄退出满韩地区后大日本帝国应当派兵占领这些土地。看见了吧，低智商民粹主义的那层皮里面其实就是帝国主义。</p>
+<p>之后还出版《世界的大势与日俄战争的结末》一书，书中称沙俄应当割让贝加尔湖以东的所有领土，受不了了，颅内狂想也要有个限度吧。在我们看来这是完全不切实际的夸夸其谈，可当时各大新闻媒体却都在盛赞户水宽人的雄壮发言，称赞其正在勇敢无畏的努力为国家争取利益。</p>
+<p>媒体界逐渐失控，**是否支持和赞美户水宽人决定了这家媒体有没有人关注，报纸能不能卖得出去。**就这样劣币驱逐良币，舆论界已然没有非战论的生存空间了。最终，原本在万朝报工作的幸德秋水选择辞职，与堺利彦创立【周刊平民新闻】，直到战争结束都一直在坚持宣传反战思想。</p>
+<p>户水宽人几乎已经事实上完全替代了政府在舆论场上的地位，明明是个政治素人，既不是官僚又不是军人，不过是一位学者的户水宽人却成为了日俄战争的绝对权威，典型的素人变成了权威。</p>
+<p>日俄战争末期，联合舰队歼灭了远道而来波罗的海舰队，大日本帝国国内一片沸腾，民众对全面赢得战争胜利的期待值达到顶峰，可战役上的胜利根本无法掩盖在财政上的巨大压力，国力几近被掏空的大日本帝国已是强弩之末。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/653.png" alt="当残酷的现实击破了低智商民粹的春秋大梦之后？"></p>
+<p>随后邀请美国总统西奥多罗斯福中间斡旋日俄和谈，这个时候户水宽人又一次出现了，称沙俄必须割让整个库页岛、整个勘察加半岛、东北亚的所有沿海州，外加支付赔偿金30亿日元。</p>
+<p>简单粗算一下，根据日本三菱银行数据，20世纪初大日本帝国的1日元相当于现在的2万日元，也就是说户水宽人要求的30亿日元赔偿金约合现在的60兆日元,差不多是人民币2.8兆。俄罗斯联邦在2022年一年的GDP都不够2.8兆人民币，可见当时户水主张的30亿日元赔偿金有多离谱。</p>
+<p>显然这种条件沙俄是不可能接受的，最终在美国的朴茨茅斯，日俄两国签订和约。和约的主要内容有大日本帝国获得了大韩帝国的支配权，大连·旅顺的租借权，长春-旅顺段，即南满洲铁路及沿线矿物的所有利权，沙俄在东北亚沿岸州海域的捕鱼权。沙俄军队撤出东北地区并割让库页岛北纬50度以南的部分给大日本帝国。</p>
+<p>是的，你没有看错，低智商民粹主义煽动的给日本人民带了沉重负担的日俄战争的结果就是连一分钱的赔款都没有！低智商民粹主义开始迅速反噬大日本帝国。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.36/img/content/nippon-history/654.png" alt="低智商民粹真的于己有利吗？"></p>
+<p>美好的幻想和沉重的现实形成的巨大落差引爆了民众的愤怒，如同火山喷发一般一发不可收拾，低智商民粹主义氛围的余温依旧没有消散。</p>
+<p><strong>“形势不是一片大好吗？！”</strong></p>
+<p><strong>“波罗的海舰队不是全灭吗？！”</strong></p>
+<p><strong>“为什么是这么一个结果？！”</strong></p>
+<p><strong>“一定都是投降失败主义的藩阀政府的错！”</strong></p>
+<p>没有人相信，也没有人愿意去相信那些如梦如幻月的报道和社论其实都是假的。1905年9月5日，数万名愤怒的民众突破了警察的封锁，聚集在东京的日比古公园举行抗议。</p>
+<p>散会后民众的怒火仍然没有消散，随后在内务大臣官邸、二重桥、京桥新富座接连发生了警民暴力冲突事件，事态逐渐演变成了一场ぼうらん，大量派出所、警察署、市街电车遭到了放火袭击。</p>
+<p>愤怒的民众们包围了由桂太郎所控制的长州藩阀政府喉舌媒体『国民新闻』的总部并进行了攻击。9月6日来不及经议会程序，藩阀政府上奏明治天皇，随后明治天皇以敕令的形式第一次下达戒严令，史称**『日比古烧打事件』**。</p>
+<p>日比古烧打事件中17人死亡，2000多人受伤，2000多人被拘捕，311人遭到检察院起诉，其中87人被判有罪。</p>
+<p>可能有观众会认为仅从后果来看的话好像并不是很重量级？不要只看表面结果，整个日俄战争从酝酿到勃发再到结束，大日本帝国政府有无数次机会可以阻止“网红”们一个赛这一个的散播低智商民粹主义言论，禁止他们吃这口流量爱国饭，可结果却是选择放任其野蛮发展。</p>
+<p>反倒是确实再也打不下去了，必须要和沙俄缔结朴茨茅斯和约的时候，由于户水宽人依旧激烈反对和谈，要求接着打下去，大日本帝国政府不得已动用『文官分限令』的11条第4项的兜底条款，强行解职了户水宽人的东京帝国大学教授身份。</p>
+<p>可惜覆水难收，早知如此何必当初，在和谈前夕对户水宽人给予解职处分正好让他成为了英雄，勇敢无畏说真话的户水宽人被软弱无能的政府“封号”了。弄巧成拙又一次刺激了低智商民粹主义，提高了户水宽人的个人威信。</p>
+<p>此后藩阀政府的威信骤然下降，在日比古烧打事件的3个月后，作为大日本帝国建国功勋组织的萨长藩阀终于迫不得已把政权交给了由西园寺公望所率领的立宪政友会。</p>
+<p>大日本帝国正式进入了藩阀·政党迭立时代，政治开始走向大众化，也为后来所谓的『大正民主风潮』打下了一定的民意基础。所以说低智商民粹主义是非常危险的，自信以为低智商民粹主义可以为我所用的，结局很有可能是葬送了自己。120年前的教训犹在眼前，希望现在的日本国不要重蹈覆辙。</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

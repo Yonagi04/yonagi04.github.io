@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/garbage_collection_in_jvm/"><!-- Primary Meta Tags --><title>JVM专题——垃圾回收 | Yonagi&#39;s Sekai</title><meta name="title" content="JVM专题——垃圾回收 | Yonagi's Sekai"><meta name="description" content="Article: JVM专题——垃圾回收"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/garbage_collection_in_jvm/"><meta property="og:title" content="JVM专题——垃圾回收 | Yonagi's Sekai"><meta property="og:description" content="Article: JVM专题——垃圾回收"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/garbage_collection_in_jvm/"><meta property="twitter:title" content="JVM专题——垃圾回收 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JVM专题——垃圾回收"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> JVM专题——垃圾回收 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-04-05T15:38:29.000Z"> 2024年4月5日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p><strong>本文部分内容节选自Java Guide和《深入理解Java虚拟机》, Java Guide地址: <a href="https://javaguide.cn/java/jvm/jvm-garbage-collection.html">https://javaguide.cn/java/jvm/jvm-garbage-collection.html</a></strong></p>
+<blockquote>
+<p>🚀 <a href="https://yonagi04.github.io/posts/2024/bc3a3d7c4c51/">基础（上）</a> → 🚀 <a href="https://yonagi04.github.io/posts/2024/da1a14d471aa/">基础（中）</a> → 🚀<a href="https://yonagi04.github.io/posts/2024/3c15992991b1/">基础（下）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/2dcdc762ee3e/">集合（上）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/5972154ca625/">集合（下）</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/4e86d54ab314/">JVM专题1</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/82639aae6f65/">JVM专题2</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/fddd546e0d7f/">JVM专题4</a></p>
+</blockquote>
+<h1 id="堆内存基本结构">堆内存基本结构</h1>
+<p>回顾堆内存的结构. Java 自动内存管理的主要区域是 Java 堆, 因此 Java 堆也被称为 GC 堆</p>
+<p>在 JDK1.7及以前的版本, 堆内存分为以下三部分:</p>
+<ol>
+<li>新生代</li>
+<li>老年代</li>
+<li>永久代</li>
+</ol>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/hotspot-heap-structure.png" alt=""></p>
+<p>JDK1.8 之后, 永久代被元空间取代</p>
+<p>具体的关于堆内存基本结构相关信息, 请看<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a></p>
+<h1 id="内存分配与回收原则">内存分配与回收原则</h1>
+<h2 id="对象优先在eden区分配">对象优先在Eden区分配</h2>
+<p>大多数情况下, 对象在新生代中Eden区分配, 当Eden区没有足够空间进行分配时, 虚拟机会发起一次 Minor GC. 如果执行 Minor GC 之后, Eden区足够存储对象, 那么就会在Eden区分配对象内存; 否则会通过 <strong>分配担保机制</strong> 将新生代对象暂时存储到老年代</p>
+<h2 id="大对象直接进入老年代">大对象直接进入老年代</h2>
+<p>大对象就是指需要大量连续内存空间的对象(例如字符串, 数组)</p>
+<p>大对象直接进入老年代的行为是由虚拟机动态决定的, 它与具体使用的垃圾回收器和相关参数有关. 大对象进入老年代是一种优化策略, 旨在避免将大对象放入新生代, 从而减少新生代的垃圾回收频率和成本</p>
+<ul>
+<li>G1垃圾回收器会根据 <code>-XX:G1HeapRegionSize</code> 参数设置堆区域的大小和 <code>-XX:G1MixedGCLiveThresholdPercent</code> 参数设置的阈值, 来决定哪些对象会直接进入老年代</li>
+<li>Parallel Scavenge垃圾回收器中, 默认情况下, 是没有一个固定的阈值来决定何时直接在老年代分配大对象, 而是由虚拟机根据当前的堆内存情况和历史数据动态决定</li>
+</ul>
+<h2 id="长期存活的对象将进入老年代">长期存活的对象将进入老年代</h2>
+<p>虚拟机给每个对象都分配了一个对象年龄计数器. 大部分情况下, 对象首先在 Eden 区分配, 如果对象在 Eden区出生且经过第一次 Minor GC后仍能存活, 且能被Survivor收纳的话, 将被移动到 Survivor空间, 并将对象年龄设置为1</p>
+<p>对象每在Survivor熬过一次Minor GC, 年龄就会增长1岁. 当它的年龄增加到一定程度(默认为15), 就会被晋升到老年代.</p>
+<h2 id="主要进行gc的区域">主要进行GC的区域</h2>
+<p>部分收集 (Partial GC):</p>
+<ul>
+<li>新生代收集(Minor GC/Young GC): 只对新生代进行垃圾收集</li>
+<li>老年代收集(Major GC/Old GC): 只对老年代进行垃圾收集, 注意Major GC在有些语义下也指整堆收集</li>
+<li>混合收集(Mixed GC): 对整个新生代和部分老年代进行垃圾收集</li>
+</ul>
+<p>整堆收集(Full GC): 收集整个Java堆和方法区</p>
+<h2 id="空间分配担保">空间分配担保</h2>
+<p>空间分配担保是为了确保在 Minor GC 之前老年代本身还有容纳新生代所有对象的剩余空间</p>
+<p>JDK6 Update24 之前, 在发生Minor GC之前, 虚拟机必须检查老年代最大可用的连续空间是否大于新生代所有对象总空间, 如果这个条件成立, 那么这一次Minor GC可以保证是安全的, 如果不成立, 则虚拟机会先查看 <code>-XX:HandlePromotionFailure</code> 参数的设置值是否允许担保失败, 如果允许, 则会继续检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小, 如果大于, 则尝试进行一次Minor GC; 如果小于, 或者 <code>-XX:HandlePromotionFailure</code> 被设置为是不允许的, 那么这一次就要进行Full GC</p>
+<p>JDK6 Update24之后, 只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小, 就会进行 Minor GC, 否则进行 Full GC</p>
+<h1 id="对象死亡判断">对象死亡判断</h1>
+<h2 id="引用计数算法">引用计数算法</h2>
+<p>在对象中添加一个引用计数器, 每当有一个地方引用它时, 计数器值就加一; 当引用失效时, 计数器值减一; 任何时刻计数器为零的对象就是不可能再被使用的, 这一点有点类似于C++智能指针中的shared pointer共享指针</p>
+<p>它的原理很简单, 且效率很高, 但实际上主流的Java 虚拟机都没有使用这个算法来管理内存, 因为这个算法无法解决对象之间循环引用的问题. 如果对象a和对象b互相引用, 除此之外没有其他对象再引用这两个对象, 但是由于引用计数器不为零, 所以使用引用计数算法无法让垃圾收集器回收它们</p>
+<h2 id="可达性分析">可达性分析</h2>
+<p>目前主流的支持垃圾回收的商用程序语言都是通过 <strong>可达性分析</strong> 来判断对象是否存活</p>
+<p>这个算法的基本思路就是通过一系列称为 “GC Roots”的根对象作为起始节点集, 从这些结点开始, 根据引用关系向下搜索, 搜索过程中所走过的路径称为 <strong>“引用链”</strong> . 如果从GC Roots到某个对象没有一条通路, 那么说明这个对象已经死亡了</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/jvm-gc-roots.png" alt=""></p>
+<p>例如, 上图的 Object6~Object10 之间虽然互有引用关系, 但是由于它们到GC Roots没有一条通路, 所以它们都是属于要被回收的对象</p>
+<p>可以作为GC Roots的对象:</p>
+<ul>
+<li>在虚拟机栈中引用的对象, 例如各个线程中被调用的方法堆栈中使用的参数, 局部变量, 临时变量等</li>
+<li>在方法区中类静态属性引用的对象, 例如Java类的引用类型静态变量</li>
+<li>在方法区中常量引用的对象, 例如字符串常量池中的引用</li>
+<li>在本地方法栈中JNI引用的对象</li>
+<li>Java 虚拟机内部的引用, 如基本数据类型对应的Class 对象, 一些常驻的异常对象, 系统类加载器</li>
+<li>所有被同步锁持有的对象</li>
+<li>反应Java虚拟机内部情况的JMXBean, JVMTI中注册的回调,本地代码缓存等</li>
+</ul>
+<p><strong>对象可以被回收, 就代表一定会被回收吗?</strong></p>
+<p>真正宣告一个对象”死亡”, 需要经过两个阶段, 可达性分析法不可达的对象第一次标记并进行一次筛选, 筛选的条件是这个对象是否有必要执行 <code>finalize</code> 方法, 当对象没有覆盖 <code>finalize</code> 方法, 或 <code>finalize</code> 方法已经被虚拟机调用过时, 虚拟机将这两种情况视为没有必要执行</p>
+<p>被判定为需要执行的对象会被放在一个队列里进行第二次标记, 除非这个对象与引用链上的任何一个对象建立关联, 否则就会被真的回收</p>
+<h2 id="引用">引用</h2>
+<p>JDK1.2之后, Java的引用分为 <strong>强引用</strong> , <strong>弱引用</strong> , <strong>软引用</strong> , <strong>虚引用</strong> 四类</p>
+<ul>
+<li>
+<p>强引用: 强引用是最传统的引用关系, 无论任何情况下, 只要强引用关系存在, 垃圾收集器就不会回收掉被引用的对象. 当内存空间不足, 虚拟机宁愿抛出OutOfMemoryError错误, 也不会随意回收具有强引用的对象</p>
+</li>
+<li>
+<p>软引用: 软引用用来描述一些还有用, 但非必须的对象. 只被软引用关联着的对象, 在系统将要发生内存溢出异常前, 会把这些对象列进回收范围之中进行第二次回收, 如果这一次回收还没有足够的内存, 才会抛出内存溢出异常.</p>
+</li>
+<li>
+<p>弱引用: 弱引用也用来描述一些非必须对象, 但是它的强度比软引用更弱, 被弱引用关联的对象只能生存到下一次垃圾收集发生为止</p>
+</li>
+<li>
+<p>虚引用: 虚引用是最弱的引用关系. 一个对象是否有虚引用的存在, 完全不会对其生存时间构成影响, 也无法通过虚引用来获得一个对象实例. 为一个对象设置虚引用的唯一目的只是为了能在这个对象被收集器回收时收到一个系统通知</p>
+<p>虚引用和软引用, 弱引用的差别在于: 虚引用必须与引用队列联合使用, 当垃圾回收器准备回收一个对象时, 如果发现它还有虚引用, 就会在回收对象的内存之前, 把这个虚引用加入到与之关联的引用队列之中. 程序可以通过判断引用队列中是否已经加入了虚引用, 来了解这个对象是否将要被垃圾回收</p>
+</li>
+</ul>
+<p>实际上使用软引用的情况比使用弱引用, 虚引用的情况要多得多. 这是因为<strong>软引用可以加速JVM对垃圾内存的回收速度, 避免出现内存溢出等问题</strong></p>
+<h2 id="如何判断一个类是无用的类">如何判断一个类是无用的类？</h2>
+<ul>
+<li>该类所有的实例都已经被回收, 也就是 Java 堆中不存在该类的任何实例</li>
+<li>加载该类的 <code>ClassLoader</code> 已经被回收</li>
+<li>该类对应的 <code>java.lang.Class</code> 对象没有在任何地方被引用, 无法在任何地方通过反射访问该类的方法</li>
+</ul>
+<h1 id="垃圾回收算法">垃圾回收算法</h1>
+<h2 id="标记-清除算法">标记-清除算法</h2>
+<p>标记-清除算法分为 “标记” 和 “清除” 阶段: 首先标记出所有不需要回收的对象, 在标记完成之后统一回收掉所有没有被标记的对象</p>
+<p>它会带来两个明显的问题</p>
+<ol>
+<li><strong>效率问题</strong> : 标记和清除两个过程效率都不高</li>
+<li><strong>空间问题</strong> : 标记清除后会产生大量不连续的内存碎片</li>
+</ol>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/mark-and-sweep-garbage-collection-algorithm.png" alt=""></p>
+<h2 id="标记-复制算法">标记-复制算法</h2>
+<p>为了解决标记-清除算法面对大量可复制对象时执行效率低的问题, 标记-复制算法诞生了. 它将可用内存按容量划分为大小相等的两块, 每次只使用其中的一块. 当这一块的内存用完了就将还活着的对象复制到另一块内存上, 然后再把已经使用过的内存空间清理掉.</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/copying-garbage-collection-algorithm.png" alt=""></p>
+<p>但是这个算法仍然存在一些问题</p>
+<ol>
+<li><strong>可用内存变小</strong> : 可用内存缩小为原来的一半</li>
+<li><strong>不适合老年代</strong> : 如果存活对象数量比较大, 复制性能会变得很差</li>
+</ol>
+<h2 id="标记-整理算法">标记-整理算法</h2>
+<p>标记-整理算法是根据老年代的特点提出的一种标记算法, 标记过程仍然和标记-清除算法一样, 但后续步骤不是直接对可回收对象回收, 而是让所有存活的对象向一端移动, 然后直接清理掉端边界以外的内存</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/mark-and-compact-garbage-collection-algorithm.png" alt=""></p>
+<p>因为多了整理这一步, 所以效率也不高, 适用于老年代这种垃圾回收频率不高的场景</p>
+<h2 id="分代收集算法">分代收集算法</h2>
+<p>一般将Java堆分为新生代和老年代, 这样我们就可以根据各个年代的特点选择合适的垃圾收集算法</p>
+<h1 id="垃圾收集器">垃圾收集器</h1>
+<p>JDK默认垃圾收集器</p>
+<ul>
+<li>JDK8: Parallel Scavenge(新生代) + Parallel Old(老年代)</li>
+<li>JDK9~JDK20: G1</li>
+</ul>
+<h2 id="serial-收集器">Serial 收集器</h2>
+<p>Serial 收集器是一个单线程收集器, 它在进行垃圾收集工作时候必须暂停其他所有的工作线程, 直到它收集结束</p>
+<p><strong>新生代采用标记-复制算法, 老年代采用标记-整理算法</strong></p>
+<p>Serial 收集器简单且高效, 且因为没有线程交互的开销, 自然可以获得很高的单线程收集效率. Serial收集器对于运行在客户端模式的虚拟机来说是一个不错的选择</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/serial-garbage-collector.png" alt=""></p>
+<h2 id="parnew-收集器">ParNew 收集器</h2>
+<p>ParNew 收集器其实就是 Serial 收集器的多线程版本, 除了使用多线程之外, 其余行为和 Serial 收集器完全一样</p>
+<p>它是许多运行在服务端模式下虚拟机的首要选择, 除了 Serial 收集器外, 只有它能和CMS收集器配合工作</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/parnew-garbage-collector.png" alt=""></p>
+<h2 id="parallel-scavenge-收集器">Parallel Scavenge 收集器</h2>
+<p>Parallel Scavenge 收集器 也是使用标记-复制算法的多线程收集器</p>
+<p>Parallel Scaveng 收集器的特点是它的关注点与其他收集器不同, CMS等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间, 而Parallel Scavenge 收集器的目标则是达到一个可控制的吞吐量. 吞吐量就是CPU中用于运行用户代码的时间和CPU总消耗时间的比值. Parallel Scavenge 收集器提供了很多参数供用户找到最合适的停顿时间和最大吞吐量, 如果对于收集器工作不了解, 手工优化存在困难时, 可以使用 Parallel Scavenge 收集器配合自适应调节策略</p>
+<p><strong>新生代使用标记-复制算法, 老年代使用标记-整理算法</strong></p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/parallel-scavenge-garbage-collector.png" alt=""></p>
+<h2 id="serial-old-收集器">Serial Old 收集器</h2>
+<p>Serial Old 是 Serial 收集器的老年代版本, 它也是单线程收集器, 使用标记-整理算法. 这个收集器的主要意义是供客户端模式下的HotSpot虚拟机使用. 在服务端模式下, 它有两种用途: 一种是在 JDK5 以及之前的版本中与 Parallel Scavenge 收集器搭配使用, 另外一种就是作为CMS收集器发生失败时的后备预案</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/serial-garbage-collector.png" alt=""></p>
+<h2 id="parallel-old-收集器">Parallel Old 收集器</h2>
+<p>Parallel Old 是 Parallel 收集器的老年代版本, 支持多线程并发收集, 使用标记-整理算法</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/parallel-scavenge-garbage-collector.png" alt=""></p>
+<h2 id="cms-收集器">CMS 收集器</h2>
+<p>CMS 收集器是一种以获取最短回收停顿时间为目标的收集器. 非常适合在注重用户体验的应用上使用</p>
+<p>CMS 收集器也是 HotSpot虚拟机第一款真正意义上的并发收集器, 实现了垃圾收集线程和用户现场同时工作</p>
+<p>CMS收集器是采用标记-清除算法实现的, 收集过程分为4个步骤</p>
+<ol>
+<li><strong>初始标记</strong> : 暂停所有线程, 并记录下直接与root相连的对象, 速度很快</li>
+<li><strong>并发标记</strong> : 同时开启 GC 和用户线程, 用一个闭包结构去记录可达对象. 但在这个阶段结束, 这个闭包结构不能保证包含所有的可达对象. 因为用户线程可能会不断的更新引用域, 所以 GC 线程无法保证可达性分析的实时性. 所以这个算法里会跟踪记录这些发生引用更新的地方</li>
+<li><strong>重新标记</strong> : 重新标记阶段就是为了修正并发标记阶段因为用户程序继续运行而导致标记变动的那一部分对象的标记记录, 这一阶段的停顿时间比初始标记阶段停顿时间长, 远比并发标记阶段时间短</li>
+<li><strong>并发清除</strong> : 开启用户线程, 同时 GC 线程对未标记的区域做清扫</li>
+</ol>
+<p>CMS的优点: <strong>并发收集, 地停顿</strong></p>
+<p>CMS的缺点:</p>
+<ol>
+<li>对CPU资源非常敏感</li>
+<li>由于CMS收集器无法处理浮动垃圾, 所以可能导致 “Con-current Mode Failure” 失败进而导致另一次完全 “Stop the world” 的 Full GC 的产生</li>
+<li>标记-清除算法会导致收集结束后产生大量的空间碎片</li>
+</ol>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/cms-garbage-collector.png" alt=""></p>
+<p>从 JDK9 开始, CMS收集器已被弃用</p>
+<h2 id="g1-收集器">G1 收集器</h2>
+<p>G1 收集器是一款面向服务器的垃圾收集器, 主要针对具备多核处理器和大容量内存的机器, 以极高概率满足GC停顿时间要求的同时, 还具备高吞吐性能特征</p>
+<p><strong>G1 收集器在后台维护了一个优先列表, 每次根据允许的收集时间, 优先选择回收价值最大的 Region.</strong> 这种使用 Region 划分内存空间以及有优先级的区域回收方式, 保证了 G1 收集器在有限时间内可以尽可能高的收集效率</p>
+<p>G1收集器的运作大致分为以下步骤</p>
+<ol>
+<li>
+<p><strong>初始标记</strong> : 仅仅标记 GC Roots 能直接关联到的对象, 并且修改 TAMS 指针的值, 让下一阶段用户线程并发运行时, 能正确地在可用的 Region 中分配新对象. 这个阶段需要停顿线程, 但耗时很短, 并且是借用进行 Minor GC 时同步进行的</p>
+</li>
+<li>
+<p><strong>并发标记</strong> : 从 GC Roots 开始对堆中对象进行可达性分析, 递归扫描整个堆中的对象图, 找出要回收的对象, 这阶段耗时较长, 但可以与用户线程并发进行. 当对象图扫描完成之后, 还要重新处理STAB记录下的在并发时有引用变动的对象</p>
+</li>
+<li>
+<p><strong>最终标记</strong> : 对用户线程做短暂的暂停, 用于处理并发阶段结束后仍遗留下来的最后少量的SATB记录</p>
+</li>
+<li>
+<p><strong>筛选回收</strong> : 负责更新 Region 的统计数据, 对各个 Region 的回收价值和成本进行排序, 根据用户所期望的停顿时间来制定回收计划, 可以自由选择任意多个 Region 构成回收集, 然后把决定回收的那一部分 Region 的存活对象复制到空 Region 中, 再清理掉整个旧 Region 的全部空间. 这个操作涉及到存活对象的移动, 是必须暂停用户线程, 由多条收集器线程并行完成的</p>
+</li>
+</ol>
+<p>从 JDK9 开始, G1收集器为默认垃圾收集器</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

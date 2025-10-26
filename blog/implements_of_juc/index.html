@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/implements_of_juc/"><!-- Primary Meta Tags --><title>JUC专题——Java并发机制的底层实现原理 | Yonagi&#39;s Sekai</title><meta name="title" content="JUC专题——Java并发机制的底层实现原理 | Yonagi's Sekai"><meta name="description" content="Article: JUC专题——Java并发机制的底层实现原理"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/implements_of_juc/"><meta property="og:title" content="JUC专题——Java并发机制的底层实现原理 | Yonagi's Sekai"><meta property="og:description" content="Article: JUC专题——Java并发机制的底层实现原理"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/implements_of_juc/"><meta property="twitter:title" content="JUC专题——Java并发机制的底层实现原理 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JUC专题——Java并发机制的底层实现原理"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> JUC专题——Java并发机制的底层实现原理 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-04-16T10:31:07.000Z"> 2024年4月16日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p><strong>本文部分内容节选自《Java并发编程的艺术》</strong></p>
+<blockquote>
+<p>🚀 <a href="https://yonagi04.github.io/posts/2024/bc3a3d7c4c51/">基础（上）</a> → 🚀 <a href="https://yonagi04.github.io/posts/2024/da1a14d471aa/">基础（中）</a> → 🚀<a href="https://yonagi04.github.io/posts/2024/3c15992991b1/">基础（下）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/2dcdc762ee3e/">集合（上）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/5972154ca625/">集合（下）</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/4e86d54ab314/">JVM专题1</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/82639aae6f65/">JVM专题2</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/fddd546e0d7f/">JVM专题4</a> →😋<a href="https://yonagi04.github.io/posts/2024/6eeebc171f9e/">JUC专题1</a> → 😋<a href="https://yonagi04.github.io/posts/2024/8b5f9ea51b60/">JUC专题2</a></p>
+</blockquote>
+<h1 id="volatile-的应用">volatile 的应用</h1>
+<p>volatile 是轻量级的 synchronized, 它在多处理器开发中保证了共享变量的 “可见性”. 可见性的意思是当一个线程修改一个共享变量时, 另外一个线程能读到这个修改的值. 如果 volatile变量修饰符使用恰当的话, 它比 synchronized 的使用和执行成本更低, 因为它不会引起线程上下文切换和调度</p>
+<h2 id="volatile-的定义和实现原理">volatile 的定义和实现原理</h2>
+<p>Java 语言规范中对 volatile 的定义如下: <strong>Java 编程语言允许线程访问共享变量, 为了保证共享变量能被准确和一致地更新, 线程应该确保通过排他锁单独获得这个变量</strong> . 如果一个变量被声明为 volatile, 那么 Java 线程内存模型保证所有线程看到这个变量的值是一致的</p>
+<p>volatile 的两条实现原则</p>
+<ol>
+<li><strong>Lock前缀指令会引起处理器缓存写回到内存</strong> .</li>
+<li><strong>一个处理器缓存回写到内存会导致其他处理器的缓存无效</strong> .</li>
+</ol>
+<h2 id="volatile-的使用优化">volatile 的使用优化</h2>
+<p>JDK7的并发包中新增了一个队列集合类 <code>LinkedTransferQueue</code> , 它在使用 volatile 变量时, 通过一种追加字节的方式来优化队列出队和入队的性能. LinkedTransferQueue的代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">private</span><span style="color:#F97583"> transient</span><span style="color:#F97583"> final</span><span style="color:#E1E4E8"> PaddedAtomicReference&#x3C;</span><span style="color:#F97583">QNode</span><span style="color:#E1E4E8">> head;</span></span>
+<span class="line"><span style="color:#F97583">private</span><span style="color:#F97583"> transient</span><span style="color:#F97583"> final</span><span style="color:#E1E4E8"> PaddedAtomicReference&#x3C;</span><span style="color:#F97583">QNode</span><span style="color:#E1E4E8">> tail;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">static</span><span style="color:#F97583"> final</span><span style="color:#F97583"> class</span><span style="color:#B392F0"> PaddedAtomicReference</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#F97583">T</span><span style="color:#E1E4E8">> </span><span style="color:#F97583">extends</span><span style="color:#B392F0"> AtomicReference</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#F97583">T</span><span style="color:#E1E4E8">> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    Object p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, pa, pb, pc, pd, pe;</span></span>
+<span class="line"><span style="color:#B392F0">    PaddedAtomicReference</span><span style="color:#E1E4E8">(T </span><span style="color:#FFAB70">r</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#79B8FF">        super</span><span style="color:#E1E4E8">(r);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">public</span><span style="color:#F97583"> class</span><span style="color:#B392F0"> AtomicReference</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#F97583">V</span><span style="color:#E1E4E8">> </span><span style="color:#F97583">implements</span><span style="color:#E1E4E8"> java.io.</span><span style="color:#B392F0">Serializable</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> volatile</span><span style="color:#E1E4E8"> V value;</span></span>
+<span class="line"><span style="color:#6A737D">    // 省略以下代码</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><strong>为什么追加字节能优化性能?</strong> 先看看 LinkedTransferQueue 这个类, 它使用一个内部类类型定义了队列的头节点和尾节点, 而内部类 PaddedAtomicReference 相对于父类 AtomicReference 只做了一件事情, 就是将共享变量追加到64字节.</p>
+<p><strong>为什么追加到64字节能提高并发编程的效率?</strong> 因为对于三级缓存的缓存行为64字节宽的CPU而言, 如果队列的头节点和尾节点都不足64字节, 处理器会将它们都读到同一个缓存行中, 在多处理器下每个处理器都会缓存同样的头, 尾节点, 当一个处理器试图修改头节点时, 会把整个缓存行锁定, 在缓存一致性机制的作用下, 其他处理器就不能访问自己缓存行下的尾节点, 而队列的入队和出队需要不停修改头节点和尾节点, 在多处理器环境下将会严重影响到队列的入队和出队效率. 使用64字节填满高速缓存的缓存行, 避免头节点和尾节点都加载到同一个缓存行, 使头尾节点修改时不会相互锁定</p>
+<p><strong>是否在使用 volatile 变量时都需要追加到64字节?</strong></p>
+<p>并非如此, 在两种场景下不应该使用这种模式</p>
+<ul>
+<li><strong>缓存行非64字节宽的处理器</strong></li>
+<li><strong>共享变量不会被频繁地写</strong></li>
+</ul>
+<h1 id="synchronized-的实现原理和应用">synchronized 的实现原理和应用</h1>
+<p>synchronized实现同步的基础: Java中的每个对象都能作为锁</p>
+<ul>
+<li>对于普通同步方法, 锁是当前实例对象</li>
+<li>对于静态同步方法, 锁是当前类的 Class 对象</li>
+<li>对于同步方法块, 锁是 synchronized 括号中配置的对象</li>
+</ul>
+<h2 id="java-对象头">Java 对象头</h2>
+<p>synchronized用的锁是存在 Java 对象头的, 如果对象是数组类型, 则虚拟机用3个字宽存储对象头, 如果对象是非数组类型, 则用2字宽存储对象头. 在32位虚拟机中, 1字宽等于4字节, 即32bit</p>
+<p>Java 对象头中的 Mark Word里默认存储对象的 HashCode, 分代年龄和锁标记位. 32位JVM的 Mark Word的默认存储结构如表所示</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>锁状态</th><th>25bit</th><th>4bit</th><th>1bit是否是偏向锁</th><th>2bit锁标志位</th></tr></thead><tbody><tr><td>无锁状态</td><td>对象的hashCode</td><td>对象分代年龄</td><td>0</td><td>01</td></tr></tbody></table>
+<p>在运行期间, Mark Word里存储的数据会随着锁标志位的变化而变化. Mark Word可能变化为以下 4 种数据</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/JUC-synchronized-markword.png" alt=""></p>
+<h2 id="锁的升级与对比">锁的升级与对比</h2>
+<p>在 JDK1.6 中, 锁一共有 4 种形态, 级别由低到高依次是: 无锁状态, 偏向锁状态, 轻量级锁状态, 重量级锁状态</p>
+<p>锁可以升级但不能降级, 意味着偏向锁升级为轻量级锁之后不能再降级为偏向锁. 这种锁升级却不能降级的策略目的是为了提高获得锁和释放锁的效率</p>
+<ol>
+<li>偏向锁</li>
+</ol>
+<p>当一个线程访问同步块并获得锁时, 会在对象头和栈帧的锁记录中存储锁偏向的线程ID, 以后该线程在进入和退出同步块时不需要进行CAS操作来加锁和解锁, 只需要简单地测试对象头的Mark Word中是否存储了指向当前线程的偏向锁. 如果测试成功, 表示线程已经获得了锁,, 如果测试失败, 则需要再测试一下Mark Word中偏向锁的标识是否设置为1: 如果没有设置, 则使用CAS竞争锁, 如果设置了, 则尝试使用CAS将对象头的偏向锁指向当前线程</p>
+<p>(1) 偏向锁的撤销</p>
+<p><strong>只有当其他线程试图竞争偏向锁时, 持有偏向锁的线程才会释放锁</strong></p>
+<p>偏向锁的撤销, 首先要暂停拥有偏向锁的线程, 然后检查持有偏向锁的线程是否活着, 如果线程处于不活动状态, 则将对象头设置成无锁状态; 如果线程仍然或者, 拥有偏向锁的栈会被执行, 遍历偏向对象的锁记录, 栈中的锁记录和对象头的 Mark Word 要么重新偏向于其他线程, 要么恢复到无锁或者标记对象不适合作为偏向锁, 最后唤醒暂停的线程</p>
+<p>(2) 关闭偏向锁</p>
+<p>Java6 和 Java7 默认启用了偏向锁, 关闭可以使用参数 <code>-XX:BiasedLockingStartupDelay=0</code></p>
+<ol start="2">
+<li>轻量级锁</li>
+</ol>
+<p>(1) 轻量级锁加锁</p>
+<p>线程在执行同步代码块之前, JVM会在当前线程的栈帧中创建用于存储锁记录的空间, 并将对象头中的 Mark Word复制到锁记录中. 然后线程尝试使用 CAS 将对象头中的 Mark Word 替换为指向锁记录的指针, 如果成功, 当前线程获得锁, 如果失败, 表示其他线程竞争锁, 当前线程就会通过自旋来获得锁</p>
+<p>(2) 轻量级锁解锁</p>
+<p>轻量级锁解锁时, 会使用原子的 CAS 操作将 Displaced Mark Word 替换回到对象头, 如果成功, 则表示没有竞争发生, 如果失败, 则表示锁存在竞争, 锁会膨胀为重量级锁</p>
+<p>因为自旋会消耗CPU, 为了避免无用的自旋, 当锁升级到重量级锁之后, 就不会再恢复到轻量级锁状态了. 其他线程试图获取这个锁时都会被阻塞</p>
+<ol start="3">
+<li>锁的优缺点对比</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>锁</th><th>优点</th><th>缺点</th><th>适用场景</th></tr></thead><tbody><tr><td>偏向锁</td><td>加锁和解锁不需要额外的消耗, 和执行非同步方法相比仅存在纳秒级的差距</td><td>如果线程间存在锁竞争, 会带来额外的锁撤销的消耗</td><td>适用于只有一个线程访问同步块场景</td></tr><tr><td>轻量级锁</td><td>竞争的线程不会阻塞, 提高了程序的响应速度</td><td>如果始终得不到锁竞争的线程, 使用自旋会消耗CPU</td><td>追求响应时间, 同步块执行速度非常快</td></tr><tr><td>重量级锁</td><td>线程竞争不会使用自旋, 不消耗CPU</td><td>线程阻塞, 响应时间缓慢</td><td>追求吞吐量, 同步块执行实际长</td></tr></tbody></table>
+<h1 id="原子操作的实现原理">原子操作的实现原理</h1>
+<p>原子操作意为 “不可被中断的一个或一系列操作”</p>
+<p>在 Java 中 通过 <strong>锁</strong> 和 <strong>CAS循环</strong> 的方式实现原子操作</p>
+<p>(1) 使用 CAS循环 实现原子操作</p>
+<p>自旋CAS实现基本思路就是循环进行CAS操作直到成功为止</p>
+<p>使用CAS实现原子操作会带来三大问题: <strong>ABA问题</strong> , <strong>循环时间长开销大</strong> , <strong>只能保证一个共享变量的原子操作</strong></p>
+<ol>
+<li><strong>ABA问题</strong></li>
+</ol>
+<p>因为 CAS需要在操作值的时候, 检查值是否变化, 如果没有变化就更新, 但是如果一个值原来是 A, 变成了B, 又变回了A, 那么使用CAS进行检查时就会发现值没有变化, 但实际上已经发生过变化了. ABA问题的解决方案是使用版本号, 每次变量更新就把版本号加1.</p>
+<ol start="2">
+<li><strong>循环时间长开销大</strong></li>
+</ol>
+<p>自旋CAS如果长时间不成功, 会给CPU带来非常大的执行开销. 如果JVM能支持处理器提供的pause指令, 那么效率会有一定的提升</p>
+<ol start="3">
+<li><strong>只能保证一个共享变量的原子操作</strong></li>
+</ol>
+<p>当对一个共享变量执行操作时, 我们可以使用循环CAS的方式来保证原子操作, 但是对多个共享变量进行操作时, 循环CAS就无法保证操作的原子性, 这时候就可以用锁</p>
+<p>(2) 使用锁机制实现原子操作</p>
+<p>锁机制保证了只有获得锁的线程才能操作锁定的内存区域. JVM内部实现了很多锁, 有偏向锁, 轻量级锁和互斥锁, 但是除了偏向锁, 其他实现锁的方式都使用了循环CAS: 当一个线程想进入同步块时使用循环CAS来获取锁, 当它想退出同步块使用循环CAS释放锁</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

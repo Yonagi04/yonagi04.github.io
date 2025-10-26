@@ -1,0 +1,629 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/lock_in_juc/"><!-- Primary Meta Tags --><title>JUC专题——Java中的锁 | Yonagi&#39;s Sekai</title><meta name="title" content="JUC专题——Java中的锁 | Yonagi's Sekai"><meta name="description" content="Article: JUC专题——Java中的锁"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/lock_in_juc/"><meta property="og:title" content="JUC专题——Java中的锁 | Yonagi's Sekai"><meta property="og:description" content="Article: JUC专题——Java中的锁"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/lock_in_juc/"><meta property="twitter:title" content="JUC专题——Java中的锁 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JUC专题——Java中的锁"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> JUC专题——Java中的锁 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-05-19T12:49:35.000Z"> 2024年5月19日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 6 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p><strong>本文部分内容节选自《Java并发编程的艺术》</strong></p>
+<blockquote>
+<p>🚀 <a href="https://yonagi04.github.io/posts/2024/bc3a3d7c4c51/">基础（上）</a> → 🚀 <a href="https://yonagi04.github.io/posts/2024/da1a14d471aa/">基础（中）</a> → 🚀<a href="https://yonagi04.github.io/posts/2024/3c15992991b1/">基础（下）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/2dcdc762ee3e/">集合（上）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/5972154ca625/">集合（下）</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/4e86d54ab314/">JVM专题1</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/82639aae6f65/">JVM专题2</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/fddd546e0d7f/">JVM专题4</a> →😋<a href="https://yonagi04.github.io/posts/2024/6eeebc171f9e/">JUC专题1</a> → 😋<a href="https://yonagi04.github.io/posts/2024/8b5f9ea51b60/">JUC专题2</a> → 😋<a href="https://yonagi04.github.io/posts/2024/b64cc63dd695/">JUC专题3</a></p>
+</blockquote>
+<h1 id="lock接口">Lock接口</h1>
+<p>锁是用来控制多个线程访问共享资源的方式, 一般来说, 一个锁能够防止多个线程同时访问共享资源 (但是有些锁可以允许多个线程并发的访问共享资源, 比如读写锁)</p>
+<p>使用 <code>synchronized</code> 关键字将会隐式地获得锁, 但是它将锁的获取和释放固化了, 也就是先获取再释放. 当然这种方式简化了同步的管理, 可是扩展性没有显式地获取和释放来的好</p>
+<h1 id="队列同步器">队列同步器</h1>
+<p><strong>队列同步器</strong> 是用来构建锁或者其他同步组件的基础框架, 使用一个 int 成员变量表示同步状态, 通过内置的FIFO队列来完成资源获取线程的排队工作</p>
+<p>同步器的主要使用方式是继承, 子类通过继承同步器并实现它的抽象方法来管理同步状态, 在抽象方法的实现过程中免不了要对同步状态进行过呢更改, 这时候就需要使用同步器提供的 3 个方法(<code>getState()</code> , <code>setState(int state)</code> , <code>compareAndSetState(int expect, int update)</code>) 来进行操作, 因为它们能够保证状态的改变是安全的</p>
+<h2 id="队列同步器的接口">队列同步器的接口</h2>
+<p>重写同步器指定的方法时, 需要使用同步器提供的如下 3 个方法来访问或修改同步状态</p>
+<ul>
+<li><code>getState()</code> : 获取同步状态</li>
+<li><code>setState()</code> : 设置当前同步状态</li>
+<li><code>compareAndSetState()</code> : 使用CAS设置当前状态, 该方法能够保证状态设置的原子性</li>
+</ul>
+<p>同步器可重写的方法如下</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>方法名称</th><th>描述</th></tr></thead><tbody><tr><td><code>protected boolean tryAcquire(int arg)</code></td><td>独占式获取同步状态, 实现该方法需要查询当前状态并判断同步状态是否符合预期, 然后再进行CAS设置同步状态</td></tr><tr><td><code>protected boolean tryRelease(int arg)</code></td><td>独占式释放同步状态, 等待获取同步状态的线程将会有机会获取同步状态</td></tr><tr><td><code>protected int tryAcquireShared(int arg)</code></td><td>共享式获取同步状态, 返回大于等于0 的值, 表示获取成功, 反之, 获取失败</td></tr><tr><td><code>protected boolean tryReleaseShared(int arg)</code></td><td>共享式释放同步状态</td></tr><tr><td><code>protected boolean isHeldExclusively()</code></td><td>当前同步器是否在独占模式下被线程占用, 一般该方法表示是否被当前线程所独占</td></tr></tbody></table>
+<p>实现自定义同步组件时, 将会调用同步锁的模板方法</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>方法名称</th><th>描述</th></tr></thead><tbody><tr><td><code>void acquire(int arg)</code></td><td>独占式获取同步状态, 如果当前线程获取同步状态成功, 则由该方法返回, 否则, 将会进入同步队列等待, 该方法将会调用重写的 <code>tryAcquire(int arg)</code> 方法</td></tr><tr><td><code>void acquireInterruptibly(int arg)</code></td><td>与 <code>acquire(int arg)</code> 相同, 但是该方法响应中断, 当前线程未获取到同步状态而进入同步队列中, 如果当前线程被中断, 则该方法会抛出 <code>InterruptedException</code> 并返回</td></tr><tr><td><code>boolean tryAcquireNanos(int arg, long nanos)</code></td><td>在<code>acquireInterruptibly(int arg)</code> 基础上增加了超时限制, 如果在超时限制内没有获取到同步状态, 则返回 <code>false</code>, 否则返回 <code>true</code></td></tr><tr><td><code>void acquireShared(int arg)</code></td><td>共享式的获取同步状态, 如果当前线程未获取到同步状态, 将会进入同步队列等待, 与独占式获取的主要区别是同一时刻可以有多个线程获取到同步状态</td></tr><tr><td><code>void acquireSharedInterruptibly(int arg)</code></td><td>与 <code>acquireShared(int arg)</code> 一样, 该方法响应中断</td></tr><tr><td><code>boolean tryAcquireSharedNanos(int arg, long nanos)</code></td><td>在 <code>acquireSharedInterruptibly(int arg)</code> 的基础上增加了超时限制</td></tr><tr><td><code>boolean release(int arg)</code></td><td>独占式的释放同步状态, 该方法会在释放同步状态之后, 将同步队列中第一个节点包含的线程唤醒</td></tr><tr><td><code>boolean releaseShared(int arg)</code></td><td>共享式的释放同步状态</td></tr><tr><td><code>Collection&#x3C;Thread> getQueuedThreads()</code></td><td>获取等待在同步队列上的线程集合</td></tr></tbody></table>
+<h2 id="队列同步器的实现分析">队列同步器的实现分析</h2>
+<h3 id="同步队列">同步队列</h3>
+<p>同步器依赖于内部的同步队列来完成同步状态的管理, 当前线程获取同步状态失败时, 同步器会将当前线程及其等待状态等信息构造成一个节点并将其加入到同步队列, 同时会阻塞当前线程, 当同步状态释放时, 会把首节点中的线程唤醒, 使其再次尝试获取同步状态</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/node.webp" alt=""></p>
+<p>节点是构成同步队列的基础, 同步器具有头节点(head)和尾节点(tail), 没有成功获取同步状态的线程将会成为节点加入该队列的尾部, 同步队列的基本结构如图所示</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.4/img/content/sync-queue.webp" alt=""></p>
+<p>同步器将节点加入到同步队列的过程如图所示</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.4/img/content/add-sync-queue.webp" alt=""></p>
+<p>同步队列遵循FIFO, 首节点是同步状态获取成功的节点, 首节点的线程在释放同步状态时, 会唤醒后继节点, 而后继节点将会在获取同步状态成功时将自己设置为首节点</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.4/img/content/headnode.webp" alt=""></p>
+<p>设置首节点是通过获取同步状态成功的线程来完成的, 由于只有一个线程能够成功获取到同步状态, 因此设置头节点的方法不需要用CAS来保证, 它只需要将首节点设置成为原首节点的后继节点并断开原首节点的next引用即可</p>
+<h3 id="独占式同步状态获取与释放">独占式同步状态获取与释放</h3>
+<p>通过调用同步器的 <code>acquire(int arg)</code> 方法可以获取同步状态, 该方法对中断不敏感, 也就是由于线程获取同步状态失败后进入同步队列中, 后续对线程进行中断操作时, 线程不会从同步队列中移出</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// 同步器的acquire方法</span></span>
+<span class="line"><span>public final void acquire(int arg) {</span></span>
+<span class="line"><span>    if (!tryAcquire(arg) &#x26;&#x26; acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) {</span></span>
+<span class="line"><span>        selfInterrupt();</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// 同步器的addWaiter和enq方法</span></span>
+<span class="line"><span>private Node addWaiter(Node mode) {</span></span>
+<span class="line"><span>    Node node = new Node(Thread.currentThread(), mode);</span></span>
+<span class="line"><span>    Node pred = tail;</span></span>
+<span class="line"><span>    if (pred != null) {</span></span>
+<span class="line"><span>        node.prev = pred;</span></span>
+<span class="line"><span>        if (compareAndSetTail(pred, node)) {</span></span>
+<span class="line"><span>            pred.next = node;</span></span>
+<span class="line"><span>            return node;</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>    enq(node);</span></span>
+<span class="line"><span>    return node;</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>private Ndoe enq(final Node node) {</span></span>
+<span class="line"><span>    for (;;) {</span></span>
+<span class="line"><span>        Node t = tail;</span></span>
+<span class="line"><span>        if (t == null) {</span></span>
+<span class="line"><span>            if (compareAndSetHead(new Node())) {</span></span>
+<span class="line"><span>                tail = head;</span></span>
+<span class="line"><span>            }</span></span>
+<span class="line"><span>        } else {</span></span>
+<span class="line"><span>            node.prev = t;</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>        if (compareAndSetTail(t, node)) {</span></span>
+<span class="line"><span>            t.next = node;</span></span>
+<span class="line"><span>            return t;</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>节点进入同步队列之后, 就进入了自旋, 每个节点都在自省地观察, 当条件满足, 获取到了同步状态, 就从自旋状态中退出, 否则依旧留在自旋过程中</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">// 同步器的acquireQueued方法</span></span>
+<span class="line"><span style="color:#F97583">final</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> acquireQueued</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">final</span><span style="color:#E1E4E8"> Node node, </span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> arg) {</span></span>
+<span class="line"><span style="color:#F97583">    boolean</span><span style="color:#E1E4E8"> failed </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        boolean</span><span style="color:#E1E4E8"> interrupted </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (;;) {</span></span>
+<span class="line"><span style="color:#F97583">            final</span><span style="color:#E1E4E8"> Node p </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> node.</span><span style="color:#B392F0">predecessor</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (p </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> head </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#B392F0"> tryAcquire</span><span style="color:#E1E4E8">(arg)) {</span></span>
+<span class="line"><span style="color:#B392F0">                setHead</span><span style="color:#E1E4E8">(node);</span></span>
+<span class="line"><span style="color:#E1E4E8">                p.next </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">                failed </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#E1E4E8"> interrupted;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">shouldParkAfterFailedAcquire</span><span style="color:#E1E4E8">(p, node) </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#B392F0"> parkAndCheckInterrupt</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                interrupted </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    } </span><span style="color:#F97583">finally</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (failed) {</span></span>
+<span class="line"><span style="color:#B392F0">            cancelAcquire</span><span style="color:#E1E4E8">(node);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>在 <code>acquireQueued(final Node node, int arg)</code> 方法中, 当前线程在”死循环”中尝试获取同步状态, 而只有头节点才能尝试获取同步状态, 为什么?</p>
+<ol>
+<li>头节点是成功获取到同步状态的节点, 而头节点的线程释放了同步状态之后, 将会唤醒后续节点, 后续节点的线程被唤醒之后需要检查自己的前驱节点是不是头节点</li>
+<li>维护同步队列的FIFO原则, 该方法中, 节点自旋获取同步状态的行为如图所示</li>
+</ol>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.4/img/content/get-sync-status.webp" alt=""></p>
+<p>节点与节点之间在循环检查的过程中基本不相互通信, 而是简单的判断自己的前驱节点是否为头节点, 这样就使得节点的释放规则符合FIFO, 并且也便于对过早通知的处理(过早通知是指前驱节点不是头节点的节点由于中断而被唤醒)</p>
+<p>独占式同步状态获取流程如图所示</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.5/img/content/exclusive-sync-state.webp" alt=""></p>
+<p>当前线程获取同步状态并执行了相应逻辑之后, 就需要释放同步状态, 使得后续节点能够继续获取同步状态, 通过调用同步器的 <code>release(int arg)</code> 方法可以释放同步状态, 该方法在释放了同步状态之后, 会唤醒其后续节点(进而使后续节点重新尝试获取同步状态)</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// 同步器的release方法</span></span>
+<span class="line"><span>public final boolean release(int arg) {</span></span>
+<span class="line"><span>    if (tryRelease(arg)) {</span></span>
+<span class="line"><span>        Node h = head;</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>总结: 在获取同步状态时, 同步器维护一个同步队列, 获取同步状态失败的线程都会被加入到队列中并进行自旋; 移出队列的前提是前驱节点为头节点且能够获取到同步状态. 在释放同步状态时, 同步器调用 <code>tryRelease(int arg)</code> 方法释放同步状态, 然后唤醒头节点的后续节点</p>
+<h3 id="共享式同步状态获取与释放">共享式同步状态获取与释放</h3>
+<p>共享式获取与独占式获取最大的区别在于同一时刻是否能有多个线程同时获取到同步状态.</p>
+<p>通过调用同步器的 <code>acquireShared(int arg)</code> 方法可以共享式地获取到同步状态</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// 同步器的acquiredShared和doAcquireShared方法</span></span>
+<span class="line"><span>public final void acquireShared(int arg) {</span></span>
+<span class="line"><span>    if (tryAcquireShared(arg) &#x3C; 0) {</span></span>
+<span class="line"><span>        doAcquireShared(arg);</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>private void doAcquireShared(int arg) {</span></span>
+<span class="line"><span>    final Node node = addWaiter(Node.SHARED);</span></span>
+<span class="line"><span>    boolean failed = true;</span></span>
+<span class="line"><span>    try {</span></span>
+<span class="line"><span>        boolean interrupted = false;</span></span>
+<span class="line"><span>        for (;;) {</span></span>
+<span class="line"><span>            final Node p = node.predecessor();</span></span>
+<span class="line"><span>            if (p == head) {</span></span>
+<span class="line"><span>                int r = tryAcquireShared(arg);</span></span>
+<span class="line"><span>                if (r >= 0) {</span></span>
+<span class="line"><span>                    setHeadAndPropagate(node, r);</span></span>
+<span class="line"><span>                    p.next = NULL;</span></span>
+<span class="line"><span>                    if (interrupted)</span></span>
+<span class="line"><span>                        selfInterrupt();</span></span>
+<span class="line"><span>                   	failed = false;</span></span>
+<span class="line"><span>                    return;</span></span>
+<span class="line"><span>                }</span></span>
+<span class="line"><span>            }</span></span>
+<span class="line"><span>            if (shouldParkAfterFailedAcquire(p, node) &#x26;&#x26; parkAndCheckInterrupt())</span></span>
+<span class="line"><span>                interrupted = true;</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>    } finally {</span></span>
+<span class="line"><span>        if (failed) {</span></span>
+<span class="line"><span>            cancelAcquire(node);</span></span>
+<span class="line"><span>        }</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>共享式获取也需要释放同步状态, 通过调用 <code>releaseShared(int arg)</code> 方法可以释放同步状态</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">public</span><span style="color:#F97583"> final</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> releaseShared</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> arg) {</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">tryReleaseShared</span><span style="color:#E1E4E8">(arg)) {</span></span>
+<span class="line"><span style="color:#B392F0">        doReleaseShared</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="独占式超时获取同步状态">独占式超时获取同步状态</h3>
+<p>通过调用同步器的 <code>doAcquireNanos(int arg, long nanoTimeout)</code> 方法可以超时获取同步状态, 即在指定的时间段内获取同步状态, 如果获取到同步状态则返回 true, 否则, 返回 false</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">private</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> doAcquireNanos</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> arg, </span><span style="color:#F97583">long</span><span style="color:#E1E4E8"> nanoTimeout) throws InterruptedException {</span></span>
+<span class="line"><span style="color:#F97583">    long</span><span style="color:#E1E4E8"> lastTime </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> System.</span><span style="color:#B392F0">nanoTime</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> Node node </span><span style="color:#F97583">=</span><span style="color:#B392F0"> addWaiter</span><span style="color:#E1E4E8">(Node.EXCLUSIVE);</span></span>
+<span class="line"><span style="color:#F97583">    boolean</span><span style="color:#E1E4E8"> failed </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (;;) {</span></span>
+<span class="line"><span style="color:#F97583">            final</span><span style="color:#E1E4E8"> Node p </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> node.</span><span style="color:#B392F0">predecessor</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (p </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> head </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#B392F0"> tryAcquire</span><span style="color:#E1E4E8">(arg)) {</span></span>
+<span class="line"><span style="color:#B392F0">                setHead</span><span style="color:#E1E4E8">(node);</span></span>
+<span class="line"><span style="color:#E1E4E8">                p.next </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">                failed </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (nanosTimeout </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">shouldParkAfterFailedAcquire</span><span style="color:#E1E4E8">(p, node) </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#E1E4E8"> nanosTimeout </span><span style="color:#F97583">></span><span style="color:#E1E4E8"> spinForTimeoutThreshold)</span></span>
+<span class="line"><span style="color:#E1E4E8">                LockSupport.</span><span style="color:#B392F0">parkNanos</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">, nanosTimeout);</span></span>
+<span class="line"><span style="color:#F97583">          	long</span><span style="color:#E1E4E8"> now </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> System.</span><span style="color:#B392F0">nanoTime</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            nanosTimeout </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> now </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> lastTime;</span></span>
+<span class="line"><span style="color:#E1E4E8">            lastTime </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> out;</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (Thread.</span><span style="color:#B392F0">interrupted</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">                throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> InterruptedException</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    } </span><span style="color:#F97583">finally</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (failed) {</span></span>
+<span class="line"><span style="color:#B392F0">            cancelAcquire</span><span style="color:#E1E4E8">(node);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>独占式超时获取同步状态的过程如图所示</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.9/img/content/exclusive-timeout-sync-state.webp" alt=""></p>
+<h1 id="重入锁">重入锁</h1>
+<p>重入锁 ReentrantLock, 顾名思义就是支持重进入的锁,它表示该锁能够支持一个线程对资源的重复加锁. 除此之外还支持获取锁时的公平和非公平性选择</p>
+<p>ReentrantLock虽然没像synchronized关键字一样支持隐式的重进入, 但是在调用 <code>lock()</code> 方法时, 已经获取到锁的进程, 能够再次调用 <code>lock()</code> 方法获取锁而不被阻塞</p>
+<h2 id="实现重进入">实现重进入</h2>
+<p><strong>重进入</strong>是指任意线程在获得到锁之后能够再次获取到锁而不会被阻塞</p>
+<p>ReentrantLock通过组合自定义同步器来实现锁的获取和释放. 以非公平性实现为例, 获取同步状态的代码如下所示</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">final</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> nonfairTryAcquire</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> acquires) {</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> Thread current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Thread.</span><span style="color:#B392F0">currentThread</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">=</span><span style="color:#B392F0"> getState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (c </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">compareAnsSetState</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, acquires)) {</span></span>
+<span class="line"><span style="color:#B392F0">            setExclusiveOwnerThread</span><span style="color:#E1E4E8">(current);</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    } </span><span style="color:#F97583">else</span><span style="color:#F97583"> if</span><span style="color:#E1E4E8"> (current </span><span style="color:#F97583">==</span><span style="color:#B392F0"> getExclusiveOwnerThread</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> nextc </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> acquires;</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (nextc </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Maximum lock count exceeded"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#B392F0">        setState</span><span style="color:#E1E4E8">(nextc);</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>成功获取锁的线程再次获取锁, 只是增加了同步状态值, 这也就要求 ReentrantLock在释放同步状态时减少同步状态值, 该方法的代码如下所示</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">protected</span><span style="color:#F97583"> final</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> tryRelease</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> releases) {</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">=</span><span style="color:#B392F0"> getState</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> releases;</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (Thread.</span><span style="color:#B392F0">currentThread</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">!=</span><span style="color:#B392F0"> getExclusiveOwnerThread</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">        throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> IllegalMonitorStateException</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    boolean</span><span style="color:#E1E4E8"> free </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (c </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        free </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#B392F0">        setExclusiveOwnerThread</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#B392F0">    setState</span><span style="color:#E1E4E8">(c);</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> free;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="公平与非公平获得锁的区别">公平与非公平获得锁的区别</h2>
+<p>如果一个锁是公平的, 那么锁的获取顺序就应该符合请求的绝对时间顺序</p>
+<p>公平锁的获取同步状态代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">protected</span><span style="color:#F97583"> final</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> tryAcquire</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> acquires) {</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> Thread current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Thread.</span><span style="color:#B392F0">currentThread</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">=</span><span style="color:#B392F0"> getState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (c </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">!</span><span style="color:#B392F0">hasQueuedPredecessors</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#B392F0"> compareAndSetState</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, acquires)) {</span></span>
+<span class="line"><span style="color:#B392F0">            setExclusiveOwnerThread</span><span style="color:#E1E4E8">(current);</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    } </span><span style="color:#F97583">else</span><span style="color:#F97583"> if</span><span style="color:#E1E4E8"> (current </span><span style="color:#F97583">==</span><span style="color:#B392F0"> getExclusiveOwnerThread</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> nextc </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> acquires;</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (nextc </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Maximum lock count exceeded"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#B392F0">        setState</span><span style="color:#E1E4E8">(nextc);</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>非公平锁可能导致线程”饥饿”, 但是极少的线程切换保证了更大的吞吐量</p>
+<h1 id="读写锁">读写锁</h1>
+<p>读写锁在同一时刻允许多个读线程访问, 但是在写线程访问时, 其他的读线程和写线程都会被阻塞. 读写锁维护了一个读锁和一个写锁, 通过分离读锁和写锁, 使得并发性相比一般的排他锁有很大的提升</p>
+<p>一般情况下读写锁的性能比排他锁要好, 这是因为大多数场景是读大于写的. 在读大于写的情况下, 读写锁能够提供比排他锁更好的并发性和吞吐量. Java实现读写锁是 ReentrantReadWriteLock, 它的特性如下</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>特性</th><th>说明</th></tr></thead><tbody><tr><td>公平性选择</td><td>支持非公平(默认)与公平的锁获取方式, 吞吐量非公平优于公平</td></tr><tr><td>重进入</td><td>该锁支持重进入, 以读写线程为例: 读线程获取读锁后能够再次获取读锁, 写线程获取写锁之后能够再次获得写锁, 也能获得读锁</td></tr><tr><td>锁降级</td><td>遵循获取写锁, 获取读锁再释放写锁的次序, 写锁能够降级为读锁</td></tr></tbody></table>
+<h2 id="读写锁的接口">读写锁的接口</h2>
+<p>ReadWriteLock仅定义了获取读锁与写锁的两个方法, 即 <code>readLock()</code> 方法和 <code>writeLock()</code> 方法, 而其实现 <code>ReentrantReadWriteLock</code> , 除了接口方法外还提供了一些便于外界监控其内部工作状态的方法</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>方法名称</th><th>描述</th></tr></thead><tbody><tr><td>int getReadLockCount()</td><td>返回当前读锁被获取的次数. 该次数不等于获取读锁的线程数</td></tr><tr><td>int getReadHoldCount()</td><td>返回当前线程获取读锁的次数</td></tr><tr><td>boolean isWriteLocked()</td><td>判断写锁是否被获取</td></tr><tr><td>int getWriteHoldCount()</td><td>返回当前写锁被获取的次数</td></tr></tbody></table>
+<h2 id="读写锁的实现分析">读写锁的实现分析</h2>
+<h3 id="读写状态的设计">读写状态的设计</h3>
+<p>读写锁依赖于自定义同步器来实现同步功能, 而读写状态就是其同步器的同步状态.</p>
+<p>读写锁的自定义同步器需要在同步状态(一个整型变量)上维护多个读线程和一个写线程的状态, 使得该状态的设计成为读写锁实现的关键</p>
+<p>如果在一个整型变量上维护多种状态, 就一定需要 “按位切割使用” 这个变量, 读写锁将变量切分成了两个部分, 高16位表示读, 低16位表示写</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.9/img/content/read-write-lock-state-divide.webp" alt=""></p>
+<p>假设当前同步状态为S, 当S不等于0时, 当写状态 (S &#x26; 0x0000FFFF) 等于 0 时, 则读状态 (S >>> 16) 大于 0, 即读锁已被获取</p>
+<h3 id="写锁的获取和释放">写锁的获取和释放</h3>
+<p>写锁是一个支持重进入的排它锁. 如果当前线程已经获取到了写锁, 则增加写状态. 如果当前线程在获取写锁时, 读锁已经被获取或者该线程不是已经获取到写锁的线程, 那么该线程进入等待状态</p>
+<p>获取写锁的代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">protected</span><span style="color:#F97583"> final</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> tryAcquire</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> acquires) {</span></span>
+<span class="line"><span style="color:#E1E4E8">    Thread current </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Thread.</span><span style="color:#B392F0">currentThread</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">=</span><span style="color:#B392F0"> getState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> w </span><span style="color:#F97583">=</span><span style="color:#B392F0"> exclusiveCount</span><span style="color:#E1E4E8">(c);</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (c </span><span style="color:#F97583">!=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (w </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> ||</span><span style="color:#E1E4E8"> current </span><span style="color:#F97583">!=</span><span style="color:#B392F0"> getExclusiveOwnerThread</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (w </span><span style="color:#F97583">+</span><span style="color:#B392F0"> exclusiveCount</span><span style="color:#E1E4E8">(acquires) </span><span style="color:#F97583">></span><span style="color:#E1E4E8"> MAX_COUNT) {</span></span>
+<span class="line"><span style="color:#F97583">            throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Maximum lock count exceeded"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#B392F0">        setState</span><span style="color:#E1E4E8">(c </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> acquires);</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">writerShouldBlock</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">||</span><span style="color:#F97583"> !</span><span style="color:#B392F0">compareAndSetState</span><span style="color:#E1E4E8">(c, c </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> acquires)) {</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#B392F0">    setExclusiveOwnerThread</span><span style="color:#E1E4E8">(current);</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>写锁的释放和ReentrantLock的释放过程基本类似, 每次释放都减少写状态, 当写状态为 0 时表示写锁已被释放, 从而等待的读写线程可以继续访问写锁, 同时前次写线程的修改对后续线程是可见的</p>
+<h3 id="读锁的获取和释放">读锁的获取和释放</h3>
+<p>读锁是一个支持重进入的共享锁, 它能够被多个线程同时获取, 在没有其他写线程访问时, 读锁总能成功获取到. 如果当前线程已经获取到了读锁, 则增加读状态. 如果当前线程在试图获取读锁时, 写锁已经被其他线程获取, 则该线程进入等待状态</p>
+<p>获取读锁的代码如下所示</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">protected</span><span style="color:#F97583"> final</span><span style="color:#F97583"> int</span><span style="color:#B392F0"> tryAcquireShared</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> unused) {</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (;;) {</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">=</span><span style="color:#B392F0"> getState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> nextc </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> c </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">1</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#79B8FF"> 16</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (nextc </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> c) {</span></span>
+<span class="line"><span style="color:#F97583">            throw</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Maximum lock count exceeded"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">exclusiveCount</span><span style="color:#E1E4E8">(c) </span><span style="color:#F97583">!=</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> &#x26;&#x26;</span><span style="color:#E1E4E8"> owner </span><span style="color:#F97583">!=</span><span style="color:#E1E4E8"> Thread.</span><span style="color:#B392F0">currentThread</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#F97583"> -</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">compareAndSetState</span><span style="color:#E1E4E8">(c, nextc)) {</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="锁降级">锁降级</h3>
+<p>锁降级是指写锁降级为读锁. 具体来讲, 锁降级是指把持住当前拥有的写锁, 然后获取读锁, 最后在释放写锁的过程</p>
+<p>锁降级中是否有必要获取读锁? 答案是必要的, 目的是为了数据的可见性. 如果一个线程不获取读锁而直接释放了写锁, 此时若另外一个线程获取到了写锁并修改了数据, 当前线程就无法感知到数据另一个线程的数据更新. 假设当前线程获取了读锁, 遵循锁降级的步骤, 另一个试图获取写锁的线程就会被阻塞, 直到当前线程使用完数据并释放掉读锁之后, 另一个线程才能获取到写锁进行更新</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

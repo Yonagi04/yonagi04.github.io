@@ -1,0 +1,213 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/how_to_learn_jpn/"><!-- Primary Meta Tags --><title>我是如何学习日语的 | Yonagi&#39;s Sekai</title><meta name="title" content="我是如何学习日语的 | Yonagi's Sekai"><meta name="description" content="Article: 我是如何学习日语的"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/how_to_learn_jpn/"><meta property="og:title" content="我是如何学习日语的 | Yonagi's Sekai"><meta property="og:description" content="Article: 我是如何学习日语的"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/how_to_learn_jpn/"><meta property="twitter:title" content="我是如何学习日语的 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 我是如何学习日语的"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 我是如何学习日语的 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-01-21T16:49:35.000Z"> 2025年1月21日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 外语学习 / 日语 </div> <div class="animate font-base text-sm">
+Tags: 日语 / 润 </div> </div> <article class="animate"> <p>博客已经许久未更，差点要把这个网站给遗忘，不过好在还是想起来了。之前已经简单介绍了自己的未来计划，这次就介绍一下自己是怎么学日语的吧。</p>
+<p><strong>开局叠甲：本人并非日语专业学生，非日语大神，目前日语水平为 JLPT N2，口语水平大致在 N3，专业程度较低，提供的方法仅供参考。笔者的日语学习开始较早且日语接触较多，有长期的积累，因此以下的方法不一定适用于所有人。</strong></p>
+<h2 id="听">听</h2>
+<p>如果是应对 JLPT 考试，那么最有效的方法当然是高强度听 JLPT 的听力。一套试题的听力时间大概50min左右（N1 和 N2），所以可以在上班通勤路上慢慢听。</p>
+<p>但是，就我个人的感受而言，日常生活的日语和 JLPT 考试的日语几乎是脱节的，具体表现为——JLPT 考试中出现的一些“口头”表达在现实中出现频次较少，且 JLPT 考试的语速明显不如日常生活中的日语（N1 考试除外）。不信？考完 JLPT，申请个日本旅游签，去日本旅游一次就知道了。</p>
+<p>所以想要真正提高日语听力能力，我个人的方法很常见但有很好用：看日剧/日本新闻，且尽可能选择有日语字幕的片源进行观看，观看的过程中可以留心一下日本人的口语表达，以及一些单词。当然，如果单纯想磨耳朵的话，把广播（如 NHK）或电视（如 NHK、TBS、Nippon TV）的直播源 patch 下来并在电脑 / 手机上播放也未尝不是一个好选择。</p>
+<h2 id="说">说</h2>
+<p>JLPT 考试和雅思、托福等其他国际性语言考试不太一样，考试项目并不包括口语，所以经常会出现有 JLPT 考生在获得 N1 / N2 资格后口语表现却一塌糊涂的情况。花钱请日本的口语老师当然是最佳的选择，但是口语课的课时费并不便宜；找日本的语伴当然是个不错的选择，但怎么找一个合适且“不会给ta添麻烦”的语伴又是一件头疼的事情。那么如何做到既省钱，又不需要语伴，还能练口语呢？</p>
+<p>我在看 Youtube 的时候曾经看到过这样一个口语练习法，名为 “Shadowing 练习法”。具体做法是：先找好一段音频材料（不要太长，且尽量贴近生活实际，可取材自动画、日剧等），听一遍并尝试将内容全部记录下来；记录完成之后，找到这段音频材料对应的文字材料，校对记录的内容是否有差错；校对完成后，尝试默读几次，仿照材料中说话人的语速、语调进行练习；最后，播放音频，在播放音频的同时开始朗读材料，并尽可能跟上材料中说话人说话的节奏。</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_zZdTKS_Z9g?si=4LAC4cGRh1P6mVlL&#x26;start=395" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>在 GPT 大行其道的时代，我们也可以利用 GPT 练习口语。GPT 的移动端支持语音聊天功能，可以尝试和 GPT 聊天，聊天的同时练习口语。</p>
+<h2 id="读">读</h2>
+<h3 id="文字词汇与文法">文字、词汇与文法</h3>
+<p>文字词汇和文法是日文阅读的基础，一切的阅读前提都建立在有足够的词汇量和语法量上，但偏偏这两样东西是最没有歪路可走的，只能靠背。笔者学习文字词汇和文法使用的是红蓝宝书，文法学习配套 B 站的免费日语文法课，文字词汇则是配套使用了 Moji辞書 的 “MojiTest” App，并购买了它们的会员。</p>
+<h3 id="阅读">阅读</h3>
+<p>对于中国人来讲，因为日语中存在大量的汉字，所以阅读日文相较于非汉字圈的人而言有先天性优势，但若只看汉字，则非常容易“望文生义”，错误地领会其背后的含义，最后闹出笑话或误会。</p>
+<blockquote>
+<p>最近在知乎上看到的一条，“南京大屠杀”在日文中为『南京事件』，很多没学过日文的中国人望文生义，以为日本人淡化南京大屠杀。实际上在日文中能用到『事件』形容的事情基本上都是死伤极其惨重的事情，例如『地下鉄サリン事件』。</p>
+</blockquote>
+<p>那么，如何练习阅读？笔者最常用的练习日语阅读的网站是 “Yahoo！Japan”，即雅虎日本（ヤフージャパン），具体来讲应该是雅虎日本的新闻（ニュース）板块，里面的文章主要都为日本国内的新闻和国际新闻（当然，也包括中国的新闻，也包括了在中国大陆提都不能提的新闻）。不讨论新闻的内容是否“政治正确”，单纯讨论对阅读能力提升的帮助的话，雅虎日本是极佳的练习资源。</p>
+<p>当然，也可以尝试多接触其他一些日本的网站，或者把电脑、手机的默认语言设置为日语，Google 搜索的默认结果也设置成日语。</p>
+<h2 id="写">写</h2>
+<p>JLPT 考试中不包括写作板块，所以仍然有不少考生在获得 N1 / N2 资格后不能掌握日文文章的撰写能力。日文的书面表达相当讲究，远比中文和英文要讲究得多，因此初次接触的人不大容易写好。</p>
+<p>当然，我们也可以使用 GPT 来练习写作。具体做法是，让 GPT 随机给定一个主题，然后用户写一篇文章发送给 GPT，GPT 帮助用户修改词汇 / 文法 / 表达上存在的问题，用户修改后再次发送给 GPT，然后如此反复。根据这个做法，自行撰写 Prompt 并发送给 GPT 即可开始练习。</p>
+<p>如果刚开始不能写出长篇的文章，那么可以从写最简单的句子开始，也就是尝试用日文和 GPT 聊天，基本做法和上述类似。</p>
+<h2 id="结语">结语</h2>
+<p>以上就是笔者的一些日语学习方法，希望可以帮助到有需要的人。</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

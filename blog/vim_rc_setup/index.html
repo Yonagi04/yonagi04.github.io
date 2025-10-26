@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/vim_rc_setup/"><!-- Primary Meta Tags --><title>.vimrc文件的自定义配置——包括括号补全、代码高亮等 | Yonagi&#39;s Sekai</title><meta name="title" content=".vimrc文件的自定义配置——包括括号补全、代码高亮等 | Yonagi's Sekai"><meta name="description" content="Article: .vimrc文件的自定义配置——包括括号补全、代码高亮等"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/vim_rc_setup/"><meta property="og:title" content=".vimrc文件的自定义配置——包括括号补全、代码高亮等 | Yonagi's Sekai"><meta property="og:description" content="Article: .vimrc文件的自定义配置——包括括号补全、代码高亮等"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/vim_rc_setup/"><meta property="twitter:title" content=".vimrc文件的自定义配置——包括括号补全、代码高亮等 | Yonagi's Sekai"><meta property="twitter:description" content="Article: .vimrc文件的自定义配置——包括括号补全、代码高亮等"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> .vimrc文件的自定义配置——包括括号补全、代码高亮等 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-04-17T18:42:07.000Z"> 2024年4月17日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p>这几天难得用回Linux写代码。用Linux写代码必然逃不开用vim（emacs另说，那玩意可比vim难用多了，当然vim本身也很难用）。因为重装过系统，原来的vimrc配置文件肯定没了，所以就重新搞了一个</p>
+<p>放在下面，一方面是mark一下，另一方面是，说不定以后会有人看到，可以直接复制粘贴拿去用</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>syntax on "自动语法高亮</span></span>
+<span class="line"><span>"winpos 5 5          " 设定窗口位置  </span></span>
+<span class="line"><span>"set lines=40 columns=155    " 设定窗口大小  </span></span>
+<span class="line"><span>"set nu              " 显示行号  </span></span>
+<span class="line"><span>set go=             " 不要图形按钮  </span></span>
+<span class="line"><span>"color asmanian2     " 设置背景主题  </span></span>
+<span class="line"><span>set guifont=Courier_New:h10:cANSI   " 设置字体  </span></span>
+<span class="line"><span>"syntax on           " 语法高亮  </span></span>
+<span class="line"><span>"autocmd InsertLeave * se nocul  " 用浅色高亮当前行  </span></span>
+<span class="line"><span>"autocmd InsertEnter * se cul    " 用浅色高亮当前行  </span></span>
+<span class="line"><span>"set ruler           " 显示标尺  </span></span>
+<span class="line"><span>set showcmd         " 输入的命令显示出来，看的清楚些  </span></span>
+<span class="line"><span>"set cmdheight=1     " 命令行（在状态行下）的高度，设置为1  </span></span>
+<span class="line"><span>"set whichwrap+=&#x3C;,>,h,l   " 允许backspace和光标键跨越行边界(不建议)  </span></span>
+<span class="line"><span>"set scrolloff=3     " 光标移动到buffer的顶部和底部时保持3行距离  </span></span>
+<span class="line"><span>set novisualbell    " 不要闪烁(不明白)  </span></span>
+<span class="line"><span>"set statusline=%F%m%r%h%w\ [FORMAT=%{&#x26;ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}   "状态行显示的内容  </span></span>
+<span class="line"><span>"set laststatus=1    " 启动显示状态行(1),总是显示状态行(2)  </span></span>
+<span class="line"><span>set foldenable      " 允许折叠  </span></span>
+<span class="line"><span>set foldmethod=manual   " 手动折叠  </span></span>
+<span class="line"><span>"set background=dark "背景使用黑色 </span></span>
+<span class="line"><span>set nocompatible  "去掉讨厌的有关vi一致性模式，避免以前版本的一些bug和局限  </span></span>
+<span class="line"><span>" 显示中文帮助</span></span>
+<span class="line"><span>if version >= 603</span></span>
+<span class="line"><span>    set helplang=cn</span></span>
+<span class="line"><span>    set encoding=utf-8</span></span>
+<span class="line"><span>endif</span></span>
+<span class="line"><span>" 设置配色方案</span></span>
+<span class="line"><span>"colorscheme murphy</span></span>
+<span class="line"><span>"字体 </span></span>
+<span class="line"><span>"if (has("gui_running")) </span></span>
+<span class="line"><span>"   set guifont=Bitstream\ Vera\ Sans\ Mono\ 10 </span></span>
+<span class="line"><span>"endif </span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> </span></span>
+<span class="line"><span>set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936</span></span>
+<span class="line"><span>set termencoding=utf-8</span></span>
+<span class="line"><span>set encoding=utf-8</span></span>
+<span class="line"><span>set fileencodings=ucs-bom,utf-8,cp936</span></span>
+<span class="line"><span>set fileencoding=utf-8"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>"""""新文件标题""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>"新建.c,.h,.sh,.java文件，自动插入文件头 </span></span>
+<span class="line"><span>autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" </span></span>
+<span class="line"><span>""定义函数SetTitle，自动插入文件头 </span></span>
+<span class="line"><span>func SetTitle() </span></span>
+<span class="line"><span>    "如果文件类型为.sh文件 </span></span>
+<span class="line"><span>    if &#x26;filetype == 'sh' </span></span>
+<span class="line"><span>        call setline(1,"\#########################################################################") </span></span>
+<span class="line"><span>        call append(line("."), "\# File Name: ".expand("%")) </span></span>
+<span class="line"><span>        call append(line(".")+1, "\# Author: 冷倾殇") </span></span>
+<span class="line"><span>        call append(line(".")+2, "\# mail: 1500428751@qq.com") </span></span>
+<span class="line"><span>        call append(line(".")+3, "\# Created Time: ".strftime("%c")) </span></span>
+<span class="line"><span>        call append(line(".")+4, "\#########################################################################") </span></span>
+<span class="line"><span>        call append(line(".")+5, "\#!/bin/bash") </span></span>
+<span class="line"><span>        call append(line(".")+6, "") </span></span>
+<span class="line"><span>    else </span></span>
+<span class="line"><span>        call setline(1, "/*************************************************************************") </span></span>
+<span class="line"><span>        call append(line("."), "    > File Name: ".expand("%")) </span></span>
+<span class="line"><span>        call append(line(".")+1, "    > Author: 冷倾殇") </span></span>
+<span class="line"><span>        call append(line(".")+2, "    > Mail: 1500428751@qq.com ") </span></span>
+<span class="line"><span>        call append(line(".")+3, "    > Created Time: ".strftime("%c")) </span></span>
+<span class="line"><span>        call append(line(".")+4, " ************************************************************************/") </span></span>
+<span class="line"><span>        call append(line(".")+5, "")</span></span>
+<span class="line"><span>    endif</span></span>
+<span class="line"><span> "   if &#x26;filetype == 'cpp'</span></span>
+<span class="line"><span> "       call append(line(".")+6, "#include&#x3C;iostream>")</span></span>
+<span class="line"><span> "       call append(line(".")+7, "using namespace std;")</span></span>
+<span class="line"><span> "       call append(line(".")+8, "")</span></span>
+<span class="line"><span> "   endif</span></span>
+<span class="line"><span> "   if &#x26;filetype == 'c'</span></span>
+<span class="line"><span> "       call append(line(".")+6, "#include&#x3C;stdio.h>")</span></span>
+<span class="line"><span> "       call append(line(".")+7, "")</span></span>
+<span class="line"><span> "   endif</span></span>
+<span class="line"><span>    "新建文件后，自动定位到文件末尾</span></span>
+<span class="line"><span>    autocmd BufNewFile * normal G</span></span>
+<span class="line"><span>endfunc </span></span>
+<span class="line"><span>""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>"键盘命令</span></span>
+<span class="line"><span>""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>nmap &#x3C;leader>w :w!&#x3C;cr></span></span>
+<span class="line"><span>nmap &#x3C;leader>f :find&#x3C;cr></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>" 映射全选+复制 ctrl+a</span></span>
+<span class="line"><span>map &#x3C;C-A> ggVGY</span></span>
+<span class="line"><span>map! &#x3C;C-A> &#x3C;Esc>ggVGY</span></span>
+<span class="line"><span>map &#x3C;F12> gg=G</span></span>
+<span class="line"><span>" 选中状态下 Ctrl+c 复制</span></span>
+<span class="line"><span>vmap &#x3C;C-c> "+y</span></span>
+<span class="line"><span>"去空行  </span></span>
+<span class="line"><span>nnoremap &#x3C;F2> :g/^\s*$/d&#x3C;CR> </span></span>
+<span class="line"><span>"比较文件  </span></span>
+<span class="line"><span>nnoremap &#x3C;C-F2> :vert diffsplit </span></span>
+<span class="line"><span>"新建标签  </span></span>
+<span class="line"><span>map &#x3C;M-F2> :tabnew&#x3C;CR>  </span></span>
+<span class="line"><span>"列出当前目录文件  </span></span>
+<span class="line"><span>map &#x3C;F3> :tabnew .&#x3C;CR>  </span></span>
+<span class="line"><span>"打开树状文件目录  </span></span>
+<span class="line"><span>map &#x3C;C-F3> \be  </span></span>
+<span class="line"><span>"C，C++ 按F5编译运行</span></span>
+<span class="line"><span>map &#x3C;F5> :call CompileRunGcc()&#x3C;CR></span></span>
+<span class="line"><span>func! CompileRunGcc()</span></span>
+<span class="line"><span>    exec "w"</span></span>
+<span class="line"><span>    if &#x26;filetype == 'c'</span></span>
+<span class="line"><span>        exec "!g++ % -o %&#x3C;"</span></span>
+<span class="line"><span>        exec "! ./%&#x3C;"</span></span>
+<span class="line"><span>    elseif &#x26;filetype == 'cpp'</span></span>
+<span class="line"><span>        exec "!g++ % -o %&#x3C;"</span></span>
+<span class="line"><span>        exec "! ./%&#x3C;"</span></span>
+<span class="line"><span>    elseif &#x26;filetype == 'java' </span></span>
+<span class="line"><span>        exec "!javac %" </span></span>
+<span class="line"><span>        exec "!java %&#x3C;"</span></span>
+<span class="line"><span>    elseif &#x26;filetype == 'sh'</span></span>
+<span class="line"><span>        :!./%</span></span>
+<span class="line"><span>    endif</span></span>
+<span class="line"><span>endfunc</span></span>
+<span class="line"><span>"C,C++的调试</span></span>
+<span class="line"><span>map &#x3C;F8> :call Rungdb()&#x3C;CR></span></span>
+<span class="line"><span>func! Rungdb()</span></span>
+<span class="line"><span>    exec "w"</span></span>
+<span class="line"><span>    exec "!g++ % -g -o %&#x3C;"</span></span>
+<span class="line"><span>    exec "!gdb ./%&#x3C;"</span></span>
+<span class="line"><span>endfunc</span></span>
+<span class="line"><span>""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>""实用设置</span></span>
+<span class="line"><span>"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>" 设置当文件被改动时自动载入</span></span>
+<span class="line"><span>set autoread</span></span>
+<span class="line"><span>" quickfix模式</span></span>
+<span class="line"><span>autocmd FileType c,cpp map &#x3C;buffer> &#x3C;leader>&#x3C;space> :w&#x3C;cr>:make&#x3C;cr></span></span>
+<span class="line"><span>"代码补全 </span></span>
+<span class="line"><span>set completeopt=preview,menu </span></span>
+<span class="line"><span>"允许插件  </span></span>
+<span class="line"><span>filetype plugin on</span></span>
+<span class="line"><span>"共享剪贴板  </span></span>
+<span class="line"><span>set clipboard+=unnamed </span></span>
+<span class="line"><span>"从不备份  </span></span>
+<span class="line"><span>set nobackup</span></span>
+<span class="line"><span>"make 运行</span></span>
+<span class="line"><span>:set makeprg=g++\ -Wall\ \ %</span></span>
+<span class="line"><span>"自动保存</span></span>
+<span class="line"><span>set autowrite</span></span>
+<span class="line"><span>"set ruler                   " 打开状态栏标尺</span></span>
+<span class="line"><span>set cursorline              " 突出显示当前行</span></span>
+<span class="line"><span>set magic                   " 设置魔术</span></span>
+<span class="line"><span>set guioptions-=T           " 隐藏工具栏</span></span>
+<span class="line"><span>set guioptions-=m           " 隐藏菜单栏</span></span>
+<span class="line"><span>"set statusline=\ %&#x3C;%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&#x26;fileformat}\ %{&#x26;encoding}\ %c:%l/%L%)\</span></span>
+<span class="line"><span>" 设置在状态行显示的信息</span></span>
+<span class="line"><span>set foldcolumn=0</span></span>
+<span class="line"><span>set foldmethod=indent </span></span>
+<span class="line"><span>set foldlevel=3 </span></span>
+<span class="line"><span>set foldenable              " 开始折叠</span></span>
+<span class="line"><span>" 不要使用vi的键盘模式，而是vim自己的</span></span>
+<span class="line"><span>set nocompatible</span></span>
+<span class="line"><span>" 语法高亮</span></span>
+<span class="line"><span>set syntax=on</span></span>
+<span class="line"><span>" 去掉输入错误的提示声音</span></span>
+<span class="line"><span>set noeb</span></span>
+<span class="line"><span>" 在处理未保存或只读文件的时候，弹出确认</span></span>
+<span class="line"><span>set confirm</span></span>
+<span class="line"><span>" 自动缩进</span></span>
+<span class="line"><span>set autoindent</span></span>
+<span class="line"><span>set cindent</span></span>
+<span class="line"><span>" Tab键的宽度</span></span>
+<span class="line"><span>set tabstop=4</span></span>
+<span class="line"><span>" 统一缩进为4</span></span>
+<span class="line"><span>set softtabstop=4</span></span>
+<span class="line"><span>set shiftwidth=4</span></span>
+<span class="line"><span>" 不要用空格代替制表符</span></span>
+<span class="line"><span>set noexpandtab</span></span>
+<span class="line"><span>" 在行和段开始处使用制表符</span></span>
+<span class="line"><span>set smarttab</span></span>
+<span class="line"><span>" 显示行号</span></span>
+<span class="line"><span>set number</span></span>
+<span class="line"><span>" 历史记录数</span></span>
+<span class="line"><span>set history=1000</span></span>
+<span class="line"><span>"禁止生成临时文件</span></span>
+<span class="line"><span>set nobackup</span></span>
+<span class="line"><span>set noswapfile</span></span>
+<span class="line"><span>"搜索忽略大小写</span></span>
+<span class="line"><span>set ignorecase</span></span>
+<span class="line"><span>"搜索逐字符高亮</span></span>
+<span class="line"><span>set hlsearch</span></span>
+<span class="line"><span>set incsearch</span></span>
+<span class="line"><span>"行内替换</span></span>
+<span class="line"><span>set gdefault</span></span>
+<span class="line"><span>"编码设置</span></span>
+<span class="line"><span>set enc=utf-8</span></span>
+<span class="line"><span>set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936</span></span>
+<span class="line"><span>"语言设置</span></span>
+<span class="line"><span>set langmenu=zh_CN.UTF-8</span></span>
+<span class="line"><span>set helplang=cn</span></span>
+<span class="line"><span>" 我的状态行显示的内容（包括文件类型和解码）</span></span>
+<span class="line"><span>"set statusline=%F%m%r%h%w\ [FORMAT=%{&#x26;ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}</span></span>
+<span class="line"><span>"set statusline=[%F]%y%r%m%*%=[Line:%l/%L,Column:%c][%p%%]</span></span>
+<span class="line"><span>" 总是显示状态行</span></span>
+<span class="line"><span>"set laststatus=2</span></span>
+<span class="line"><span>" 命令行（在状态行下）的高度，默认为1，这里是2</span></span>
+<span class="line"><span>set cmdheight=2</span></span>
+<span class="line"><span>" 侦测文件类型</span></span>
+<span class="line"><span>filetype on</span></span>
+<span class="line"><span>" 载入文件类型插件</span></span>
+<span class="line"><span>filetype plugin on</span></span>
+<span class="line"><span>" 为特定文件类型载入相关缩进文件</span></span>
+<span class="line"><span>filetype indent on</span></span>
+<span class="line"><span>" 保存全局变量</span></span>
+<span class="line"><span>set viminfo+=!</span></span>
+<span class="line"><span>" 带有如下符号的单词不要被换行分割</span></span>
+<span class="line"><span>set iskeyword+=_,$,@,%,#,-</span></span>
+<span class="line"><span>" 字符间插入的像素行数目</span></span>
+<span class="line"><span>set linespace=0</span></span>
+<span class="line"><span>" 增强模式中的命令行自动完成操作</span></span>
+<span class="line"><span>set wildmenu</span></span>
+<span class="line"><span>" 使回格键（backspace）正常处理indent, eol, start等</span></span>
+<span class="line"><span>set backspace=2</span></span>
+<span class="line"><span>" 允许backspace和光标键跨越行边界</span></span>
+<span class="line"><span>set whichwrap+=&#x3C;,>,h,l</span></span>
+<span class="line"><span>" 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）</span></span>
+<span class="line"><span>set mouse=a</span></span>
+<span class="line"><span>set selection=exclusive</span></span>
+<span class="line"><span>set selectmode=mouse,key</span></span>
+<span class="line"><span>" 通过使用: commands命令，告诉我们文件的哪一行被改变过</span></span>
+<span class="line"><span>set report=0</span></span>
+<span class="line"><span>" 在被分割的窗口间显示空白，便于阅读</span></span>
+<span class="line"><span>set fillchars=vert:\ ,stl:\ ,stlnc:\</span></span>
+<span class="line"><span>" 高亮显示匹配的括号</span></span>
+<span class="line"><span>set showmatch</span></span>
+<span class="line"><span>" 匹配括号高亮的时间（单位是十分之一秒）</span></span>
+<span class="line"><span>set matchtime=1</span></span>
+<span class="line"><span>" 光标移动到buffer的顶部和底部时保持3行距离</span></span>
+<span class="line"><span>set scrolloff=3</span></span>
+<span class="line"><span>" 为C程序提供自动缩进</span></span>
+<span class="line"><span>set smartindent</span></span>
+<span class="line"><span>" 高亮显示普通txt文件（需要txt.vim脚本）</span></span>
+<span class="line"><span>au BufRead,BufNewFile *  setfiletype txt</span></span>
+<span class="line"><span>"自动补全</span></span>
+<span class="line"><span>:inoremap ( ()&#x3C;ESC>i</span></span>
+<span class="line"><span>:inoremap ) &#x3C;c-r>=ClosePair(')')&#x3C;CR></span></span>
+<span class="line"><span>:inoremap { {&#x3C;CR>}&#x3C;ESC>O</span></span>
+<span class="line"><span>:inoremap } &#x3C;c-r>=ClosePair('}')&#x3C;CR></span></span>
+<span class="line"><span>:inoremap [ []&#x3C;ESC>i</span></span>
+<span class="line"><span>:inoremap ] &#x3C;c-r>=ClosePair(']')&#x3C;CR></span></span>
+<span class="line"><span>:inoremap " ""&#x3C;ESC>i</span></span>
+<span class="line"><span>:inoremap ' ''&#x3C;ESC>i</span></span>
+<span class="line"><span>function! ClosePair(char)</span></span>
+<span class="line"><span>    if getline('.')[col('.') - 1] == a:char</span></span>
+<span class="line"><span>        return "\&#x3C;Right>"</span></span>
+<span class="line"><span>    else</span></span>
+<span class="line"><span>        return a:char</span></span>
+<span class="line"><span>    endif</span></span>
+<span class="line"><span>endfunction</span></span>
+<span class="line"><span>filetype plugin indent on </span></span>
+<span class="line"><span>"打开文件类型检测, 加了这句才可以用智能补全</span></span>
+<span class="line"><span>set completeopt=longest,menu</span></span>
+<span class="line"><span>"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>" CTags的设定  </span></span>
+<span class="line"><span>"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>let Tlist_Sort_Type = "name"    " 按照名称排序  </span></span>
+<span class="line"><span>let Tlist_Use_Right_Window = 1  " 在右侧显示窗口  </span></span>
+<span class="line"><span>let Tlist_Compart_Format = 1    " 压缩方式  </span></span>
+<span class="line"><span>let Tlist_Exist_OnlyWindow = 1  " 如果只有一个buffer，kill窗口也kill掉buffer  </span></span>
+<span class="line"><span>let Tlist_File_Fold_Auto_Close = 0  " 不要关闭其他文件的tags  </span></span>
+<span class="line"><span>let Tlist_Enable_Fold_Column = 0    " 不要显示折叠树  </span></span>
+<span class="line"><span>autocmd FileType java set tags+=D:\tools\java\tags  </span></span>
+<span class="line"><span>"autocmd FileType h,cpp,cc,c set tags+=D:\tools\cpp\tags  </span></span>
+<span class="line"><span>"let Tlist_Show_One_File=1            "不同时显示多个文件的tag，只显示当前文件的</span></span>
+<span class="line"><span>"设置tags  </span></span>
+<span class="line"><span>set tags=tags  </span></span>
+<span class="line"><span>"set autochdir </span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>"其他东东</span></span>
+<span class="line"><span>"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""</span></span>
+<span class="line"><span>"默认打开Taglist </span></span>
+<span class="line"><span>let Tlist_Auto_Open=1 </span></span>
+<span class="line"><span>"""""""""""""""""""""""""""""" </span></span>
+<span class="line"><span>" Tag list (ctags) </span></span>
+<span class="line"><span>"""""""""""""""""""""""""""""""" </span></span>
+<span class="line"><span>let Tlist_Ctags_Cmd = '/usr/bin/ctags' </span></span>
+<span class="line"><span>let Tlist_Show_One_File = 1 "不同时显示多个文件的tag，只显示当前文件的 </span></span>
+<span class="line"><span>let Tlist_Exit_OnlyWindow = 1 "如果taglist窗口是最后一个窗口，则退出vim </span></span>
+<span class="line"><span>let Tlist_Use_Right_Window = 1 "在右侧窗口中显示taglist窗口</span></span>
+<span class="line"><span>" minibufexpl插件的一般设置</span></span>
+<span class="line"><span>let g:miniBufExplMapWindowNavVim = 1</span></span>
+<span class="line"><span>let g:miniBufExplMapWindowNavArrows = 1</span></span>
+<span class="line"><span>let g:miniBufExplMapCTabSwitchBufs = 1 </span></span>
+<span class="line"><span>let g:miniBufExplModSelTarget = 1</span></span>
+<span class="line"><span></span></span></code></pre> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

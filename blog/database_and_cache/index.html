@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/database_and_cache/"><!-- Primary Meta Tags --><title>数据库与缓存一致性的解决方案 | Yonagi&#39;s Sekai</title><meta name="title" content="数据库与缓存一致性的解决方案 | Yonagi's Sekai"><meta name="description" content="Article: 数据库与缓存一致性的解决方案"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/database_and_cache/"><meta property="og:title" content="数据库与缓存一致性的解决方案 | Yonagi's Sekai"><meta property="og:description" content="Article: 数据库与缓存一致性的解决方案"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/database_and_cache/"><meta property="twitter:title" content="数据库与缓存一致性的解决方案 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 数据库与缓存一致性的解决方案"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 数据库与缓存一致性的解决方案 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-08-29T19:04:00.000Z"> 2024年8月29日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p>数据库和缓存的数据一致性问题一直是老生常谈的话题了，它不仅在面试中十分常见，而且在实际开发中也是需要加以考量的因素。借着难得的空暇时光（其实是晚上不太想写代码），笔者今天想和大家简单讨论一下，数据库和缓存的数据一致性问题，以及如何避免or解决数据库和缓存的数据不一致的问题。</p>
+<h2 id="为什么要引入缓存">为什么要引入缓存？</h2>
+<p>在我们的后端系统没有引入缓存之前，我们的后端系统大致来讲应该是类似于这样的模型。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/application_database.webp" alt=""></p>
+<p>应用服务器中的数据库驱动通过网络I/O向数据库发增删改查操作的请求，数据库通过硬盘I/O在硬盘读/写相应数据之后，再通过网络I/O返回给应用服务器的数据库驱动，然后完成后续的业务操作。</p>
+<p>这个模型在请求量较小的时候，是行得通的。但是当请求量变大，就会出现性能问题，而这个性能问题的瓶颈就出在硬盘I/O上。</p>
+<p>我们都知道，内存的读写速度大于磁盘的读写速度，那么我们可以考虑将一些数据放到内存中，这样就能有效加快整体的响应速度。此时的模型应当是这样的。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/application_cache_database_1.webp" alt=""></p>
+<p>对于缓存，我们有以下几个疑问：</p>
+<ol>
+<li>对于缓存中存放的数据，是存放全部数据，还是存放热点数据？</li>
+<li>假如数据库中的数据发生了更新/删除，缓存中对应的数据要怎么处理？</li>
+</ol>
+<p>最简单的思路是，<strong>将数据库中的所有数据全部刷到缓存，然后定时将数据库的数据再次刷到缓存里面</strong>。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/application_cache_database_2.webp" alt=""></p>
+<p>但是这又带来了两个问题：</p>
+<ol>
+<li>缓存的利用率不高。因为有些非热点数据也被放进了缓存，但是这些数据正如其名，很少被访问，所以缓存的利用率并不高</li>
+<li>定时刷新会带来数据库和缓存的不一致问题。因为这里用了定时刷新缓存的方案，假如数据库中的数据发生了更新/删除，那么需要等到下一次刷新缓存才能把缓存中的数据更新为新的数据。在更新数据库到刷新缓存之间的窗口期就是数据不一致的窗口期，窗口期越长，数据不一致带来的负面影响就越大。</li>
+</ol>
+<p>因此这个方案实际上无人采用，我们更倾向于下面这个方案：<strong>将数据库中的热点数据刷新到缓存中，并设置一个过期时间。对于热点数据的请求，先查看缓存中是否有对应的数据，如果没有再去查数据库，查询到对应的数据后返回并同时写回缓存中。当数据库的数据发生更新/删除时，缓存中对应的数据也需要做对应操作。（如果这个数据存在的话）</strong></p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/application_cache_database_3.webp" alt=""></p>
+<p>这样，缓存中不常访问的数据，都会随着时间的推移而过期，这样缓存中保存的数据就都是热点数据了。缓存的利用率问题成功解决。</p>
+<p>那么，数据不一致的问题呢？我们刚刚提到，当数据库的数据发生更新/删除时，缓存中对应的数据也需要做对应操作，这个操作是更新还是删除？这个操作应该发生在数据库更新/删除之前，还是发生在数据库更新/删除之后？</p>
+<h2 id="多级存储结构带来的数据不一致问题">多级存储结构带来的数据不一致问题</h2>
+<p>对于这个问题，我们有四个选择（假设此时数据库中的数据发生了更新）：</p>
+<ol>
+<li>先更新数据库，再更新缓存</li>
+<li>先更新缓存，再更新数据库</li>
+<li>先更新数据库，再删除缓存</li>
+<li>先删除缓存，再更新数据库</li>
+</ol>
+<p>哪种最可靠呢？实际上四种都不大可靠。对于这四种完全不同的解决方案，我们都可以构造出可以让它们发生数据不一致问题的情形——第二步操作失败。</p>
+<p>假设某热点数据存在于数据库和缓存中，初始的数据为10，我们需要将其更新为20。</p>
+<p>对于方案1，第一步操作之后数据库的数据更新为20，但是如果缓存中的数据更新失败了，仍然为10，那么就发生了数据不一致。</p>
+<p>对于方案4，第一步操作之后缓存中的数据被删除了，但是数据库中的数据更新失败，仍然为10，那么就发生了数据不一致。</p>
+<p>方案2和方案3同样很容易构造出数据不一致的情形，以下不再赘述。</p>
+<p>因为更新数据库和更新/删除缓存并不是一个原子操作，所以一旦第二步操作失败了，就会发生数据不一致的问题。尽管操作失败的概率非常非常低，但如同墨菲定律——“<strong>If it can go wrong, it will.</strong>”，最恶劣的情况往往不会发生，但不代表一定不会发生。因此我们需要考虑第二步操作失败而带来数据不一致的问题。</p>
+<p>在讨论如何解决第二步操作失败而带来的数据不一致之前，让我们先转移一下视线，先看向导致数据不一致的另外一个”罪魁祸首“，<strong>高并发环境</strong>。</p>
+<h2 id="高并发环境带来的数据不一致问题">高并发环境带来的数据不一致问题</h2>
+<p>高并发环境为什么会导致数据不一致？</p>
+<p>对于上面提到的四种解决方案，我们假设两步操作都能操作成功，假设现在是在一个多线程的环境下，情况又会如何？</p>
+<p>如果我们采用了”先更新数据库，再更新缓存“，假设某热点数据存在于数据库和缓存中，初始的数据为10。</p>
+<p>有线程A和线程B两个线程，都需要更新这条数据，那么可能出现如下情况：</p>
+<ol>
+<li>线程A更新数据为20</li>
+<li>线程B更新数据为30</li>
+<li>线程B更新缓存为30</li>
+<li>线程A更新缓存为20</li>
+</ol>
+<p>两步操作都是成功的，但是还是发生了数据不一致！这是为什么？我们发现线程A的两步操作之间被插入了线程B的操作，而线程B的操作直接导致了数据库与缓存的数据不一致。</p>
+<p>同样的，”先更新缓存，再更新数据库“的方案也会带来数据不一致，这里不再赘述。</p>
+<p>实际上，我们没必要在更新数据库的时候同时更新缓存！从缓存利用率的角度来考虑，假设数据更新完之后，读的次数相对较少，那么缓存利用率就提不起来；而且，如果写入缓存的值并非是数据库中原始的值，而是经过了其他的计算再把值写入缓存，那么“更新缓存”的方案就会带来性能问题</p>
+<p>因此我们考虑另外一类方案，“删除缓存”</p>
+<h2 id="删除缓存就一定能保证数据一致性吗">删除缓存就一定能保证数据一致性吗？</h2>
+<p>对于“删除缓存”的方案，我们同样有两种选择：</p>
+<ol>
+<li>先更新数据库，再删除缓存</li>
+<li>先删除缓存，再更新数据库</li>
+</ol>
+<p>我们一个一个来分析。</p>
+<ol>
+<li>先更新数据库，再删除缓存</li>
+</ol>
+<p>假设某热点数据存在于数据库中，初始的数据为10。有线程A和线程B两个线程，线程A需要写数据，线程B需要读数据，那么可能会出现如下情况：</p>
+<p>​	1）线程B读数据，由于缓存中不存在这条数据，因此读数据库中的数据</p>
+<p>​	2）线程B读到数据为10</p>
+<p>​	3）线程A更新数据为20</p>
+<p>​	4）线程A删除缓存</p>
+<p>​	5）线程B将数据10写入缓存</p>
+<p>数据不一致由此发生。</p>
+<ol start="2">
+<li>先删除缓存，再更新数据库</li>
+</ol>
+<p>假设某热点数据存在于数据库中，初始的数据为10。有线程A和线程B两个线程，线程A需要写数据，线程B需要读数据，那么可能会出现如下情况：</p>
+<p>​	1）线程A删除缓存</p>
+<p>​	2）线程B读数据，由于缓存中不存在这条数据，因此读数据库中的数据</p>
+<p>​	3）线程B读到数据为10</p>
+<p>​	4）线程A更新数据为20</p>
+<p>​	5）线程B将数据10写入缓存</p>
+<p>数据不一致由此发生。</p>
+<p>这样看来，无论哪个都没法解决数据不一致的问题，那该如何是好？那么我们只能“矮个子挑高个”，选择一个相对来讲较优的方案。我们都知道，写内存的时间短于写硬盘的时间，那么“先更新数据库，再删除缓存”显然是比“先删除缓存，再更新数据库”更优的，因为数据不一致主要发生在写线程的两步操作之间，而删除缓存的时间显然比更新数据库的时间要短得多，留给读线程的“机会”自然也就更少。</p>
+<p>这样看来，我们似乎已经解决了高并发环境下带来的数据不一致问题。但是别忘了我们遗留在前面的一个小tip——如果第二步操作失败了（也就是删除失败），也会导致数据不一致。如何解决？</p>
+<h2 id="无脑重试能解决数据不一致问题">无脑重试，能解决数据不一致问题？</h2>
+<p>删除失败了，那就重试呗！</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/delete_cache_retry.webp" alt=""></p>
+<p>删除失败了，就不断尝试，直到缓存被删除。但是如果一直删除失败呢？是不是要一直尝试？重试需不需要有时间间隔？如果一直失败会阻塞这个线程，那还能接收其他客户端请求吗？这个线程资源不就被浪费了？</p>
+<p>由此看来，无脑删除并不能解决数据不一致的问题，尤其是这种“同步”删除。基于这个方案，我们提出了一个更好的解决方案，这就是**“异步”删除**。具体来讲就是把缓存删除的任务放进消息队列，让专门的消费者来删除缓存。</p>
+<p>引入消息队列是否会带来额外的维护成本？在我看来是不会的，因为消息队列是非常常见的中间件，不会增加维护成本；而消息队列本身可以做到持久化，在消息被消费之前一般来讲都不会丢失消息，这和“同步”删除简直是大相径庭（“同步”删除会不断地尝试删除缓存，假如此时项目重启，或服务器宕机，那么删除请求就会永久丢失，数据就永远不一致了）</p>
+<p>引入消息队列之后的模型应该是这样的。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/application_cache_mq_database.webp" alt=""></p>
+<p>如果不想写消息队列，有无其他解决方案？</p>
+<p>目前比较流行的解决方案就是，通过中间件来监听数据库的变更日志（如MySQL的Binlog），根据变更日志中提到的操作的数据，去缓存中删除对应的缓存。常用的中间件有阿里巴巴开源的canal，通过监听MySQL的Binlog，自动向消息队列投递变更的数据，消费者再去缓存删除对应的数据。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.24/img/content/application_canal_cache_database.webp" alt=""></p>
+<p>但是这个方案就需要额外维护canal，保证canal的可用性。</p>
+<h2 id="延迟双删策略">延迟双删策略</h2>
+<p>对于解决数据不一致问题，业界还有另外一个知名的解决方案，那就是<strong>延迟双删策略</strong>。</p>
+<p>延迟双删策略就是在原来“先删缓存，再更新数据库”的基础上，让线程休眠一段时间，再去删除对应的缓存，从而避免缓存中出现脏数据，因而保证数据一致性</p>
+<p>那么又引出一个新的问题，“延迟双删策略”的“延迟”，具体要延迟多久？</p>
+<p>一般来讲，延迟的时间应当大于读线程读取数据库+写入缓存的时间，但是在高并发环境下，这个时间非常难衡量，而且仍然会有概率导致数据不一致，所以一般推荐“先更新数据库，再删除缓存”，并在这个方案的基础上采用消息队列或canal来实现异步删除。</p>
+<h2 id="强一致还是弱一致">强一致还是弱一致？</h2>
+<p>什么是强一致性和弱一致性？</p>
+<p>Bing Copilot给了我这样的答案：</p>
+<blockquote>
+<p>强一致性和弱一致性是分布式系统中的两种数据一致性模型。让我为您解释一下它们的区别：</p>
+<ol>
+<li><strong>强一致性</strong>（也称为线性一致性）：
+<ul>
+<li>当一个系统中的数据被修改时，其他所有系统的数据都能实时地反映出这个修改。</li>
+<li>也就是说，如果在一个系统中修改了某个数据项，那么这个修改将会立即反映到其他所有的系统中。</li>
+<li>强一致性可以保证从库有与主库一致的数据，即使主库宕机，数据仍然完整。</li>
+</ul>
+</li>
+<li><strong>弱一致性</strong>：
+<ul>
+<li>在系统中，数据的修改可能不会立即反映到所有系统中。</li>
+<li>也就是说，在某个系统中修改了数据项后，可能需要经过一段时间，这个修改才会在其他系统中体现出来。</li>
+<li>弱一致性允许一些暂时的不一致状态，但最终会达到一致的状态。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>在一个引入缓存的系统中，我们能做到强一致性吗？其实几乎是不可能的，或者说可以做到，但是需要一点性能作为代价——引入分布式锁，但是引入分布式锁也就违背了我们引入缓存的初衷——加快系统的响应速度。所以当选择了缓存，也就默认了放弃强一致性，性能和一致性往往是不可兼得的。根据本文上面所提到的内容，我们更多的是追求“弱一致性”，也就是追求最终达到数据一致的状态。即使本文上面所提到的方法都失效了，因为缓存有过期时间可以作为一致性的兜底，即使存在数据不一致的情况，当缓存过期，也就达到了最终一致的状态，尽管这个“最终一致”看起来不太体面罢了。</p>
+<h2 id="总结">总结</h2>
+<ol>
+<li>引入缓存可以有效加快系统响应速度。</li>
+<li>多级缓存结构会带来数据不一致。而解决数据不一致问题我们有四种解决方案。</li>
+<li>考虑到高并发带来的数据不一致问题，我们推荐使用“删除缓存”的策略。</li>
+<li>对于“删除缓存”策略而言，更加推荐使用“先更新数据库再删缓存”，“延迟双删策略”看似好用，实则难以估计延迟时间。</li>
+<li>建议采用消息队列+canal中间件监听MySQL的Binlog的方式实现异步删除缓存</li>
+</ol> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

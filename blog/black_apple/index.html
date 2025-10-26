@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/black_apple/"><!-- Primary Meta Tags --><title>基于VMware虚拟机安装MacOS BigSur系统 | Yonagi&#39;s Sekai</title><meta name="title" content="基于VMware虚拟机安装MacOS BigSur系统 | Yonagi's Sekai"><meta name="description" content="Article: 基于VMware虚拟机安装MacOS BigSur系统"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/black_apple/"><meta property="og:title" content="基于VMware虚拟机安装MacOS BigSur系统 | Yonagi's Sekai"><meta property="og:description" content="Article: 基于VMware虚拟机安装MacOS BigSur系统"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/black_apple/"><meta property="twitter:title" content="基于VMware虚拟机安装MacOS BigSur系统 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 基于VMware虚拟机安装MacOS BigSur系统"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 基于VMware虚拟机安装MacOS BigSur系统 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-03-16T09:41:16.000Z"> 2024年3月16日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 1 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 </div> <div class="animate font-base text-sm">
+Tags: VMWare / 黑苹果 / MacOS / 杂七杂八 </div> </div> <article class="animate"> <p>这周用VMWare搞了个MacOS虚拟机，也算是完成初中高中时候的梦想了吧 <del>(那时候我的电脑配置还很拉跨，带不动虚拟机)</del> 写一篇博客记录一下，当然这也是yonagi04.github.io建站的第一篇新博客</p>
+<h2 id="准备工作vmware镜像文件">准备工作（VMWare、镜像文件）</h2>
+<p>首先当然是要先准备好VMWare了，VMWare可以在官网下载，然后在Google上面找一下激活码就能直接激活了，VMWare的激活码还是很容易找的，<del>比起Jetbrain家的软件，VMWare的激活码可更容易找了，Idea的激活码我是怎么找都找不到</del></p>
+<p>刚刚装好的VMWare，在安装虚拟机操作系统的时候是没有MacOS这个选项的，必须先破解了才能安装MacOS，不破解是装不了的（别问为什么）</p>
+<p>Github上面有不少大神写了破解脚本，其中有一个是Auto-Unlocker，我把它的下载链接贴在这里：<a href="https://github.com/paolo-projects/auto-unlocker/releases">https://github.com/paolo-projects/auto-unlocker/releases</a></p>
+<p>点进去就能直接下载了</p>
+<p>解压之后，启动程序（<strong>注意，这一步要在任务管理器把和VMWare有关的所有进程先关掉！</strong>）</p>
+<p>接下来就是等待了，程序会自动下载资源并破解VMWare，破解完之后我们就可以直接安装了</p>
+<p>接下来就是MacOS镜像，这里同样给大家一个网站：<a href="https://www.mediafire.com/file/dbfod9u5q9ii9nd/macOS_Big_Sur_11.0.1_%252820B29%2529.iso/file">https://www.mediafire.com/file/dbfod9u5q9ii9nd/macOS_Big_Sur_11.0.1_%252820B29%2529.iso/file</a></p>
+<p>网速快的话，半个多小时就能下完</p>
+<p>下载完成之后，我们就可以开始安装MacOS虚拟机</p>
+<h2 id="macos启动">MacOS，启动！</h2>
+<p>启动VMWare</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/VMWare1.png" alt=""></p>
+<p>点击左上角的 文件-新建虚拟机，在弹出来的新窗口中，选择“典型”，然后下一步</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/VMWare2.png" alt=""></p>
+<p>（我这里已经把MacOS镜像删掉了）</p>
+<p>选择“安装程序光盘映像文件”, 然后选择刚刚下载好的MacOS镜像，点击下一步</p>
+<p>下一步就是选择系统了，我们当然要选择MacOS系统，系统版本选择macOS 11</p>
+<p>下一步是存储位置，根据自己的偏好来就行，但还是那句老话：<strong>不要装在C盘！不要装在C盘！不要装在C盘！</strong> 重要的事情说三遍！</p>
+<p>然后就是选择磁盘大小了，这里建议分配80GB以上。下面的单文件or多文件，我个人建议是选择单文件，因为多文件的话虚拟硬盘速度会明显比单文件的虚拟硬盘速度要慢得多</p>
+<p>之后我们就创建完成了，接下来就是修改具体的硬件参数。选择“自定义硬件”，个人建议CPU至少给8核，RAM至少给8GB，这至少能保证不会非常卡</p>
+<p>接下来就是启动虚拟机了，Intel用户可以直接启动安装了，AMD用户留下来(没错，接下来有一个大坑，就是针对AMD的)</p>
+<p>AMD用户如果直接启动，VMWare会报错，提示CPU不可用，客户机系统已关闭</p>
+<p>然后你就会一直卡在苹果的logo那里……一动不动……</p>
+<p>怎么办呢，很简单。打开虚拟机安装目录，用记事本或者其他什么什么软件打开类似这样的文件</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>macOS xxxxx.vmx</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>在文件的末尾，添加如下的代码</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>cpuid.0.eax = "0000:0000:0000:0000:0000:0000:0000:1011"</span></span>
+<span class="line"><span>cpuid.0.ebx = "0111:0101:0110:1110:0110:0101:0100:0111"</span></span>
+<span class="line"><span>cpuid.0.ecx = "0110:1100:0110:0101:0111:0100:0110:1110"</span></span>
+<span class="line"><span>cpuid.0.edx = "0100:1001:0110:0101:0110:1110:0110:1001"</span></span>
+<span class="line"><span>cpuid.1.eax = "0000:0000:0000:0001:0000:0110:0111:0001"</span></span>
+<span class="line"><span>cpuid.1.ebx = "0000:0010:0000:0001:0000:1000:0000:0000"</span></span>
+<span class="line"><span>cpuid.1.ecx = "1000:0010:1001:1000:0010:0010:0000:0011"</span></span>
+<span class="line"><span>cpuid.1.edx = "0000:0111:1000:1011:1111:1011:1111:1111"</span></span>
+<span class="line"><span>smbios.reflectHost = "TRUE"</span></span>
+<span class="line"><span>hw.model = "MacBookPro14,3"</span></span>
+<span class="line"><span>board-id = "Mac-551B86E5744E2388"</span></span>
+<span class="line"><span>keyboard.vusb.enable = "TRUE"</span></span>
+<span class="line"><span>mouse.vusb.enable = "TRUE" </span></span>
+<span class="line"><span></span></span></code></pre>
+<p>这样就大功告成啦，再次启动虚拟机，VMWare就不会再报错，MacOS也能继续正常安装了</p>
+<p>然后就是MacOS的具体安装，这就不教了，毕竟难度不大，按着系统提示来就行</p>
+<p>安装过程会经历多次重启，最后我们就能看到亲切的MacOS桌面啦！</p>
+<p>当然还没有完全完成，这时候还需要安装VMWare tools、安装优化工具等，但是受制于篇幅我不打算继续写了（其实是我懒）（优化策略以后也许会讲的吧？）</p>
+<p>这样MacOS BigSur系统就算安装完成了</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

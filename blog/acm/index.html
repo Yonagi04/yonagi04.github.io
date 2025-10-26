@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/acm/"><!-- Primary Meta Tags --><title>关于ACM的一点往事 | Yonagi&#39;s Sekai</title><meta name="title" content="关于ACM的一点往事 | Yonagi's Sekai"><meta name="description" content="Article: 关于ACM的一点往事"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/acm/"><meta property="og:title" content="关于ACM的一点往事 | Yonagi's Sekai"><meta property="og:description" content="Article: 关于ACM的一点往事"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/acm/"><meta property="twitter:title" content="关于ACM的一点往事 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 关于ACM的一点往事"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 关于ACM的一点往事 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-03-23T12:50:35.000Z"> 2024年3月23日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 1 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 生活 </div> <div class="animate font-base text-sm">
+Tags: 生活 </div> </div> <article class="animate"> <p>今天是我校ACM校赛暨ACM队选拔赛的日子。比赛刚刚开始，我大概看了下题，感觉题目还不错（），难的题也有，简单的题也有。（不过简单题不是特别多就是了，听他们说今年出题要出得难一点，所以难题真的不是难得一星半点）</p>
+<p>这次校赛罕见地请了不少外校的佬过来这边打，什么华工，华师，广工……都有人过来。我去年打这个比赛的时候倒是只面向校内，今年好像是peipei（后面会讲到他是谁）去广东acm群里面发了邀请，然后就有不少佬过来打了</p>
+<p>借着这个机会，讲讲我以前还在acm队的时候，不完美的经历。</p>
+<hr>
+<p>我刚说到我去年也参加了acm选拔赛，不过我的实力并没有那么强大，进去多半是靠祖上积德，或者是我那天运气特好，靠我自己的运气进去的。我预选赛a了4道题，但排位比较一般，但也到了能进正赛的程度，但是到了正赛只a了两道题出来（看看，这都能进了，这开题数放acm区域赛连铜末都摸不到，这就是acm弱校）。打完之后，我的第一感想：”完蛋了，肯定进不了了“，第二感想：”不进acm咋办？我现在做的一切工作都是为了进acm，咋办啊咋办“，第三感想：”算了，不进就不进，不进的话继续卷C++，卷技术栈……“</p>
+<p>可能是运气比较好，然后就进了acm。进了acm之后呢，就是训练。我印象里第一次去计算机楼510实验室（也就是acm队集训基地）训练，我还忘记带电脑（是的，我没有在队群里面问基地有没有电脑，结果就是我人到了基地，但是发现基地没有好用的电脑，全部都是清华同方的老爷机，最后就是我自己又跑回宿舍，紧急拿了电脑又跑回基地训练）我最开始是去的512，打开512的房间门，小声地问了一个师兄，”额请问这里是acm集训队吗“</p>
+<p>”acm集训队啊，在隔壁“</p>
+<p>（后来我才知道，512其实是老acm集训队的基地，和现在的510是连在一起的；后来512变成acm队教练的研究生的实验室了，所以我们acm队就只能挤在510这个小房间训练+住宿）</p>
+<p>然后我就去了隔壁510，当时房间里面有和我同年级的同样被入选进来的新人（比如uzi），还有一些老人（比如明哥，鑫哥，屈姐，翀哥，peipei）。出于害怕别人看我电脑（对，我一直有这样的习惯，害怕别人看我电脑。因为不选靠墙的座位，我就会一直感觉别人盯着我的电脑屏幕看，然后我就压力山大！所以我在图书馆或者自习室都喜欢选靠墙的座位，就是不想让别人看到我的电脑屏幕。），我选了最后一排的座位。清掉了已经退役的师兄or师姐的“遗产”之后，我就开始训练了。当时给的训练题我还记得不少都是从poj上面拉下来的，但是有很多题我都不会做（现在看来那些题真的超级超级基础，哪怕不打acm的计算机学生都应该要会的，题目基本上就是dfs or bfs or 模拟（甚至还不是那种插橡树树针那种大模拟，就是那种最简单的小模拟），结果我居然一道都没a出来。挫败感十足啊！</p>
+<p>然后就是日常训练了，差不多就是鑫哥明哥每周会拉一个专项题单下来，然后我们就自己训练。前面说到了，我们学校是弱校，所以我们学校也没有那种很系统的训练体系，也就是有一个acm队可以让大家一起抱团训练然后去打比赛而已。我们学校的训练大概就是，每周拉一份题单下来，然后自己做，最后会有一份题解，你可以参照题解自己补题。（听说这个训练方法最开始还是没有的，还是鸿爷（我校近年来唯一一个金牌爷）在当acm队长的时候搞的一个训练制度，目的是不想让新人走歪路）但是我却动了歪心思。有些题不会做？直接Bing找题解答案；题解看不懂？cv大法（事实证明cv大法对acmer真的很不好，或者是不仅仅是acmer，对于所有要吃计算机这碗饭的学生，刷算法题的时候cv都不是一个好选择）。这就导致了我虽然水得一批，但我的ac数和补题数特别高。高到什么程度？全级第一</p>
+<p>对，你没看错，全级第一的ac数+补题数，所以之后组队肯定有什么大佬来找我了。果不其然，之后uzi就来找我了，拉我进他的队伍（当时他已经拉了另一个大佬翰爷），我想着这不是能抱大腿嘛，外加我这个人不擅长拒绝他人，外加我总不能说我这些题都是cv的，我其实特别水吧？索性就加了</p>
+<p>加了之后呢，就是训练了。不过翰爷从来没来过acm基地，他都是在自己宿舍打代码。然后就是平静的训练日常，刷题、补题、打比赛，日复一日</p>
+<p>再过段时间，acm广东省赛就要来了，我们学校自然会参赛。然后就是校内选拔赛（校内选拔赛还没透露出我是个水货的事实，只不过透露了我电脑是台老爷机的事实），但最后有惊无险，我们的队伍在选拔赛中排位第5，成功拿到了出线名额，参加广东省省赛。</p>
+<p>之后就是省赛报名，我们苦于起一个合适的队名。当时uzi参考鸿爷的金牌队伍名，”负负得正“，起了个类似的名字，“虚虚得实”，大概就是从实平面扩展到复平面的意思。我当时还是傻逼管人痴，硬是想着把队名和国内某管人团体的某成员扯上关系（好他妈傻逼啊），不过”虚虚得实“这个队名我们都很满意，最后也就定下来了，一直到后来打区域赛都是用的这个队名</p>
+<p>之后就是一直训练……你说训练那么久，我的水平有提高吗？当然有，至少我开题速度明显提升了，基本的一些题我也能开出来了。当时打cf，1200~1300分左右的题我不到10分钟就能开出来（你别笑，我进队的时候是23年3月，训练一个月就有这样的水平，这对于一个最开始连dfsbfs都不会的新手来讲，进步已经很快了）但是因为我训练方法有问题，外加我的底子差，而且走的野路子（我最开始甚至没有买过任何一本好用的算法竞赛入门书，也没买过线上课程，买课都是后来的事情了），所以我提升速度明显不及两个队友，这也为我后面选择退队而不是选择转队伍埋下了祸根。</p>
+<p>然后运气很不好，比赛前两个星期我得了甲流。得了甲流自然很糟糕，因为发烧，所以我没法训练。当时两个队友在基地vp前年的广东省省赛，我只能在健康驿站和他们远程vp，不过我还是a了两题出来，然后昏昏沉沉又睡下去了。</p>
+<p>之后就是去深圳打比赛了，我没想到我第一次去深圳居然是以这种形式去，但是我们不是去深圳大学，是去的深圳技术大学，在深圳坪山，离南山远得很。坪山和我想象中的深圳完全不一样，不过深圳技术大学真的很大很漂亮，饭也特好吃。我们是比赛当天才去的深圳，早上六点钟就要起床去坐车了，有一说一，这是我第一次和这么多认识的人聚众出游。同年级的就我和uzi、翰爷、ke爷，其他的都是师兄，比如鸿爷，靖爷，鑫哥，明哥，peipei，原神，还有其他我不是很熟的师兄，一起坐车去深圳。坐到了深圳，我感觉有点头晕，但是马上就要开始打比赛了。签到，领物资，换衣服（对，比赛是有给一套衣服的，比赛的时候作为选手身份要传上去，不过我打完比赛之后就没穿过），然后就是等体育馆开门进场准备比赛。比赛过程我就不讲了，只记得我们好像开了5题出来，我自己开了一道签到题，然后和uzi开了一道贪心。当时差一点点就能开出6题了，但是时间不够，翰爷没时间开，最后我们就只a了5道题出来。最后我们拿了省赛铜，这作为acm开端真是再好不过了，毕竟我们都还是新人，还没训练多久，省赛铜已经不错了</p>
+<p>然后就是蓝桥杯，可惜我去年没报成，所以就没参加。不过我这个时候就有点懈怠了，一面在训练写cf题，一面在搞qq机器人（我对于Linux系统的认识也是从这个时候开始建立起来的，Linux的各种指令都是借着搭机器人的机会学的，所以有时候实践大于理论）。所以这个阶段提升就很慢，刷题量也不算多。这时候我买了AcWing的算法基础课，开始系统地学习各种算法（对，此前我基本上就是纯板刷cf和刷洛谷题，题目刷多了就就知道怎么写题了）</p>
+<p>然后就是放暑假了。暑假的话，按照惯例，牛客每年都有暑假训练，用于acmer的区域赛模拟。这个时候我和两个队友的实力差距就体现出来了。我多次开题却无法成功开出来，uzi也多次找到我，私信和我说如果没法把题开出来的话，就尽快去补题。但是我发现就算我再拼命地补题，短时间内也很难达到区域赛所需要的技术水平（暑假训练难度基本和区域赛趋同），我当时就产生了一个想法，”打完了这个赛季，就退役吧，我真的打不下去了“，虽然按照网络上流传的acm技能树，我的算法水平已经达到了在区域赛可以勉强打铜的水平，但是和队友的实力差距仍然很大（队友的算法水平，按照acm技能树的话是可以冲银的），且当时我已经极度内耗，外加没有和队友交流我的情况，导致了后面没有打完区域赛我就选择了退出acm</p>
+<p>之后就是ccpc的网络赛了，这直接决定了我们学校能不能在ccpc比赛中出线，能拿到多少名额。这次我的电脑又又又开始卡了，我和队友的实力差距也暴露无遗</p>
+<p>打完ccpc网络赛，之后就是icpc网络赛了。打比赛之前肯定要先vp，但是我知道我的水平不行，频繁开题失败，写测试样例也写不动。之后呢，就是uzi找到了我，提出更换队友的要求，他觉得我现在的水平没法去打区域赛，认为我可以先沉淀一年，大三了再去打。我理解他的想法，因为我们学校的出线名额一直很少，尤其是今年要打线下赛，名额只会只减不增，而且21级（也就是鑫哥明哥peipei那届）打acm，是直接打铁的，如果这次他们还拿不到牌子，打acm拿不到牌子就直接退役是一件很惨的事情。所以今年区域赛名额很明显是直接倾向于给21级，22级的名额几乎少到没有。但是我直接提出了退出acm队，我知道我自己已经打不动了，再这样下去不仅不会再有进步，反而是继续拉别人后腿。uzi尽力劝阻我退队，毕竟我们这一届打acm的人真的不多，算上我，还在训练的就三个人（对，就是我+uzi+翰爷），其他的都已经变成挂名摆子了。但是我很清楚如果我明年打区域赛，拿不到牌子，会有什么样的后果。我最后还是毅然决然的退队，写了退队申请，离开了acm，也结束了我短暂的acm生涯</p>
+<p>之后呢？之后区域赛，我还是关注着学校的acm队的发挥。今年没有队伍拿到金牌，不过21级的师兄队都拿了银，”虚虚得实“也收获了铜牌；我呢，我收获了后端技术栈，自学了计算机专业课，我们都有光明的未来</p>
+<p>不过之后还有蓝桥杯省赛，硬要说的话，可能今年蓝桥杯省赛就是我竞赛生涯最后的一场比赛了吧，就算能拿省一我也不会继续打了</p>
+<hr>
+<p>你是不是觉得我这个人很傻逼？进了队，那么快又退掉，而且还是在区域赛之前退掉的。我也知道，我这么做确实很傻逼。我很对不起鑫哥明哥，毕竟他们是很看重”虚虚得实“这支队伍的，也很看重我本人（一方面是他们对我也是很照顾，另一方面是，前面提到了，我训练的ac数很高，按照惯例来讲，ac数高的人要么天赋异禀，要么就是足够勤奋，以后的成绩不算差，算个好苗子，不过我是个特例）；我也对不起鸿爷，我最开始决定来打acm，还是在知乎上面偶然刷到了鸿爷的退役小作文，看了鸿爷的小作文，我才毅然决定来打acm。我印象里鸿爷的退役小作文里面有这样几句话</p>
+<blockquote>
+<p>吾辈生如蝼蚁,却亦有鸿鹄之志。
+就算是一个无名小卒，也想为自己的梦想拼尽全力。</p>
+</blockquote>
+<blockquote>
+<p>最后希望我的学弟学妹们，能延续下去这一份光辉，不说你需要疯狂的去追赶（除非你真的有这时间和这份疯狂的热情），至少能做到你们能够做到最好的，取的自己满意的成果。</p>
+</blockquote>
+<p>鸿爷的退役小作文，我看了很多次。最有感触的就是这两句话</p>
+<p>后来再见到鸿爷，就是在acm校赛了，当时鸿爷就坐在我旁边，隔着一个座位（对，可惜我当时不认识他，我只知道他是acm队的师兄，但不知道他就是鸿爷），他坐在一边写题解，我在另一边坐牢。</p>
+<p>然后再见到，就是在去深圳了。我们acm队合了影，现在还放在计算机院的acm队宣传公文里面（挺丢人的）</p>
+<p>再次见到就是在51节了，51节我留在acm队训练，鸿爷在acm基地打雀魂。鸿爷要走之前，找鑫哥聊了几句，因为我就坐在鑫哥附近，所以鸿爷也注意到了我</p>
+<p>”你是大一的？“ ”啊是的“ ”我看看你是群里的谁“</p>
+<p>然后我就打开qq，打开acm队群，把我的id指给了他看</p>
+<p>“哦原来是你。51节还留在这边训练啊，你加油”</p>
+<p>后来我在我校的新生群（当时也不算新生群了，都是22级的老东西）里面水群，鸿爷偶尔看到我在水群，就会说“快去加训”（当然我知道这是开玩笑，加训这个词在acm圈子里面是经常说的，没有什么训斥的含义），之前有一次我在群里和群友聊gal，我说大学了没地方打，鸿爷这时候正好上线了，回复我 ”可以在基地打啊，想怎么打就怎么打😋“，当然我没那个胆量就是了</p>
+<p>后来暑期实习，听说他被腾讯wxg挂了，有点吃惊，毕竟以他的技术和算法能力，腾讯没有理由能挂他，不知道他现在去哪家公司了，希望有个好去处吧</p>
+<p>（24.7.6 updates: 鸿爷后来去了广州一家相当有名的自动驾驶公司，做自动驾驶去了，也算是有了个好去处吧，当然他自己对这个结果并不是很满意）</p>
+<p>然后就是对不起uzi和翰爷。毕竟是我自己突然退队，外加我的水平拉跨，直接拉了他们后腿，还有就是我的电脑真的太垃圾了，之前打比赛频繁卡机，从某种程度上也影响了队伍的心态</p>
+<p>唉，本来只想随便写一点的，没想到一写就是一个小时，4000+个字，就这样吧</p>
+<p>一段不算完美的经历</p>
+<hr>
+<p>这一段是24号补的，昨天打完了校赛，我也拿到了榜单</p>
+<p>今年新生的情况不容乐观</p>
+<p>今年虽然有oi爷，但不多（其实去年也就ke爷一个oi爷），但是今年的情况特殊，今年真正意义上的老队伍只能凑个一支，剩下的全部都是新生队了，不过就算我留在acm，这种情况也无法逆转，毕竟以我的实力，我也带不了新生。这样看来估计下半年区域赛不好打</p>
+<p>祝我校acm年年向好吧</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

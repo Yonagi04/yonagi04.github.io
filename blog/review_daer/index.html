@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/review_daer/"><!-- Primary Meta Tags --><title>大二总结 | Yonagi&#39;s Sekai</title><meta name="title" content="大二总结 | Yonagi's Sekai"><meta name="description" content="Article: 大二总结"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/review_daer/"><meta property="og:title" content="大二总结 | Yonagi's Sekai"><meta property="og:description" content="Article: 大二总结"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/review_daer/"><meta property="twitter:title" content="大二总结 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 大二总结"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 大二总结 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-07-09T10:42:11.000Z"> 2024年7月9日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 1 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 生活 </div> <div class="animate font-base text-sm">
+Tags: 生活 </div> </div> <article class="animate"> <p>大二结束了，从去年8月开始，按时间顺序回顾一下我的大二</p>
+<h2 id="大二上学期">大二上学期</h2>
+<h3 id="迷茫时刻">迷茫时刻</h3>
+<p>我在今年四月份发了一篇博客，大概内容是讲我之前在acm队的一点故事。然后去年8月份因为下半年的区域赛，acm的队伍阵容需要调整，我就趁着这个机会选择从acm隐退了。是的我就打了一把省赛和几次网络赛就选择隐退了，连一把区域赛都没有打，我都不太好意思和外人说我是打过acm的，或者说我已经从acm隐退了。</p>
+<p>然后就是长达三个月的迷茫时间了。从acm隐退之后，我差不多有三四个月的时间没有写过一道算法题（因为acm在役期间我基本上每天都刷了起码15道算法题，平均一道题30~40分钟，每天花接近10个小时的时间在刷Codeforce和Atcoder，写得我真的有点犯恶心），学东西也很慢，也不知道自己以后的技术栈到底往哪个方向发展。我当时是在学C++，因为我当时固执地认为自己大概率会往C++的方向发展，所以就一直在啃C++ Primer。同期也一直在学CSAPP，顺带做了几个CSAPP的Lab（虽然我就做了两个还是三个Lab）。那时候基本上除了上课就在啃C++ Primer和看CSAPP的网课。</p>
+<h3 id="方向初立">方向初立</h3>
+<p>差不多到11月，我刷知乎的时候偶然刷到了知乎上某知名C++答主的一些回答，发现C++可以走后端开发路线，于是我决定开始往后端开发的方向学习。C++后端要学啥呢？C++、STL、各种计算机的专业课，所以我从这个时候开始就直接开啃其他的专业课，《Computer Networking: A Top-Down Approach》也是这个时候买下来的，《Operation System: Three Easy Pieces》也是这个时候开始看的。那时候一方面要兼顾课内的模电数电和复变函数论，另一方面还要继续补充计算机专业课的知识，虽然那段时间我没咋写代码，但还是很忙，每天日程还是排满的</p>
+<p>差不多也是这个时候我才确定要去实习的，此前一直都是想着大三上学期学完后端开发所有的技术，然后大三下学期就去准备考研。不过牛客上面的一篇博客推送打破了我的计划，博客的大概内容是华师的一位同样是26届、同样是C++方向的同学计划去找实习，在牛客上询问需要补充哪些知识点。可能是好胜心所致，我不愿意屈服于我的现状，外加我当时也从研究生师兄那里听说到研究生找工作也很困难，而且基本上都被导师压榨到无法去实习，所以我在那个时候差不多就确定了在本科期间我得去找一份实习的想法。</p>
+<p>12月份的时候我开始学MySQL和Redis，也算是后端开发的关键技能点了吧！学到寒假基本上就学完了（其实是把黑马程序员的网课看完了，顺带还做了笔记）（<del>至于做了笔记之后到现在还能记得多少，我不好说哈哈</del>）</p>
+<p>当时还记得在牛客上发了个帖子，大概内容也是关于找实习的，评论区下面有不少劝我润Java的，我当时还感觉奇怪，C++的环境真的那么糟糕吗？后来才知道，C++本身不算烂，但C++后端真的是烂到底了，本来hc就少（大厂只有腾讯还在用C++写后端，但是新项目已经全部改用Go了；中厂小厂更是无人用C++写后端系统的），项目更是人手一个WebServer和cmu15445，还能找到工作吗？去招聘网站一看，根本没人要C++后端开发。我不禁产生了怀疑</p>
+<h2 id="大二下学期">大二下学期</h2>
+<h3 id="转移目标">转移目标</h3>
+<p>C++后端这条路似乎走不太通，我于是试图转其他的语言，毕竟我的目的是后端开发，而不是C++。我最开始尝试了Go语言，但是感觉Go的语法真的很怪，用起来很不习惯（如果能适应Go的语法，那么很快就能开始上手写东西了，框架也就只有Gin和Gorm，当然这些都是我听说的，我并未尝试过），外加学习Go找不到合适的教程和项目，于是就放弃了</p>
+<p>然后我选择了Java。因为大一上学期学过一段时间的Java，且大一下学期和大二上学期大部分时间都在写C++，所以入门相当快，花了一个星期就基本上把基础的东西学完了，之后就是SpringBoot，SpringCloud，各种后端技术栈。当时我还怀抱着“大二就能进大厂实习”这种美好的幻想</p>
+<h3 id="试图找实习">试图找实习</h3>
+<p>我是在四月把简历写完的，但是之后还一直在陆陆续续地改简历。然后五月份开始就是期末考试，一直断断续续考到七月初，差不多隔一两个星期就有一门考试。这就导致了其实我根本没啥时间可以背八股或者复盘我写过的项目。开始投简历已经是六月份的事情了——可惜这时候正好没啥hc。所以我为啥在这个小节的title加了一个“试图”，就是想说明其实我根本没找到</p>
+<h3 id="陷入焦虑">陷入焦虑</h3>
+<p>这应该是前段时间的状态了，不过最近好了很多。一方面是自己基本上是大厂投了就挂，中小厂投了要么已读不回，要么要了简历，却没了后续，连个面试都没收到；另一方面是看到不少同龄人都已经拿到了实习offer甚至是大厂offer（当然，不是后端），看完之后就更焦虑。一焦虑了就想着背八股投简历，结果一轮投完了啥都没有，打开牛客一看推送又是26届的拿到offer了，简直被气得要吐血，狠狠地恶性循环。不过现在个人感觉，找不到也无所谓吧，反正多少还有点时间。（应该吧？）</p>
+<h2 id="其他">其他</h2>
+<h3 id="换了新电脑">换了新电脑</h3>
+<p>我大一和大二上学期大部分时间都在用我老掉牙的古董电脑——4GB内存，128GB的SATA固态，1TB的机械，8代的英特尔低压处理器，没有独立显卡。看到这些配置就应该感觉生产力会明显受限了——确实是这样的。大一还在acm队的时候，我基本上是左边分屏edge开着codeforce或者atcoder可以看题（别问为什么是edge，因为chrome会更吃内存），右边分屏开vscode敲代码，但是因为这台电脑只有4GB的内存，所以会非常非常卡。去年11月份，终于用省吃俭用攒下来的一点钱买下了我现在的这台电脑。16GB内存，CPU是amd的7735H，显卡是4060，生产力问题当然是成功解决了。我寻思着我要是不换电脑，可能到现在我都没法学java后端（因为java和idea真的好吃内存，老电脑用idea开个项目都能卡死，更别说开什么微服务了）</p>
+<h3 id="买了学了电吉他">买了/学了电吉他</h3>
+<p>具体信息可以看我之前写过的博客。今年3月份用多余的一点钱买了一把Ibanez GRX40和橘子音箱CR mini，现在弹了几个月了，讲讲用琴感受</p>
+<p>拾音器很垃圾，尤其是双拾音器，开失真的声音非常非常糊……当然可能是我音箱的问题。单拾音器会稍微好一点，但我确实不咋喜欢单拾音器清淡的音色……所以我一般练乐句还是练曲子都是用的双拾音器，然后就是一直被双拾音器折磨。然后就是这玩意的电流声真的超级明显……也有可能是我音箱的问题。但这把琴也才一千来块钱，要什么自行车？</p>
+<p>下半年可能会考虑去闲鱼收一个二手的效果器，当然在此之前先允许我把音箱给换了，这个音箱用着太难受了</p>
+<p>再然后就可能是会换一把琴，下一把琴可能会换PRS SE Custom 24吧</p>
+<h3 id="yonagis--sekai的建立">Yonagi’s  Sekai的建立</h3>
+<p><code>Yonagi's Sekai</code> 这个网站也是在我大二上学期的时候建起来的。当时是阿里云给每个在校大学生都送了200块钱还是300块钱的代金券，正好能买一台一年份的新加坡的轻量服务器。作为白嫖仙人，这么一台服务器不嫖白不嫖嘛，那当然是要白嫖一台的，然后嫖了就不知道干啥了。我本来是想复活我的qq机器人计划，但是之前我的小号因为挂qq机器人所以被腾讯封了好几次号……所以这个计划就搁置了。</p>
+<p>那么服务器还能拿来干啥呢？我想到了一个绝佳的想法，那就是搞个人网站。说搞就搞，我反手去网上查了点资料，发现WordPress很适合个人建站，而且WordPress有很多好看的主题，于是技术方案就选择了PHP+WordPress，数据库是选用了MySQL。整个网站完全建起来应该花了一天左右的时间，包括建站到开始运行再到买域名，差不多一天吧。~~记得当时还在qq空间打了个广告，宣传了一下自己的网站。~~然后就是在CSDN发了一篇关于WordPress建站的博客，那篇博客的阅读数还挺高的，到现在好像差不多有1w的阅读量了</p>
+<p>大一的时候也嫖过阿里云的一台服务器，不过是三个月的，拿来挂qq机器人。结果挂到后面发现qq机器人的进程经常死掉，查询了阿里云的后台发现服务器的连接数和CPU、网络、内存的占用率非常高，而且经常压不下来。当时还不知道发生了什么，后来学了点网安相关的东西，才知道原来是服务器被打了，大概率是ssh先被爆破，然后服务器变成了黑客的肉鸡（<del>什么ntr剧情</del>）。所以这次拿到服务器之后，我对于服务器的安全运行是非常重视的，到手直接先改了ssh的默认端口，ssh的登录方式也改成了密钥文件+强口令登录，顺带还挂了Cloudflare的防火墙。（<del>后来也发了两篇关于Cloudflare的防火墙设置的博客，感觉更像是给Cloudflare打广告，Cloudflare快付我广告费</del>）</p>
+<p>如果你观察本站（而非镜像站）的域名，你会发现本站的域名改成了<code>yonagi04.github.io</code>，部署的位置改成了Github。这是在我今年三月的时候对网站做的一个大改动，就是把整个网站全部迁移到Github，用Hexo框架来构建网站页面，然后由Github来管理我的网站。我为什么会选择放弃WordPress，选择使用Hexo框架呢？首先就是Hexo完全支持Markdown语法，这是它最吸引我的一点（反观WordPress，完全不支持Markdown语法，其实就不太适合我用Typora撰写的技术类博客）；其次就是Hexo是一个无后端框架，写完的博客会通过Hexo自动生成一个静态的HTML页面，这样我也不需要服务器了；然后就是Hexo的源码都是JS和CSS，总比PHP容易看懂吧？后来也是花了一个下午的时间把网站跑起来，后来又花了差不多几个星期的时间给网站做优化，就变成了现在大家能看到的 <code>Yonagi's Sekai</code>。</p>
+<h2 id="未来对大三的一点展望">未来（对大三）的一点展望</h2>
+<p>经典立flag环节。好吧，虽然有时候计划赶不上变化，但计划还是需要的</p>
+<ol>
+<li>
+<p>假如我能去实习的话，希望不要被卡实习</p>
+</li>
+<li>
+<p>可能会学一点前端 （<del>画大饼环节</del>）</p>
+</li>
+<li>
+<p>学一手测试（<del>画大饼环节</del>）</p>
+</li>
+<li>
+<p>明年春招的暑期实习可以顺利找到，不管是测开还是后端都行，能进大厂就更好了</p>
+</li>
+<li>
+<p>继续练吉他，早日达成cover一首anime song的成就</p>
+</li>
+<li>
+<p>每天坚持绕着学校骑车骑一圈（外环西路-星光下道-外环西路）（如果不下雨的话）</p>
+</li>
+<li>
+<p>可能会学一点乐理和视唱练耳，早日能独立扒铺子（<del>画大饼环节</del>）</p>
+</li>
+<li>
+<p>有钱了应该大概也许可能maybe会考虑买一把midi键盘（<del>你有那个实力吗</del>）（<del>吉他都还没完全学会就开始学编曲，笑死人了</del>）</p>
+</li>
+<li>
+<p><del>如果能给开源项目contribute一下就更好了，比如Nacos或者SpringCloud Alibaba之类的</del></p>
+</li>
+<li>
+<p>维持一下绩点，现在的绩点真的太烂了（为什么说是维持呢？因为我感觉这byd绩点真的提不起来了，尽量维持一下，别人挂科了绩点掉下去了我的排名不就上来了吗哈哈哈）</p>
+</li>
+</ol>
+<p>大概就是这样，希望能越过越好吧</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

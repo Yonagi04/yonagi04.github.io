@@ -1,0 +1,703 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/rocket_mq/"><!-- Primary Meta Tags --><title>深入RocketMQ消息队列——消息原理 | Yonagi&#39;s Sekai</title><meta name="title" content="深入RocketMQ消息队列——消息原理 | Yonagi's Sekai"><meta name="description" content="Article: 深入RocketMQ消息队列——消息原理"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/rocket_mq/"><meta property="og:title" content="深入RocketMQ消息队列——消息原理 | Yonagi's Sekai"><meta property="og:description" content="Article: 深入RocketMQ消息队列——消息原理"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/rocket_mq/"><meta property="twitter:title" content="深入RocketMQ消息队列——消息原理 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 深入RocketMQ消息队列——消息原理"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 深入RocketMQ消息队列——消息原理 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-10-02T15:47:36.000Z"> 2024年10月2日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 7 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 / 消息队列 </div> <div class="animate font-base text-sm">
+Tags: RocketMQ / 消息队列 </div> </div> <article class="animate"> <blockquote>
+<p>本文主要讲解 RocketMQ 的消息原理方面相关理论，不涉及消息的底层存储过程</p>
+</blockquote>
+<h2 id="消息在-rocketmq-中流转的过程与消息可靠性的保证">消息在 RocketMQ 中流转的过程与消息可靠性的保证</h2>
+<p>在研究 RocketMQ 的消息原理之前，我们必须先了解 RocketMQ 的领域模型，以及消息在 RocketMQ 中流转的过程</p>
+<h3 id="rocketmq-领域模型">RocketMQ 领域模型</h3>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/mainarchi-9b036e7ff5133d050950f25838367a17.png" alt="Apache RocketMQ Main Architecture"></p>
+<p>如上图所示，RocketMQ 中消息的生命周期主要分为消息生产、消息存储、消息消费三大流程。生产者生产消息并将其发送到 RocketMQ 服务端，消息被存储在服务端的主题中，消费者通过订阅主题来消费消息</p>
+<p><strong>消息生产</strong></p>
+<p>生产者（Producer）：RocketMQ 中用于产生消息的实体，一般继承于业务调用链路的上游。</p>
+<p><strong>消息存储</strong></p>
+<ul>
+<li>主题（Topic）：RocketMQ 消息传输和存储的分组容器，主题内部由多个队列组成，消息的存储和水平拓展是由主题内的队列实现的</li>
+<li>队列（MessageQueue）：RocketMQ 消息传输和存储的实际单元容器。RocketMQ 通过流式特性的无限队列结构来存储消息，消息在队列内具备顺序性存储特征</li>
+<li>消息（Message）：RocketMQ 的最小传输单元，消息具备不变性，在初始化和完成存储后不可变</li>
+</ul>
+<p><strong>消息消费</strong></p>
+<ul>
+<li>消费者分组（ConsumerGroup）：RocketMQ发布订阅模型中定义的独立的消费身份分组，用于统一管理底层运行的多个消费者（Consumer）。同一个消费组的多个消费者必须保持消费逻辑和配置一致，共同分担该消费组订阅的消息，实现消费能力的水平扩展。</li>
+<li>消费者（Consumer）：RocketMQ 消费消息的运行实体，一般集成在业务调用链路的下游。消费者必须被指定到某一个消费组中。</li>
+<li>订阅关系（Subscription）：RocketMQ 发布订阅模型中消息过滤、重试、消费进度的规则配置。订阅关系以消费组粒度进行管理，消费组通过定义订阅关系控制指定消费组下的消费者如何实现消息过滤、消费重试及消费进度恢复等。RocketMQ 的订阅关系除过滤表达式之外都是持久化的，即服务端重启或请求断开，订阅关系依然保留。</li>
+</ul>
+<p>在了解领域模型之后，我们就可以基于这个领域模型，进一步了解消息的流转过程</p>
+<h3 id="消息的发送流程">消息的发送流程</h3>
+<p>一条消息从生产到被消费，大致会经历以下三个阶段</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.28/img/content/rocket-mq-message-send.png" alt=""></p>
+<ul>
+<li>生产阶段，Producer 新建消息，然后通过网络将消息发送给 MQ Broker服务器</li>
+<li>存储阶段，消息存储在 Broker 端的磁盘</li>
+<li>消费阶段，Consumer 从 Broker 拉取消息</li>
+</ul>
+<p>在这三个阶段，如果发生了网络波动、机器宕机、断电等异常情况，就可能导致消息的丢失。因此，消息的可靠性保证也从这三个阶段展开</p>
+<h3 id="消息可靠性的保证">消息可靠性的保证</h3>
+<h4 id="生产阶段">生产阶段</h4>
+<p>生产者通过网络发送消息给 Broker，当 Broker 收到后，将会返回确认响应消息（ACK）给 Producer。所以只要生产者收到了返回的 ACK，就代表消息在生产过程中没有丢失</p>
+<p>发送普通消息的示例代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">//普通消息发送。</span></span>
+<span class="line"><span style="color:#E1E4E8">MessageBuilder messageBuilder </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> MessageBuilderImpl</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">Message message </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> messageBuilder.</span><span style="color:#B392F0">setTopic</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"topic"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">    //设置消息索引键，可根据关键字精确查找某条消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setKeys</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageKey"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">    //设置消息Tag，用于消费端根据指定Tag过滤消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setTag</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageTag"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">    //消息体。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setBody</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageBody"</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">getBytes</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">    //发送消息，需要关注发送结果，并捕获失败等异常。</span></span>
+<span class="line"><span style="color:#E1E4E8">    SendReceipt sendReceipt </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> producer.</span><span style="color:#B392F0">send</span><span style="color:#E1E4E8">(message);</span></span>
+<span class="line"><span style="color:#E1E4E8">    System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(sendReceipt.</span><span style="color:#B392F0">getMessageId</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">} </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">    e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><code>send</code> 方法是一个同步操作，只要不抛出异常，就说明消息已经发送成功</p>
+<p>另外，还有一种异步的 <code>send</code> 方法，但是需要重写一个回调方法，以确保在消息发送成功 or 失败后可以继续后续的业务流程</p>
+<p>无论是同步发送还是异步发送，都有可能出现由于网络抖动而导致发送失败的情况。针对这种情况，可以设置合理的重试次数，当发送消息失败时，会自动重试发送</p>
+<h4 id="broker-存储阶段">Broker 存储阶段</h4>
+<p>默认情况下，消息到达 Broker 端后，会先将消息保存在内存中，然后立刻返回 ACK 给 Producer，随后 Broker 会定期地将一组消息异步地写入磁盘，它可以减少磁盘的I/O次数，但是如果机器突然掉电或宕机，内存中的消息没有写入磁盘，就会出现丢失消息的情况</p>
+<p>为了确保 Broker 端不丢失消息，Broker 端选择把消息记录到 CommitLog 中，关于记录到 CommitLog，也有两种方式：</p>
+<ol>
+<li><strong>同步刷盘</strong>：生产者将消息发送到 Broker 后，只有 Broker 将消息成功记录到 CommitLog 之后，才会返回 ACK。这种可靠性高，但是性能差</li>
+<li><strong>异步刷盘</strong>：Broker 将消息写入 CommitLog 采用后台线程异步刷盘的方式，刷盘完成之后回调接口返回发送成功的 ACK。它的性能更好，但是 Broker 宕机时会丢失一部分没有写入到 CommitLog 的消息</li>
+</ol>
+<h4 id="消费阶段">消费阶段</h4>
+<p>Consumer 从 Broker 拉取消息，并执行后续的业务逻辑，一旦执行成功，将会返回 <code>ConsumeConcurrentlyStatus.CONSUME_SUCCESS</code> 状态给 Broker</p>
+<p>如果 Broker 没有收到ACK，Consumer 下次还会尝试拉取这条消息，进行重试，这样避免了 Consumer 在消费过程中出现了异常，或由于网络抖动而导致消息丢失的情况</p>
+<p>消费普通消息的示例代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">//消费示例一：使用PushConsumer消费普通消息，只需要在消费监听器中处理即可。</span></span>
+<span class="line"><span style="color:#E1E4E8">MessageListener messageListener </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> MessageListener</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    @</span><span style="color:#F97583">Override</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#E1E4E8"> ConsumeResult </span><span style="color:#B392F0">consume</span><span style="color:#E1E4E8">(MessageView </span><span style="color:#FFAB70">messageView</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#6A737D">        //根据消费结果返回状态。</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> ConsumeResult.SUCCESS;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"><span style="color:#6A737D">//消费示例二：使用SimpleConsumer消费普通消息，主动获取消息进行消费处理并提交消费结果。</span></span>
+<span class="line"><span style="color:#E1E4E8">List&#x3C;</span><span style="color:#F97583">MessageView</span><span style="color:#E1E4E8">> messageViewList </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    messageViewList </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> simpleConsumer.</span><span style="color:#B392F0">receive</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">, Duration.</span><span style="color:#B392F0">ofSeconds</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">30</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">    messageViewList.</span><span style="color:#B392F0">forEach</span><span style="color:#E1E4E8">(messageView </span><span style="color:#F97583">-></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">        System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#6A737D">        //消费处理完成后，需要主动调用ACK提交消费结果。</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">            simpleConsumer.</span><span style="color:#B392F0">ack</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    });</span></span>
+<span class="line"><span style="color:#E1E4E8">} </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">    //如果遇到系统流控等原因造成拉取失败，需要重新发起获取消息请求。</span></span>
+<span class="line"><span style="color:#E1E4E8">    e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="消息幂等性的保证">消息幂等性的保证</h2>
+<p>在消息幂等性和消息可靠性的抉择之中，RocketMQ选择了保证消息可靠性，这就意味着在消息中间件层面上消息幂等性得不到保障，消息重复的问题需要开发者在业务层面自行解决</p>
+<p>一般情况下，导致消息重复问题的原因可能是网络抖动。例如在消息的消费阶段，由于网络抖动，Consumer 返回给 Broker 的 ACK 丢失了，Broker 自然无法收到来自 Consumer 的 ACK。因此，当 Consumer 再次拉取消息时，就会拉取到已经消费过的消息，这就是消息重复</p>
+<p>解决消息重复的方法是通过存储消息的 MessageID，通过在缓存或数据库中查找对应的 MessageID 来判断消息是否已经被消费过。一般可以通过 MySQL 或 Redis 的 Set 来存储消息的MessageID，但要根据具体业务来决定是采用 MySQL 还是采用 Redis</p>
+<h2 id="消息堆积问题">消息堆积问题</h2>
+<p>消息队列主要的作用是“削峰”，那么消息队列必然需要有一定的消息积压能力来保证后端服务的正常运作。</p>
+<p>如果发生了消息积压，意味着 Consumer 的消费速度赶不上 Producer 的生产速度，这时候需要考虑提高 Consumer 的消费能力</p>
+<ul>
+<li>如果 Queue 的数量大于 Consumer 的数量，这时候需要做的是 <strong>消费者扩容</strong>，也就是把 Consumer 的数量增加到和 Queue 的数量一致</li>
+<li>如果 Consumer 的数量大于等于 Queue 的数量但还是发生了消息积压问题，这时候需要做的是 <strong>消息迁移Queue扩容</strong>，具体来讲就是修改消费者的逻辑，让消费者使用一个临时的 Topic，在这个 Topic 下建立设置更多的 Consumer，然后把原来的消息转发到临时的 Topic 上，通过临时的 Topic 的 Consumer 来消费这些堆积的消息</li>
+</ul>
+<h2 id="定时消息">定时消息</h2>
+<p>定时消息是 RocketMQ 提供的一种高级消息特性，消息被发送到服务端之后，在指定时间后才能被消费者消费</p>
+<h3 id="schedule_topic_xxxx-介绍"><code>SCHEDULE_TOPIC_XXXX</code> 介绍</h3>
+<p><code>SCHEDULE_TOPIC_XXXX</code> 是 RocketMQ 一个系统类型的 Topic，用于标识延时消息</p>
+<p>这个 Topic 有 18 个队列，分别唯一对应着 RocketMQ 的 18 个延时等级，对应关系为：queueId = delayTimeLevel - 1</p>
+<h3 id="schedulemessageservice-介绍"><code>ScheduleMessageService</code> 介绍</h3>
+<p>这是 Broker 中的一个延时服务，专门消费 Topic 为 <code>SCHEDULE_TOPIC_XXXX</code> 的延时消息，并将其投递到目标 Topic 中</p>
+<p><code>ScheduleMessageService</code> 在启动时，会创建一个定时器 Timer，并根据延迟级别的个数，启动对应数量的 TimerTask，每个 TimerTask 负责一个延迟级别的消费与投递</p>
+<h3 id="延时消息的生命周期">延时消息的生命周期</h3>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/lifecyclefordelay-2ce8278df69cd026dd11ffd27ab09a17.png" alt=""></p>
+<ul>
+<li>初始化：消息被生产者构建并完成初始化，待发送到服务端的状态</li>
+<li>定时中：消息被发送到服务端，和普通消息不同的是，服务端不会直接构建消息索引，而是会将定时消息单独存储在定时存储系统中，等待定时时刻到达</li>
+<li>待消费：定时时刻到达后，服务端将消息重新写入普通存储引擎，对下游消费者可见，等待消费者消费的状态</li>
+<li>消费中：消息被消费者获取，并按照消费者本地的业务逻辑进行处理的过程。 此时服务端会等待消费者完成消费并提交消费结果，如果一定时间后没有收到消费者的响应，RocketMQ 会对消息进行重试处理</li>
+<li>消费提交：消费者完成消费处理，并向服务端提交消费结果，服务端标记当前消息已经被处理（包括消费成功和失败）。 RocketMQ 默认支持保留所有消息，此时消息数据并不会立即被删除，只是逻辑标记已消费。消息在保存时间到期或存储空间不足被删除前，消费者仍然可以回溯消息重新消费。</li>
+<li>消息删除：RocketMQ 按照消息保存机制滚动清理最早的消息数据，将消息从物理文件中删除</li>
+</ul>
+<h3 id="延时消息在-broker-的轮转流程">延时消息在 Broker 的轮转流程</h3>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.28/img/content/delay_message_send_process.png" alt=""></p>
+<ol>
+<li>Broker 把消息的 Topic 修改为 <code>SCHEDULE_TOPIC_XXX</code>，然后根据本次消息的延时等级计算需要投递到的具体队列。同时还需要把消息原来的 Topic 及其队列信息存储到消息的属性中，便于后面正确投递</li>
+<li>在从 CommitLog 把消息转发到 Queue 的过程中，会计算这个延时消息什么时候进行投递，<strong>投递时间 = 消息存储时间 + 延时等级对应的时间</strong></li>
+<li>延时队列服务 <code>ScheduleMessageService</code> 消费这个消息</li>
+<li>从消息属性中取出并设置原来消息的 Topic 和队列信息，存储到 CommitLog，此时这条消息已经完成延时，所以 ConsumeQueue 中的 Message Tag HashCode 需要重新计算消息 Tag 的哈希值再存储</li>
+<li>由于消息的 Topic 已经修改为原来的 Topic，所以直接投递到对应的队列中</li>
+<li>消费者消费这条消息</li>
+</ol>
+<p>延时消息的示例代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">        //定时/延时消息发送</span></span>
+<span class="line"><span style="color:#E1E4E8">        MessageBuilder messageBuilder </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> MessageBuilderImpl</span><span style="color:#E1E4E8">();;</span></span>
+<span class="line"><span style="color:#6A737D">        //以下示例表示：延迟时间为10分钟之后的Unix时间戳。</span></span>
+<span class="line"><span style="color:#E1E4E8">        Long deliverTimeStamp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> System.</span><span style="color:#B392F0">currentTimeMillis</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 10L</span><span style="color:#F97583"> *</span><span style="color:#79B8FF"> 60</span><span style="color:#F97583"> *</span><span style="color:#79B8FF"> 1000</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        Message message </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> messageBuilder.</span><span style="color:#B392F0">setTopic</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"topic"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">                //设置消息索引键，可根据关键字精确查找某条消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setKeys</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageKey"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">                //设置消息Tag，用于消费端根据指定Tag过滤消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setTag</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageTag"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setDeliveryTimestamp</span><span style="color:#E1E4E8">(deliverTimeStamp)</span></span>
+<span class="line"><span style="color:#6A737D">                //消息体</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setBody</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageBody"</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">getBytes</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">            //发送消息，需要关注发送结果，并捕获失败等异常。</span></span>
+<span class="line"><span style="color:#E1E4E8">            SendReceipt sendReceipt </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> producer.</span><span style="color:#B392F0">send</span><span style="color:#E1E4E8">(message);</span></span>
+<span class="line"><span style="color:#E1E4E8">            System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(sendReceipt.</span><span style="color:#B392F0">getMessageId</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#6A737D">        //消费示例一：使用PushConsumer消费定时消息，只需要在消费监听器处理即可。</span></span>
+<span class="line"><span style="color:#E1E4E8">        MessageListener messageListener </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> MessageListener</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">            @</span><span style="color:#F97583">Override</span></span>
+<span class="line"><span style="color:#F97583">            public</span><span style="color:#E1E4E8"> ConsumeResult </span><span style="color:#B392F0">consume</span><span style="color:#E1E4E8">(MessageView </span><span style="color:#FFAB70">messageView</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView.</span><span style="color:#B392F0">getDeliveryTimestamp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#6A737D">                //根据消费结果返回状态。</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#E1E4E8"> ConsumeResult.SUCCESS;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        };</span></span>
+<span class="line"><span style="color:#6A737D">        //消费示例二：使用SimpleConsumer消费定时消息，主动获取消息进行消费处理并提交消费结果。</span></span>
+<span class="line"><span style="color:#E1E4E8">        List&#x3C;</span><span style="color:#F97583">MessageView</span><span style="color:#E1E4E8">> messageViewList </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">            messageViewList </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> simpleConsumer.</span><span style="color:#B392F0">receive</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">, Duration.</span><span style="color:#B392F0">ofSeconds</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">30</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">            messageViewList.</span><span style="color:#B392F0">forEach</span><span style="color:#E1E4E8">(messageView </span><span style="color:#F97583">-></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#6A737D">                //消费处理完成后，需要主动调用ACK提交消费结果。</span></span>
+<span class="line"><span style="color:#F97583">                try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                    simpleConsumer.</span><span style="color:#B392F0">ack</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#E1E4E8">                } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                    e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#E1E4E8">            });</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">            //如果遇到系统流控等原因造成拉取失败，需要重新发起获取消息请求。</span></span>
+<span class="line"><span style="color:#E1E4E8">            e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"></span></code></pre>
+<h2 id="事务消息">事务消息</h2>
+<p>事务消息是 RocketMQ 提供的一种高级消息类型，支持在分布式场景下保障消息生产和本地事务的最终一致性</p>
+<h3 id="实现事务消息的核心">实现事务消息的核心</h3>
+<ul>
+<li><strong>两阶段提交</strong>：第一阶段 Producer 发送 Half 消息到 Broker 测试 RocketMQ 是否正常；Broker只有在收到第二阶段的消息为 Commit 时，Consumer 才能对消息进行消费</li>
+<li><strong>事务补偿机制</strong>：当 Broker 收到状态为 <code>unknown</code> 的消息或由于网络波动、Producer 宕机导致长时间没有收到第二阶段的提交时，Broker 会调用生产者接口来回查本次事务的状态</li>
+</ul>
+<h3 id="事务消息处理流程">事务消息处理流程</h3>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/transflow-0b07236d124ddb814aeaf5f6b5f3f72c.png" alt=""></p>
+<ol>
+<li>生产者将消息发送至 RocketMQ 服务端。</li>
+<li>RocketMQ 服务端将消息持久化成功之后，向生产者返回 ACK 确认消息已经发送成功，此时消息被标记为”暂不能投递”，这种状态下的消息即为半事务消息。</li>
+<li>生产者开始执行本地事务逻辑。</li>
+<li>生产者根据本地事务执行结果向服务端提交二次确认结果（Commit 或是 Rollback），服务端收到确认结果后处理逻辑如下：
+<ul>
+<li>二次确认结果为 Commit ：服务端将半事务消息标记为可投递，并投递给消费者。</li>
+<li>二次确认结果为 Rollback ：服务端将回滚事务，不会将半事务消息投递给消费者。</li>
+</ul>
+</li>
+<li>在断网或者是生产者应用重启的特殊情况下，若服务端未收到发送者提交的二次确认结果，或服务端收到的二次确认结果为 Unknown 未知状态，经过固定时间后，服务端将对消息生产者即生产者集群中任一生产者实例发起消息回查。</li>
+<li>生产者收到消息回查后，需要检查对应消息的本地事务执行的最终结果。</li>
+<li>生产者根据检查到的本地事务的最终状态再次提交二次确认，服务端仍按照步骤4对半事务消息进行处理。</li>
+</ol>
+<h3 id="事务消息生命周期">事务消息生命周期</h3>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/lifecyclefortrans-fe4a49f1c9fdae5d590a64546722036f.png" alt=""></p>
+<ul>
+<li>
+<p>初始化：半事务消息被生产者构建并完成初始化，待发送到服务端的状态。</p>
+</li>
+<li>
+<p>事务待提交：半事务消息被发送到服务端，和普通消息不同，并不会直接被服务端持久化，而是会被单独存储到事务存储系统中，等待第二阶段本地事务返回执行结果后再提交。此时消息对下游消费者不可见。</p>
+</li>
+<li>
+<p>消息回滚：第二阶段如果事务执行结果明确为回滚，服务端会将半事务消息回滚，该事务消息流程终止。</p>
+</li>
+<li>
+<p>提交待消费：第二阶段如果事务执行结果明确为提交，服务端会将半事务消息重新存储到普通存储系统中，此时消息对下游消费者可见，等待被消费者获取并消费。</p>
+</li>
+<li>
+<p>消费中：消息被消费者获取，并按照消费者本地的业务逻辑进行处理的过程。 此时服务端会等待消费者完成消费并提交消费结果，如果一定时间后没有收到消费者的响应，RocketMQ会对消息进行重试处理。</p>
+</li>
+<li>
+<p>消费提交：消费者完成消费处理，并向服务端提交消费结果，服务端标记当前消息已经被处理（包括消费成功和失败）。 Apache RocketMQ默认支持保留所有消息，此时消息数据并不会立即被删除，只是逻辑标记已消费。消息在保存时间到期或存储空间不足被删除前，消费者仍然可以回溯消息重新消费。</p>
+</li>
+<li>
+<p>消息删除：Apache RocketMQ按照消息保存机制滚动清理最早的消息数据，将消息从物理文件中删除。</p>
+</li>
+</ul>
+<p>事务消息的示例代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">    //演示demo，模拟订单表查询服务，用来确认订单事务是否提交成功。</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> static</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> checkOrderById</span><span style="color:#E1E4E8">(String orderId) {</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#6A737D">    //演示demo，模拟本地事务的执行结果。</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> static</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> doLocalTransaction</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> static</span><span style="color:#F97583"> void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">String</span><span style="color:#E1E4E8">[] args) throws ClientException {</span></span>
+<span class="line"><span style="color:#E1E4E8">        ClientServiceProvider provider </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> ClientServiceProvider</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        MessageBuilder messageBuilder </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> MessageBuilderImpl</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#6A737D">        //构造事务生产者：事务消息需要生产者构建一个事务检查器，用于检查确认异常半事务的中间状态。</span></span>
+<span class="line"><span style="color:#E1E4E8">        Producer producer </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> provider.</span><span style="color:#B392F0">newProducerBuilder</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setTransactionChecker</span><span style="color:#E1E4E8">(messageView </span><span style="color:#F97583">-></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">                    /**</span></span>
+<span class="line"><span style="color:#6A737D">                     * 事务检查器一般是根据业务的ID去检查本地事务是否正确提交还是回滚，此处以订单ID属性为例。</span></span>
+<span class="line"><span style="color:#6A737D">                     * 在订单表找到了这个订单，说明本地事务插入订单的操作已经正确提交；如果订单表没有订单，说明本地事务已经回滚。</span></span>
+<span class="line"><span style="color:#6A737D">                     */</span></span>
+<span class="line"><span style="color:#F97583">                    final</span><span style="color:#E1E4E8"> String orderId </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> messageView.</span><span style="color:#B392F0">getProperties</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">get</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"OrderId"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">                    if</span><span style="color:#E1E4E8"> (Strings.</span><span style="color:#B392F0">isNullOrEmpty</span><span style="color:#E1E4E8">(orderId)) {</span></span>
+<span class="line"><span style="color:#6A737D">                        // 错误的消息，直接返回Rollback。</span></span>
+<span class="line"><span style="color:#F97583">                        return</span><span style="color:#E1E4E8"> TransactionResolution.ROLLBACK;</span></span>
+<span class="line"><span style="color:#E1E4E8">                    }</span></span>
+<span class="line"><span style="color:#F97583">                    return</span><span style="color:#B392F0"> checkOrderById</span><span style="color:#E1E4E8">(orderId) </span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> TransactionResolution.COMMIT </span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> TransactionResolution.ROLLBACK;</span></span>
+<span class="line"><span style="color:#E1E4E8">                })</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#6A737D">        //开启事务分支。</span></span>
+<span class="line"><span style="color:#F97583">        final</span><span style="color:#E1E4E8"> Transaction transaction;</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">            transaction </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> producer.</span><span style="color:#B392F0">beginTransaction</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#6A737D">            //事务分支开启失败，直接退出。</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">        Message message </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> messageBuilder.</span><span style="color:#B392F0">setTopic</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"topic"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">                //设置消息索引键，可根据关键字精确查找某条消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setKeys</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageKey"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">                //设置消息Tag，用于消费端根据指定Tag过滤消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setTag</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageTag"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">                //一般事务消息都会设置一个本地事务关联的唯一ID，用来做本地事务回查的校验。</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">addProperty</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"OrderId"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"xxx"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">                //消息体。</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">setBody</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"messageBody"</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">getBytes</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#E1E4E8">                .</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#6A737D">        //发送半事务消息</span></span>
+<span class="line"><span style="color:#F97583">        final</span><span style="color:#E1E4E8"> SendReceipt sendReceipt;</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">            sendReceipt </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> producer.</span><span style="color:#B392F0">send</span><span style="color:#E1E4E8">(message, transaction);</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">            //半事务消息发送失败，事务可以直接退出并回滚。</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#6A737D">        /**</span></span>
+<span class="line"><span style="color:#6A737D">         * 执行本地事务，并确定本地事务结果。</span></span>
+<span class="line"><span style="color:#6A737D">         * 1. 如果本地事务提交成功，则提交消息事务。</span></span>
+<span class="line"><span style="color:#6A737D">         * 2. 如果本地事务提交失败，则回滚消息事务。</span></span>
+<span class="line"><span style="color:#6A737D">         * 3. 如果本地事务未知异常，则不处理，等待事务消息回查。</span></span>
+<span class="line"><span style="color:#6A737D">         *</span></span>
+<span class="line"><span style="color:#6A737D">         */</span></span>
+<span class="line"><span style="color:#F97583">        boolean</span><span style="color:#E1E4E8"> localTransactionOk </span><span style="color:#F97583">=</span><span style="color:#B392F0"> doLocalTransaction</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (localTransactionOk) {</span></span>
+<span class="line"><span style="color:#F97583">            try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                transaction.</span><span style="color:#B392F0">commit</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">                // 业务可以自身对实时性的要求选择是否重试，如果放弃重试，可以依赖事务消息回查机制进行事务状态的提交。</span></span>
+<span class="line"><span style="color:#E1E4E8">                e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">            try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                transaction.</span><span style="color:#B392F0">rollback</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">                // 建议记录异常信息，回滚异常时可以无需重试，依赖事务消息回查机制进行事务状态的提交。</span></span>
+<span class="line"><span style="color:#E1E4E8">                e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span></code></pre>
+<h2 id="消息发送重试与消息流控">消息发送重试与消息流控</h2>
+<h3 id="重试的基本概念">重试的基本概念</h3>
+<p>RocketMQ 客户端连接服务端发起消息发送请求时，可能会因为网络故障、服务异常等原因导致调用失败。为保证消息的可靠性， RocketMQ 在客户端SDK中内置请求重试逻辑，尝试通过重试发送达到最终调用成功的效果。</p>
+<p>同步发送和异步发送模式均支持消息发送重试。</p>
+<h3 id="重试的触发条件">重试的触发条件</h3>
+<p>触发消息发送重试机制的条件如下：</p>
+<ul>
+<li>客户端消息发送请求调用失败或请求超时</li>
+<li>网络异常造成连接失败或请求超时。</li>
+<li>服务端节点处于重启或下线等状态造成连接失败。</li>
+<li>服务端运行慢造成请求超时。</li>
+<li>服务端返回失败错误码
+<ul>
+<li>系统逻辑错误：因运行逻辑不正确造成的错误。</li>
+<li>系统流控错误：因容量超限造成的流控错误。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>对于事物消息，只会进行 <strong>透明重试（transparent retries）</strong>，网络超时或异常等场景不会进行重试</p>
+</blockquote>
+<h3 id="重试流程">重试流程</h3>
+<p>Producer 在初始化时设置消息发送最大重试次数，当触发了上述条件时，Producer 客户端会按照重试的最大次数一直重试发送消息，直到消息发送成功或已经达到最大重试次数，并在最后一次重试失败后返回调用错误响应</p>
+<ul>
+<li>同步发送：调用线程会一直阻塞，直到某次重试成功或彻底重试失败并返回错误码、抛出异常</li>
+<li>异步发送：调用线程不会阻塞，但调用结果会通过异常事件或成功事件返回</li>
+</ul>
+<h3 id="重试间隔">重试间隔</h3>
+<ul>
+<li>除了服务端返回系统流控错误场景，其他触发条件触发重试之后，均会立即重试，无等待间隔</li>
+<li>若由于服务端返回了系统流控错误触发了重试，系统会按照 <strong>指数退避策略</strong> 进行延迟重试。指数退避算法通过以下参数控制重试行为：
+<ul>
+<li>INITIAL_BACKOFF：第一次失败重试前后需要等待多久，默认值为1s</li>
+<li>MULTIPLIER：指数退避因子，即退避倍率，默认值为1.6</li>
+<li>JITTER：随即抖动因子，默认值为0.2</li>
+<li>MAX_BACKOFF：等待间隔时间上限，默认值为120s</li>
+<li>MIN_CONNECT_TIMEOUT：最短重试间隔，默认值为20s</li>
+</ul>
+</li>
+</ul>
+<h3 id="流控的基本概念">流控的基本概念</h3>
+<p>消息流控指的是系统容量或水位过高， RocketMQ 服务端会通过快速失败返回流控错误来避免底层资源承受过高压力。</p>
+<h3 id="流控的触发条件">流控的触发条件</h3>
+<ul>
+<li>存储压力大：参考 <a href="https://rocketmq.apache.org/zh/docs/featureBehavior/09consumerprogress">消费进度管理</a> 的原理机制，消费者分组的初始消费位点为当前队列的最大消费位点。若某些场景例如业务上新等需要回溯到指定时刻前开始消费，此时队列的存储压力会瞬间飙升，触发消息流控。</li>
+<li>服务端请求任务排队溢出：若消费者消费能力不足，导致队列中有大量堆积消息，当堆积消息超过一定数量后会触发消息流控，减少下游消费系统压力。</li>
+</ul>
+<h2 id="消费者分类">消费者分类</h2>
+<p>RocketMQ 支持 PushConsumer 、 SimpleConsumer 以及 PullConsumer 这三种类型的消费者</p>
+<h3 id="pushconsumer">PushConsumer</h3>
+<p>PushConsumers是一种高度封装的消费者类型，消费消息仅通过消费监听器处理业务并返回消费结果。消息的获取、消费状态提交以及消费重试都通过 RocketMQ 的客户端SDK完成。</p>
+<h4 id="使用方式">使用方式</h4>
+<p>PushConsumer的使用方式比较固定，在消费者初始化时注册一个消费监听器，并在消费监听器内部实现消息处理逻辑。由 RocketMQ 的SDK在后台完成消息获取、触发监听器调用以及进行消息重试处理。</p>
+<p>示例代码如下：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">// 消费示例：使用PushConsumer消费普通消息。</span></span>
+<span class="line"><span style="color:#E1E4E8">ClientServiceProvider provider </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ClientServiceProvider.</span><span style="color:#B392F0">loadService</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">String topic </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "YourTopic"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">FilterExpression filterExpression </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> FilterExpression</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"YourFilterTag"</span><span style="color:#E1E4E8">, FilterExpressionType.TAG);</span></span>
+<span class="line"><span style="color:#E1E4E8">PushConsumer pushConsumer </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> provider.</span><span style="color:#B392F0">newPushConsumerBuilder</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#6A737D">    // 设置消费者分组。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setConsumerGroup</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"YourConsumerGroup"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">    // 设置接入点。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setClientConfiguration</span><span style="color:#E1E4E8">(ClientConfiguration.</span><span style="color:#B392F0">newBuilder</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">setEndpoints</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"YourEndpoint"</span><span style="color:#E1E4E8">).</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#6A737D">    // 设置预绑定的订阅关系。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setSubscriptionExpressions</span><span style="color:#E1E4E8">(Collections.</span><span style="color:#B392F0">singletonMap</span><span style="color:#E1E4E8">(topic, filterExpression))</span></span>
+<span class="line"><span style="color:#6A737D">    // 设置消费监听器。</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">setMessageListener</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">new</span><span style="color:#B392F0"> MessageListener</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">        @</span><span style="color:#F97583">Override</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#E1E4E8"> ConsumeResult </span><span style="color:#B392F0">consume</span><span style="color:#E1E4E8">(MessageView </span><span style="color:#FFAB70">messageView</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">            // 消费消息并返回处理结果。</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8"> ConsumeResult.SUCCESS;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    })</span></span>
+<span class="line"><span style="color:#E1E4E8">    .</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"></span></code></pre>
+<p>PushConsumer的消费监听器执行结果分为以下三种情况：</p>
+<ul>
+<li>返回消费成功：以Java SDK为例，返回<code>ConsumeResult.SUCCESS</code>，表示该消息处理成功，服务端按照消费结果更新消费进度。</li>
+<li>返回消费失败：以Java SDK为例，返回<code>ConsumeResult.FAILURE</code>，表示该消息处理失败，需要根据消费重试逻辑判断是否进行重试消费。</li>
+<li>出现非预期失败：例如抛异常等行为，该结果按照消费失败处理，需要根据消费重试逻辑判断是否进行重试消费。</li>
+</ul>
+<p>PushConsumer 消费消息时，若消息处理逻辑出现预期之外的阻塞导致消息处理一直无法执行成功，SDK会按照消费超时处理强制提交消费失败结果，并按照消费重试逻辑进行处理。</p>
+<h4 id="内部原理">内部原理</h4>
+<p>在PushConsumer类型中，消息的实时处理能力是基于SDK内部的典型Reactor线程模型实现的。</p>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/pushconsumer-26b909b090d4f911a40d5050d3ceba1d.png" alt=""></p>
+<p>SDK内置了一个长轮询线程，先将消息异步拉取到SDK内置的缓存队列中，再分别提交到消费线程中，触发监听器执行本地消费逻辑。</p>
+<h3 id="simpleconsumer">SimpleConsumer</h3>
+<p>SimpleConsumer 是一种接口原子型的消费者类型，消息的获取、消费状态提交以及消费重试都是通过消费者业务逻辑主动发起调用完成。</p>
+<h4 id="使用方式-1">使用方式</h4>
+<p>SimpleConsumer 的使用涉及多个接口调用，由业务逻辑按需调用接口获取消息，然后分发给业务线程处理消息，最后按照处理的结果调用提交接口，返回服务端当前消息的处理结果。</p>
+<p>示例代码如下：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D">// 消费示例：使用 SimpleConsumer 消费普通消息，主动获取消息处理并提交。 </span></span>
+<span class="line"><span style="color:#E1E4E8">ClientServiceProvider provider </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ClientServiceProvider.</span><span style="color:#B392F0">loadService</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">String topic </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "YourTopic"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">FilterExpression filterExpression </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> FilterExpression</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"YourFilterTag"</span><span style="color:#E1E4E8">, FilterExpressionType.TAG);</span></span>
+<span class="line"><span style="color:#E1E4E8">SimpleConsumer simpleConsumer </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> provider.</span><span style="color:#B392F0">newSimpleConsumerBuilder</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#6A737D">        // 设置消费者分组。</span></span>
+<span class="line"><span style="color:#E1E4E8">        .</span><span style="color:#B392F0">setConsumerGroup</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"YourConsumerGroup"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D">        // 设置接入点。</span></span>
+<span class="line"><span style="color:#E1E4E8">        .</span><span style="color:#B392F0">setClientConfiguration</span><span style="color:#E1E4E8">(ClientConfiguration.</span><span style="color:#B392F0">newBuilder</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">setEndpoints</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"YourEndpoint"</span><span style="color:#E1E4E8">).</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#6A737D">        // 设置预绑定的订阅关系。</span></span>
+<span class="line"><span style="color:#E1E4E8">        .</span><span style="color:#B392F0">setSubscriptionExpressions</span><span style="color:#E1E4E8">(Collections.</span><span style="color:#B392F0">singletonMap</span><span style="color:#E1E4E8">(topic, filterExpression))</span></span>
+<span class="line"><span style="color:#6A737D">        // 设置从服务端接受消息的最大等待时间</span></span>
+<span class="line"><span style="color:#E1E4E8">        .</span><span style="color:#B392F0">setAwaitDuration</span><span style="color:#E1E4E8">(Duration.</span><span style="color:#B392F0">ofSeconds</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#E1E4E8">        .</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">    // SimpleConsumer 需要主动获取消息，并处理。</span></span>
+<span class="line"><span style="color:#E1E4E8">    List&#x3C;</span><span style="color:#F97583">MessageView</span><span style="color:#E1E4E8">> messageViewList </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> simpleConsumer.</span><span style="color:#B392F0">receive</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">, Duration.</span><span style="color:#B392F0">ofSeconds</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">30</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">    messageViewList.</span><span style="color:#B392F0">forEach</span><span style="color:#E1E4E8">(messageView </span><span style="color:#F97583">-></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">        System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#6A737D">        // 消费处理完成后，需要主动调用 ACK 提交消费结果。</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">            simpleConsumer.</span><span style="color:#B392F0">ack</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            logger.</span><span style="color:#B392F0">error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Failed to ack message, messageId={}"</span><span style="color:#E1E4E8">, messageView.</span><span style="color:#B392F0">getMessageId</span><span style="color:#E1E4E8">(), e);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    });</span></span>
+<span class="line"><span style="color:#E1E4E8">} </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">    // 如果遇到系统流控等原因造成拉取失败，需要重新发起获取消息请求。</span></span>
+<span class="line"><span style="color:#E1E4E8">    logger.</span><span style="color:#B392F0">error</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Failed to receive message"</span><span style="color:#E1E4E8">, e);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="消费重试">消费重试</h2>
+<p>消费重试指的是，消费者在消费某条消息失败后，Apache RocketMQ 服务端会根据重试策略重新消费该消息，超过一定次数后若还未消费成功，则该消息将不再继续重试，直接被发送到死信队列中。</p>
+<p><strong>消息重试的触发条件</strong></p>
+<ul>
+<li>消费失败，包括消费者返回消息失败状态标识或抛出非预期异常。</li>
+<li>消息处理超时，包括在PushConsumer中排队超时。</li>
+</ul>
+<p><strong>消息重试策略主要行为</strong></p>
+<ul>
+<li>重试过程状态机：控制消息在重试流程中的状态和变化逻辑。</li>
+<li>重试间隔：上一次消费失败或超时后，下次重新尝试消费的间隔时间。</li>
+<li>最大重试次数：消息可被重试消费的最大次数。</li>
+</ul>
+<p><strong>消息重试策略差异</strong></p>
+<p>根据消费者类型不同，消息重试策略的具体内部机制和设置方法有所不同，具体差异如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>消费者类型</th><th>重试过程状态机</th><th>重试间隔</th><th>最大重试次数</th></tr></thead><tbody><tr><td>PushConsumer</td><td>已就绪 处理中 待重试 提交死信</td><td>消费者分组创建时的元数据控制</td><td>消费者分组创建时的元数据控制</td></tr><tr><td>SimpleConsumer</td><td>已就绪 处理中 提交死信</td><td>通过API修改获取消息时的不可见时间</td><td>消费者分组创建时的元数据控制</td></tr></tbody></table>
+<h3 id="pushconsumer-消费重试策略">PushConsumer 消费重试策略</h3>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/retrymachinestatus-37ddbd0a20b8736e34bb88f565945d16.png" alt=""></p>
+<ul>
+<li>Ready：已就绪状态。消息在 RocketMQ 服务端已就绪，可以被消费者消费。</li>
+<li>Inflight：处理中状态。消息被 Consumer 客户端获取，处于消费中还未返回消费结果的状态。</li>
+<li>WaitingRetry：待重试状态，PushConsumer 独有的状态。当 Consumer 消息处理失败或消费超时，会触发消费重试逻辑判断。如果当前重试次数未达到最大次数，则该消息变为待重试状态，经过重试间隔后，消息将重新变为已就绪状态可被重新消费。多次重试之间，可通过重试间隔进行延长，防止无效高频的失败。</li>
+<li>Commit：提交状态。消费成功的状态，消费者返回成功响应即可结束消息的状态机。</li>
+<li>DLQ：死信状态。消费逻辑的最终兜底机制，若消息一直处理失败并不断进行重试，直到超过最大重试次数还未成功，此时消息不会再重试，会被投递至死信队列。您可以通过消费死信队列的消息进行业务恢复。</li>
+</ul>
+<p>消息重试过程中，每次重试消息状态都会经过已就绪>处理中>待重试的变化，两次消费间的间隔时间实际由消费耗时及重试间隔控制，消费耗时的最大上限受服务端系统参数控制，一般不应该超过上限时间。</p>
+<p>PushConsumer 的最大重试次数由 Consumer 分组创建时的元数据控制</p>
+<p>PushConsumer的消费重试示例代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E1E4E8">SimpleConsumer simpleConsumer </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D">        //消费示例：使用PushConsumer消费普通消息，如果消费失败返回错误，即可触发重试。</span></span>
+<span class="line"><span style="color:#E1E4E8">        MessageListener messageListener </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> MessageListener</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">            @</span><span style="color:#F97583">Override</span></span>
+<span class="line"><span style="color:#F97583">            public</span><span style="color:#E1E4E8"> ConsumeResult </span><span style="color:#B392F0">consume</span><span style="color:#E1E4E8">(MessageView </span><span style="color:#FFAB70">messageView</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#6A737D">                //返回消费失败，会自动重试，直至到达最大重试次数。</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#E1E4E8"> ConsumeResult.FAILURE;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        };</span></span>
+<span class="line"></span></code></pre>
+<h3 id="simpleconsumer-消费重试策略">SimpleConsumer 消费重试策略</h3>
+<p><img src="https://rocketmq.apache.org/zh/assets/images/simplemachinestatus-1844bd0115b315e32661cf20b1732db0.png" alt=""></p>
+<ul>
+<li>Ready：已就绪状态。消息在 RocketMQ 服务端已就绪，可以被 Consumer 消费。</li>
+<li>Inflight：处理中状态。消息被 Consumer 客户端获取，处于消费中还未返回消费结果的状态。</li>
+<li>Commit：提交状态。消费成功的状态，Consumer 返回成功响应即可结束消息的状态机。</li>
+<li>DLQ：死信状态。消费逻辑的最终兜底机制，若消息一直处理失败并不断进行重试，直到超过最大重试次数还未成功，此时消息不会再重试，会被投递至死信队列。</li>
+</ul>
+<p>和 PushConsumer 消费重试策略不同的是，SimpleConsumer 消费者的重试间隔是预分配的，每次获取消息消费者会在调用 API 时设置一个不可见时间参数 InvisibleDuration，即消息的最大处理时长。若消息消费失败触发重试，不需要设置下一次重试的时间间隔，直接复用不可见时间参数的取值。</p>
+<p>SimpleConsumer 的最大重试次数由 Consumer 分组创建时的元数据控制</p>
+<p>SimpleConsumer的消费重试示例代码如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#6A737D"> //消费示例：使用SimpleConsumer消费普通消息，如果希望重试，只需要静默等待超时即可，服务端会自动重试。</span></span>
+<span class="line"><span style="color:#E1E4E8">        List&#x3C;</span><span style="color:#F97583">MessageView</span><span style="color:#E1E4E8">> messageViewList </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">            messageViewList </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> simpleConsumer.</span><span style="color:#B392F0">receive</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">, Duration.</span><span style="color:#B392F0">ofSeconds</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">30</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">            messageViewList.</span><span style="color:#B392F0">forEach</span><span style="color:#E1E4E8">(messageView </span><span style="color:#F97583">-></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">                System.out.</span><span style="color:#B392F0">println</span><span style="color:#E1E4E8">(messageView);</span></span>
+<span class="line"><span style="color:#6A737D">                //如果处理失败，希望服务端重试，只需要忽略即可，等待消息再次可见后即可重试获取。</span></span>
+<span class="line"><span style="color:#E1E4E8">            });</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (ClientException </span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">            //如果遇到系统流控等原因造成拉取失败，需要重新发起获取消息请求。</span></span>
+<span class="line"><span style="color:#E1E4E8">            e.</span><span style="color:#B392F0">printStackTrace</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"></span></code></pre> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

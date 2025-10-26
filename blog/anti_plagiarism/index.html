@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/anti_plagiarism/"><!-- Primary Meta Tags --><title>个人博客对繁体自动化镜像搬运的反制 | Yonagi&#39;s Sekai</title><meta name="title" content="个人博客对繁体自动化镜像搬运的反制 | Yonagi's Sekai"><meta name="description" content="Article: 个人博客对繁体自动化镜像搬运的反制"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/anti_plagiarism/"><meta property="og:title" content="个人博客对繁体自动化镜像搬运的反制 | Yonagi's Sekai"><meta property="og:description" content="Article: 个人博客对繁体自动化镜像搬运的反制"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/anti_plagiarism/"><meta property="twitter:title" content="个人博客对繁体自动化镜像搬运的反制 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 个人博客对繁体自动化镜像搬运的反制"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 个人博客对繁体自动化镜像搬运的反制 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-11-14T17:15:13.000Z"> 2024年11月14日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p>在网上冲浪，偶然看到这么一篇文章</p>
+<p><a href="https://blog.meta-code.top/2024/10/27/2024-15/">我也中招了！大量简中博客站点被镜像，并翻译成了繁体中文</a></p>
+<p>文章的内容就是一位站长发现自己的网站在未经许可的情况下被海外的繁体镜像搬运。我个人对这种行为是极其深恶痛绝且不齿的，搬运他人的文章构建“内容农场”，不仅侵害了他人的著作权，还会影响原站的SEO权重，时间长了搞不好搜索引擎也会把假的镜像站当成真的网站，而把真的网站当成假的网站。</p>
+<p>文章给了一些反制措施，事不宜迟，跟着做起来。虽然我的网站还没有出现这种情况，但是防范于未然。</p>
+<h2 id="1-在网站中添加防盗链代码">1. 在网站中添加防盗链代码</h2>
+<p>镜像站的特点就是无脑搬运原站的内容，既然如此，那就在网站中添加这么一段Javascript代码，如果当前网站的域名不是笔者的域名，就直接跳转到笔者的网站</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">scirpt</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  (function() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    var encodedValidDomain1 </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> 'eW9uYWdpMDQuZ2l0aHViLmlv'</span><span style="color:#E1E4E8">; </span><span style="color:#6A737D">// 使用Base64编码替代明文字符串`yonagi04.github.io`</span></span>
+<span class="line"><span style="color:#E1E4E8">    var encodedValidDomain2 </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> 'YmxvZy55b25hZ2kwNC5jbg=='</span><span style="color:#E1E4E8">; </span><span style="color:#6A737D">// 使用Base64编码替代明文字符串`blog.yonagi04.cn`</span></span>
+<span class="line"><span style="color:#E1E4E8">    var encodedValidDomain3 </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> 'bG9jYWxob3N0'</span><span style="color:#E1E4E8">; </span><span style="color:#6A737D">// 使用Base64编码替代明文字符串`localhost`</span></span>
+<span class="line"><span style="color:#E1E4E8">    var encodedRedirectUrl </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> 'aHR0cHM6Ly9ibG9nLnlvbmFnaTA0LmNu'</span><span style="color:#E1E4E8">; </span><span style="color:#6A737D">// 使用Base64编码替代明文字符串`https://blog.yonagi04.cn`</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // 对Base64编码后的域名和URL进行解码</span></span>
+<span class="line"><span style="color:#F97583">    function</span><span style="color:#B392F0"> decodeBase64</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">encodedStr</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">      return</span><span style="color:#B392F0"> atob</span><span style="color:#E1E4E8">(encodedStr);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">    var validDomain1 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> decodeBase64</span><span style="color:#E1E4E8">(encodedValidDomain1);</span></span>
+<span class="line"><span style="color:#E1E4E8">    var validDomain2 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> decodeBase64</span><span style="color:#E1E4E8">(encodedValidDomain2);</span></span>
+<span class="line"><span style="color:#E1E4E8">    var validDomain3 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> decodeBase64</span><span style="color:#E1E4E8">(encodedValidDomain3)</span></span>
+<span class="line"><span style="color:#E1E4E8">    var redirectUrl </span><span style="color:#F97583">=</span><span style="color:#B392F0"> decodeBase64</span><span style="color:#E1E4E8">(encodedRedirectUrl);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // 如果访问不是来自指定的域名，则自动跳转页面</span></span>
+<span class="line"><span style="color:#E1E4E8">    var hostname </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> document.location.hostname;</span></span>
+<span class="line"><span style="color:#B392F0">    if</span><span style="color:#E1E4E8"> (hostname </span><span style="color:#F97583">!==</span><span style="color:#E1E4E8"> validDomain1 </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#E1E4E8"> hostname </span><span style="color:#F97583">!==</span><span style="color:#E1E4E8"> validDomain2 </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#E1E4E8"> hostname </span><span style="color:#F97583">!==</span><span style="color:#E1E4E8"> validDomain3) {</span></span>
+<span class="line"><span style="color:#B392F0">      confirm</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"警告：您当前浏览的页面非官方页面，可能存在有害信息！建议您跳转至官方页面进行浏览！"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">      window.location.href </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> redirectUrl;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  })();</span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#85E89D">script</span><span style="color:#E1E4E8">></span></span>
+<span class="line"></span></code></pre>
+<p>为了保证这段代码在任何一个页面都可以执行，所以可以选择把这段代码放到页面的pug文件下。笔者使用的是Hexo Butterfly主题，所以笔者把这个代码放到了 <code>\themes\butterfly\layout\includes\head\analytics.pug</code> 的最后一行。对于其他框架或其他主题，可以参考类似的做法。</p>
+<h2 id="2向域名的注册商报告滥用">2、向域名的注册商报告滥用</h2>
+<p>　　根据ICANN的政策，域名的注册商有义务配合被侵权者终止侵权行为。如果域名注册商是中国企业，我们还可以根据民法典、著作权法等法律法规向对方提出配合的要求。如果域名注册商是美国企业，我们还可以根据DMCA（Digital Millennium Copyright Act，数字千年版权法案）向对方提出配合要求。</p>
+<p>　　根据域名的WHOIS信息找到域名注册商的官方网站，然后将侵权事项通过EMail、在线客服等方式告知对方，要求对方停止为侵权域名提供DNS服务器地址更新服务。如果打算起诉侵权者的话，还可以要求对方配合提供侵权者的姓名、身份证号、联系电话、住址等信息。</p>
+<h2 id="3向搜索引擎报告滥用">3、向搜索引擎报告滥用</h2>
+<p>　　参照第2条，向搜索引擎报告滥用，寻求对方的配合，将侵权者的网站从收录条目中剔除。</p>
+<h2 id="4向域名的dns解析服务商报告滥用">4、向域名的DNS解析服务商报告滥用</h2>
+<p>　　参照第2条，向域名的DNS解析服务商报告滥用，寻求对方的配合，终止向侵权者提供DNS解析服务。</p>
+<h2 id="5向网站的托管商报告滥用">5、向网站的托管商报告滥用</h2>
+<p>　　参照第2条，向网站的托管商报告滥用，寻求对方的配合，终止向侵权者提供服务。</p>
+<h2 id="6向域名的注册局报告滥用">6、向域名的注册局报告滥用</h2>
+<p>　　每个域名的注册局都有防滥用(Anti Abuse)的政策，打开对应域名的注册局官网，然后找到报告域名滥用的页面，通过提交请求的方式将侵权事项告知对方。寻求对方的配合。</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

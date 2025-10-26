@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/first_intern_in_beijing/"><!-- Primary Meta Tags --><title>第一次实习之北京之旅 | Yonagi&#39;s Sekai</title><meta name="title" content="第一次实习之北京之旅 | Yonagi's Sekai"><meta name="description" content="Article: 第一次实习之北京之旅"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/first_intern_in_beijing/"><meta property="og:title" content="第一次实习之北京之旅 | Yonagi's Sekai"><meta property="og:description" content="Article: 第一次实习之北京之旅"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/first_intern_in_beijing/"><meta property="twitter:title" content="第一次实习之北京之旅 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 第一次实习之北京之旅"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 第一次实习之北京之旅 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-05-02T17:01:41.000Z"> 2025年5月2日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 生活 / 实习 </div> <div class="animate font-base text-sm">
+Tags: 实习 / 北京 </div> </div> <article class="animate"> <p>差点忘了上次写博客是什么时候了。这学期初一直忙于找实习，所以没时间写博客，但telegram频道我还在偶尔搬运点东西。找到实习之后本来打算入职之后写一篇的，没想到入职没几天电脑就进了水，只好把后盖和散热器拆开晾了接近一个星期，因此一个星期没得用电脑。现在电脑已经好了，因此来写这么一篇博客，讲讲第一次实习之北京之旅。</p>
+<h2 id="投简历与面试">投简历与面试</h2>
+<p>暑期实习我投了不少公司，但只有寥寥几家公司给了我笔试或者面试机会。小厂就不算进去了，这里只统计一些中大厂。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>公司 and 部门 and 岗位</th><th>面试流程</th></tr></thead><tbody><tr><td>字节跳动 广告部门 后端</td><td>一面羞辱面，后续投了国际商业和飞书直接简历挂</td></tr><tr><td>腾讯 s3线 hr部门 后端</td><td>一面挂</td></tr><tr><td>腾讯 pcg线 qq部门 客户端开发</td><td>二面挂</td></tr><tr><td>腾讯 pcg线 腾讯地图 客户端开发</td><td>已拒面试，当时已经入职美团</td></tr><tr><td>灵犀互娱 游戏测试开发</td><td>一面挂</td></tr><tr><td>饿了么 客户端开发</td><td>笔试挂</td></tr><tr><td>网易互娱 游戏测试开发</td><td>已拒面试，当时已经oc美团了</td></tr><tr><td>米哈游 游戏测试开发</td><td>笔试挂</td></tr><tr><td>cvte 软件测试</td><td>oc，但是拒了</td></tr><tr><td>anker 软件测试</td><td>一面挂</td></tr><tr><td>美团 核心本地商业-业务研发 测试开发</td><td>offer，已入职</td></tr></tbody></table>
+<p>（所以说双非的同学其实在找工作这方面是很困难的，一定要沉得住心，努力背八股+刷题，说不定明天就能拿到offer了）</p>
+<p>最后的话是去了美团，做测试开发。</p>
+<h2 id="启程">启程</h2>
+<p>广州到北京的距离大概是两千多公里，坐飞机的话得飞两个半小时，而坐高铁需要12h起步，坐普速火车则更是需要花上整整一天的时间。权衡利弊，我最后选择了飞机，毕竟高铁票不便宜，火车的时间太长，飞机则是能很好地权衡价格和时间，相对来讲是不错的选择。</p>
+<p>我是4月19号来的北京，从白云机场飞到北京首都。这是我人生第二次坐飞机，第一次坐飞机是中考结束之后从外婆家回广东的时候，坐了飞机，具体机型不记得了，只记得是一个窄体客机，飞机降落的时候我的耳朵非常不舒服，这也就让我对飞行留下了不太好的印象。这次坐飞机特意挑了宽体机型客机，执飞的是空客的a350-900，希望能改善一下我的耳朵状况。</p>
+<p>从学校辗转两个小时的地铁和公交车到达白云机场，去值机柜台值机。有很多外国人，而且我正好前后都是外国人。说实话，他们的气味真的很难闻，如果用了廉价香水那么气味更加呛人</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/baiyun-airport.webp" alt=""></p>
+<p>安检通过了，在登机口附近等待，当天广州的天气不是很好，阴沉沉的，早上还下了雨。不过并不耽误飞机起飞就是了</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/waiting-4-plane.webp" alt=""></p>
+<p>登机完成，我挑的是窗口位置的座位，飞机的上座率达到了100%，完全没有空位。不愧是京广干线的航线啊。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/on-plane.webp" alt=""></p>
+<p>登机过了差不多20min左右，机舱门关闭，飞机推出，机舱内开始播放安全演示视频。滑行的时间倒不是很长，也没有等待很久，就起飞了，起飞时久违的超重感让人意识到自己就在飞机上</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/take-off.webp" alt=""></p>
+<p>在飞机上看到了很漂亮的蓝天白云，想起了米津玄师的新曲《Bow And Arrow》的封面</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/blue-sky-and-white-cloud.webp" alt=""></p>
+<p>飞机上面还有小触摸屏，可以实时观看飞机的位置，当然也可以看电影，玩小游戏之类的</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/tv-on-plane.webp" alt=""></p>
+<p>途中碰到了一些颠簸，不过最后成功落地北京</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/view-of-beijing.webp" alt=""></p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/shoudu-airport.webp" alt=""></p>
+<h2 id="到达北京">到达北京</h2>
+<p>北京当天的天气意外的不太冷，在地铁上我全程穿着短袖也不会感到寒冷，之后拖着箱子走在北京的路上更是感觉舒适。</p>
+<p>落地北京，当然是不知道要吃什么的，所以只好吃了kfc，吃了老北京儿鸡肉儿卷儿。（其实来北京半个月了，我也不知道北京有什么好吃的，简直是美食荒漠）</p>
+<p>住的酒店很糟糕，这家酒店的名字就不放出来了，是建在一个小区里面的。酒店的房间很小，没有窗户，装修留下的刺鼻气味很浓，呛得人只想呕吐，导致我一整个晚上都没睡好。</p>
+<p>第二天就把房子看好了，住的地方离公司不太远，一个月不算水电差不多3300人民币左右，不算便宜了，不过好在小区安保设施齐全+物业服务态度好+房间大小合适，倒也能接受。</p>
+<h2 id="入职美团">入职美团</h2>
+<p>确定好房子之后的第二天，我就入职了美团。当天去的比较早，九点之前就到公司了。先是领工卡和电脑什么的，本来大象上显示我是领的m2芯片的MacBook Pro，结果资产管理那边发给我的是19年款intel芯片的MacBook Pro，算不算是一种偷工减料？</p>
+<p>最后贴一张入职时候拍的一张美团的照片</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.37/img/content/meituan.webp" alt=""></p>
+<h2 id="工作与生活">工作与生活</h2>
+<p>美团的工作体验还算不错，虽然福利较少，但工资报酬还算不错，且好在同事和+1都很和蔼，并没有我想象中职场中严肃的感觉。</p>
+<p>主要的工作内容是负责美团质效技术部的内部工具的开发和测试，俗称“造轮子”，而且这个轮子还没有造完，所以这个组肯定是很卷的。我入职第一天是晚上八点半下班，第二天就变成九点半了，之后的话下班时间在晚上九点和九点半之后反复横跳，虽然实习生不一定要跟着正式员工一起加班就是了</p>
+<p>不过上班有一个好处，就是每天的工作都能转化成非常明确的报酬……今天干了一天活，拿了xxx钱什么的……如果是读书的话，可能就没有这么快的正反馈</p>
+<p>午餐和晚餐时间一般会和mt、其他组的同事去吃饭（别问为什么不是我们组的，因为mt是从别的组调过来的），吃饭的地点选择倒是很多样，不用担心吃腻。早餐的话我买了麦当劳的早餐卡，每天早上一般是一个芝士蛋麦满分+美式咖啡，7块钱一份，在北京这个地方来讲已经相当便宜</p>
+<p>平时周末的话一般用餐补点外卖，不过北京是美食荒漠，根本不知道吃什么</p>
+<hr>
+<p>大概就先写这么多吧，比较到北京的时间也不是很久。这几天又回广州了，回广州考试，考完试又得回北京接着上班</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

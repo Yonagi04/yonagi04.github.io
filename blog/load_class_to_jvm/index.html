@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/load_class_to_jvm/"><!-- Primary Meta Tags --><title>JVM专题——类文件加载 | Yonagi&#39;s Sekai</title><meta name="title" content="JVM专题——类文件加载 | Yonagi's Sekai"><meta name="description" content="Article: JVM专题——类文件加载"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/load_class_to_jvm/"><meta property="og:title" content="JVM专题——类文件加载 | Yonagi's Sekai"><meta property="og:description" content="Article: JVM专题——类文件加载"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/load_class_to_jvm/"><meta property="twitter:title" content="JVM专题——类文件加载 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JVM专题——类文件加载"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> JVM专题——类文件加载 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-04-02T16:16:46.000Z"> 2024年4月2日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p><strong>本文部分内容节选自Java Guide和《深入理解Java虚拟机》, Java Guide地址: <a href="https://javaguide.cn/java/jvm/class-loading-process.html">https://javaguide.cn/java/jvm/class-loading-process.html</a></strong></p>
+<blockquote>
+<p>🚀 <a href="https://yonagi04.github.io/posts/2024/bc3a3d7c4c51/">基础（上）</a> → 🚀 <a href="https://yonagi04.github.io/posts/2024/da1a14d471aa/">基础（中）</a> → 🚀<a href="https://yonagi04.github.io/posts/2024/3c15992991b1/">基础（下）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/2dcdc762ee3e/">集合（上）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/5972154ca625/">集合（下）</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/4e86d54ab314/">JVM专题1</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/82639aae6f65/">JVM专题2</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/fddd546e0d7f/">JVM专题4</a></p>
+</blockquote>
+<h1 id="类加载过程">类加载过程</h1>
+<p>一个类从被加载到 JVM 内存开始, 到卸载出内存位置, 它的整个生命周期会经历 <strong>加载</strong> , <strong>验证</strong> , <strong>准备</strong> , <strong>解析</strong> , <strong>初始化</strong> , <strong>使用</strong> 和 <strong>卸载</strong> 七个阶段, 其中, <strong>验证</strong> , <strong>准备</strong> , <strong>解析</strong> 这三个阶段统称为 <strong>连接</strong></p>
+<p>加载, 验证, 准备, 初始化, 卸载这五个阶段的顺序是确定的, 类型的加载过程必须按照这种顺序按部就班地开始, 而解析顺序不一定</p>
+<h2 id="加载">加载</h2>
+<p>类加载过程的第一步, 主要完成下面三件事情:</p>
+<ul>
+<li>通过一个类的全限定名来获取定义此类的二进制字节流</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成一个代表这个类的 java.lang.Class 对象, 作为方法区这个类的各种数据的访问入口</li>
+</ul>
+<p>加载这一步主要是通过 <strong>类加载器</strong> 完成的, 具体是由哪个类加载器加载由 <strong>双亲委派模型</strong> 决定</p>
+<p>每个 Java 类都有一个引用指向加载它的 <code>ClassLoader</code> , 不过, 数组类不是由 <code>ClassLoader</code> 加载的, 而是 JVM 在需要的时候自动创建的, 数组类通过 <code>getClassLoader()</code> 方法获取 <code>ClassLoader</code> 的时候和该数组的元素类型的 <code>ClassLoader</code> 是一致的</p>
+<p>一个非数组类的加载阶段 (加载阶段获取类的二进制字节流的动作) 是可控性最强的阶段, 这一步我们可以去完成还可以自定义类加载器去控制字节流的获取方式 (重写一个类加载器的 <code>loadClass()</code> 方法)</p>
+<p>加载阶段与连接阶段的部分动作 (如一部分字节码文件格式验证动作) 是交叉进行的, 加载阶段尚未完成, 连接阶段可能已经开始, 但这些夹在加载阶段之中进行的动作, 仍然属于连接阶段的一部分, 这两个阶段的开始时间仍然保持着固定的先后顺序</p>
+<h2 id="验证">验证</h2>
+<p>验证是连接阶段的第一步, 这一阶段的目的是为了确保 Class 文件的字节流中的信息符合 Java 虚拟机规范的全部约束要求, 保证这些信息被当作代码运行后不会危害虚拟机的安全</p>
+<p>Java 虚拟机如果不检查输入的字节流, 对其完全信任的话, 很可能会因为载入了有错误或者有恶意企图的字节码流导致整个系统受攻击甚至崩溃, 所以验证字节码是 Java 虚拟机保护自身的必要措施</p>
+<p>验证阶段大致上会完成下面四个阶段的检验动作: <strong>文件格式验证, 元数据验证, 字节码验证和符号引用验证</strong></p>
+<h3 id="文件格式验证">文件格式验证</h3>
+<p>验证点如下:</p>
+<ol>
+<li>是否以魔数 0xCAFEBABE 开头</li>
+<li>主, 次版本号是否在当前 Java 虚拟机的可接受范围之内</li>
+<li>常量池中是否有不被支持的常量类型</li>
+<li>指向常量的各种索引值中是否有指向不存在的常量或不符合类型的常量</li>
+<li>CONSTANT_Utf8_info型的常量中是否有不符合 UTF-8 编码的数据</li>
+<li>Class 文件中各个部分及文件本身是否有被删除的或附加的其他信息</li>
+</ol>
+<p>主要目的是保证输入的字节流能够正确地解析并存储于方法区内, 格式上符合描述一个 Java 类型信息的要求.</p>
+<p>这阶段的验证是基于二进制字节流进行的, 只有通过了这个阶段的验证之后, 这段字节流才被允许进入 Java 虚拟机内存的方法区中进行存储, 所以后面的三个验证阶段全部是基于方法区的存储结构上进行的, 不会再读取, 操作字节流了</p>
+<h3 id="元数据验证">元数据验证</h3>
+<p>验证点如下:</p>
+<ol>
+<li>这个类是否有父类 (除了 java.lang.Object 之外, 所有的类都应当有父类)</li>
+<li>这个类的父类是否继承了不允许被继承的类</li>
+<li>如果这个类不是抽象类, 是否实现了其父类或接口之中要求实现的所有方法</li>
+<li>类中的字段, 方法是否与父类产生矛盾</li>
+</ol>
+<p>主要是对字节码描述的信息进行语义分析, 保证不存在与 Java语言规范 定义相悖的元数据信息</p>
+<h3 id="字节码验证">字节码验证</h3>
+<p>验证点如下:</p>
+<ol>
+<li>保证任意时刻操作数栈的数据类型和指令代码序列都能配合工作, 例如不能出现类似于 “在操作栈中放置了一个int类型的数据, 使用时却按照long类型加载入本地变量表中” 这种情况</li>
+<li>保证任何跳转指令都不会跳转到方法体之外的字节码指令上</li>
+<li>保证方法体中的类型转换总是有效的, 例如可以把一个子类对象赋给父类数据类型, 这是安全的, 但是把父类对象赋值给子类数据类型甚至一个毫无继承关系的数据类型, 则是不合法的</li>
+</ol>
+<h3 id="符号引用验证">符号引用验证</h3>
+<p>验证点如下:</p>
+<ol>
+<li>符号引用中通过字符串描述的全限定名是否能找到对应的类</li>
+<li>在指定类中是否存在符合方法的字段描述符及简单名称所描述的方法和字段</li>
+<li>符号引用中类, 字段, 方法的可访问性是否可被当前类访问</li>
+</ol>
+<p>符号引用验证的目的是确保解析行为可以正常执行, 如果无法通过符号引用验证, Java 虚拟机会抛出一个 <code>java.lang.IncompatibleClassChangeError</code> 的子类异常, 典型的有: <code>java.lang.IllegalAccessError</code> , <code>java.lang.NoSuchFieldError</code> , <code>java.lang.NoSuchMethodError</code> 等</p>
+<h2 id="准备">准备</h2>
+<p>准备阶段是正式为类中定义的变量 (即静态变量, 被static修饰的变量) 分配内存并设置类变量初始值的阶段.</p>
+<p>需要注意的几点</p>
+<ol>
+<li>这时候进行内存分配的仅包括类变量, 而不包括实例变量, 实例变量会在对象实例化时随着对象一起分配在 Java 堆中</li>
+<li>这里所说的初始值 “通常情况下” 是数据类型的零值(如 0, 0L, null, false 等)</li>
+<li>类变量使用的内存都应当在方法区中分配, 不过需要注意的是, 在 JDK7 以前, HotSpot 使用永久代实现方法区时, 是符合这种逻辑概念的, 但是在 JDK7 之后, HotSpot已经把原本放在永久代的字符串常量池, 静态变量等移动到堆中, 这时候类变量则会随着 Class 对象一起存放在 Java 堆中</li>
+</ol>
+<h2 id="解析">解析</h2>
+<p>解析阶段是 JVM 将常量池中的符号引用直接替换为直接引用的过程</p>
+<p>解析动作主要针对类或接口, 字段, 类方法, 接口方法, 方法类型, 方法句柄和调用点限定符这7种符号引用进行</p>
+<h2 id="初始化">初始化</h2>
+<p>初始化阶段是执行初始化方法 <code>&#x3C;clinit>()</code> 方法的过程, 是类加载的最后一步, 这一步 JVM 才开始真正执行类中定义的 Java 程序代码</p>
+<p>对于 <code>&#x3C;clinit>()</code> 方法的调用, 虚拟机会自己确保其在多线程环境中的安全性, 因为 <code>&#x3C;clinit>()</code> 方法是带锁线程安全, 所以在多线程环境下进行类初始化的话可能会引起多个线程阻塞, 并且这种阻塞很难被发现</p>
+<p>对于初始化阶段, 虚拟机严格规范了有且只有6种情况, 必须对类进行初始化</p>
+<ol>
+<li>当遇到 <code>new</code> , <code>getstatic</code> , <code>putstatic</code> 或 <code>invokestatic</code> 这4条字节码指令时, 比如 <code>new</code> 一个类, 读取一个静态字段, 或调用一个类的静态方法
+<ul>
+<li>当 JVM 执行 <code>new</code> 指令时会初始化类, 即当程序创建一个类的实例对象</li>
+<li>当 JVM 执行 <code>getstatic</code> 指令时会初始化类, 即程序访问类的静态变量</li>
+<li>当 JVM 执行 <code>putstatic</code> 指令时会初始化类, 即程序给类的静态变量赋值</li>
+<li>当 JVM 执行 <code>invokestatic</code> 指令时会初始化类, 即程序调用类的静态方法</li>
+</ul>
+</li>
+<li>使用 <code>java.lang.reflect</code> 包的方法对类进行反射调用时如 <code>Class.forName("...")</code> , <code>newInstance()</code> 等. 如果类没有初始化, 需要触发其初始化</li>
+<li>初始化一个类, 如果其父类没有初始化, 则先触发父类的初始化</li>
+<li>当虚拟机启动时, 用户需要定义一个要执行的主类, 虚拟机会先初始化这个类</li>
+<li><code>MethodHandle</code> 和 <code>Varhandle</code> 可以看作是轻量级的反射调用机制, 而要想使用这两个调用, 就必须先使用 <code>findStaticVarHandle</code> 来初始化要调用的类</li>
+<li>当一个接口中定义了 JDK8 新加入的默认方法时, 如果有这个接口的实现类发生了初始化, 那该接口要在其之前被初始化</li>
+</ol>
+<h2 id="类卸载">类卸载</h2>
+<p><strong>卸载类即该类的 Class 对象被GC</strong></p>
+<p>卸载类需要满足 3 个要求:</p>
+<ol>
+<li>该类的所有实例对象都已被 GC, 也就是说堆不存在该类的实例对象</li>
+<li>该类没有在其他地方被引用</li>
+<li>该类的类加载器实例已被GC</li>
+</ol>
+<h1 id="类加载器">类加载器</h1>
+<h2 id="类与类加载器">类与类加载器</h2>
+<p><strong>类加载器的主要作用就是加载 Java 类的字节码 (<code>.class</code> 文件) 到 JVM 中 (在内存中生成一个代表该类的 <code>Class</code> 对象)</strong></p>
+<p><strong>对于任意一个类, 都必须由加载它的类加载器和这个类本身一起共同确定其在 JVM 中的唯一性, 每个类加载器都有一个独立的类名称空间</strong></p>
+<p>也就是说, 比较两个类是否 “相等”, 只有在这两个类是由同一个类加载器加载的前提下才有意义, 否则, 即使这两个类来源于同一个 Class 文件, 被同一个 JVM 加载, 只要加载它们的类加载器不同, 那么这两个类必定不相等</p>
+<p>此处的相等, 包括 Class 对象的 <code>equals()</code> 方法, <code>isAssignableFrom()</code> 方法, <code>isInstance</code> 方法的返回结果, 也包括了使用 <code>instanceof</code> 关键字做对象所属关系判断等各种情况</p>
+<h2 id="加载规则">加载规则</h2>
+<p>JVM 启动时, 并非会一次性加载所有的类, 而是根据需要动态加载类. 也就是说大部分类都是在具体用到的时候才会去加载, 这样对内存更友好</p>
+<p>对于已经加载的类会放在 <code>ClassLoader</code> 中, 在类加载时, 系统会先判断这个类是否被加载过, 已经被加载过的类会直接返回, 否则会尝试加载. 也就是说, 对于一个类加载器来说, 相同二进制名称的类只会被加载一次</p>
+<h2 id="类加载器总结">类加载器总结</h2>
+<p>JVM 中内置了3个重要的 <code>ClassLoader</code></p>
+<ol>
+<li><code>BootstrapClassLoader</code> (启动类加载器): 最顶层加载类, 由C++实现, 通常表示为null, 且没有父级, 主要用来加载 JDK 内部的核心类库以及被 <code>-Xbootclasspath</code> 参数指定的路径下的所有类</li>
+<li><code>ExtensionClassLoader</code> (扩展类加载器): 主要负责加载 <code>%JRE_HOME%/lib/ext</code> 目录下的jar包和类以及被 <code>java.ext.dirs</code> 系统变量所指定的路径下所有的类</li>
+<li><code>AppClassLoader</code> (应用程序类): 负责加载当前应用 classpath 下所有的jar包和类</li>
+</ol>
+<p>除了上面三个类加载器, 用户还可以自定义类加载器</p>
+<p>除了 <code>BootstrapClassLoader</code> 是 JVM 自身的一部分之外, 其他所有的类加载器都是在 JVM 外部实现的, 并且全部继承自 <code>ClassLoader</code> 抽象类. 这样的好处是用户可以自定义类加载器, 以便让应用程序自己决定如何去获取所需的类</p>
+<p>每个 <code>ClassLoader</code> 都可以通过 <code>getParent()</code> 获取其父加载器, 如果获取到的加载器为 null 的话, 说明该类是通过 <code>BootstrapClassLoader</code> 加载到</p>
+<h2 id="自定义类加载器">自定义类加载器</h2>
+<p>如果需要自定义类加载器, 需要继承 <code>ClassLoader</code> 抽象类</p>
+<p><code>ClassLoader</code> 中有两个关键的方法</p>
+<ul>
+<li><code>protected Class loadClass(String name, boolean resolve)</code> : 加载指定二进制名称的类, 实现双亲委派机制</li>
+<li><code>protected Class findClass(String name)</code> : 根据类的二进制名称查找类, 默认实现是空方法</li>
+</ul>
+<p>如果不想打破双亲委派机制, 就重写 <code>ClassLoader</code> 中的 <code>findClass()</code> 方法. 但是, 如果想打破双亲委派机制就需要重写 <code>loadClass()</code> 方法</p>
+<h2 id="双亲委派模型">双亲委派模型</h2>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/jvmclassload.png" alt="JVM类加载器双亲委派模型"></p>
+<p>如图所示的各种类加载器之间的层次关系被称为类加载器的 “双亲委派模型”. 双亲委派模型要求除了顶层的启动类加载器之外, 其他类加载器都必须有自己的父类加载器. 这里类加载器之间的父子关系不是以继承的关系来实现的, 而是通常使用组合关系复用父加载器的代码</p>
+<p>双亲委派模型的执行流程:</p>
+<ul>
+<li>在类加载时候, 系统会判断这个类是否被加载过, 已经被加载过的类会直接返回, 否则会尝试加载</li>
+<li>类加载器在进行类加载的时候, 他首先不会自己尝试加载这个类, 而是把这个请求委派给父类加载器去完成. 这样的话, 所有的请求都会传送到顶层的启动类加载器 <code>BootstrapClassLoader</code> 中</li>
+<li>只有当父加载器反馈自己无法完成这个加载请求, 子加载器才会尝试自己去加载</li>
+<li>如果子加载器也无法加载, 抛出 <code>ClassNotFoundException</code> 异常</li>
+</ul>
+<p>双亲委派模型保证了 Java 程序的稳定运行, 也避免类的重复加载, 也保证了 Java 的核心 API 不被篡改</p>
+<h2 id="打破双亲委派模型">打破双亲委派模型</h2>
+<p>双亲委派模型并非是一个具有强制性约束的模型, 而是 Java 设计者推荐给开发者的类加载器实现方式</p>
+<p>为了打破双亲委派模型, 需要继承 <code>ClassLoader</code> , 如果不想打破双亲委派模型, 就重写 <code>ClassLoader</code> 中的 <code>findClass()</code> 方法, 如果要打破双亲加载机制就需要重写 <code>loadClass()</code> 方法</p>
+<p>重写 <code>loadClass()</code>方法之后, 我们就可以改变传统双亲委派模型的执行流程.例如, 子类加载器可以在委派给父类加载器之前, 先自己尝试加载这个类, 或者在父类加载器返回之后, 再尝试从其他地方加载这个类. 具体的规则由我们自己实现，根据项目需求定制化</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/small_trip_in_guangzhou/"><!-- Primary Meta Tags --><title>半天的广州小旅行 | Yonagi&#39;s Sekai</title><meta name="title" content="半天的广州小旅行 | Yonagi's Sekai"><meta name="description" content="Article: 半天的广州小旅行"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/small_trip_in_guangzhou/"><meta property="og:title" content="半天的广州小旅行 | Yonagi's Sekai"><meta property="og:description" content="Article: 半天的广州小旅行"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/small_trip_in_guangzhou/"><meta property="twitter:title" content="半天的广州小旅行 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 半天的广州小旅行"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 半天的广州小旅行 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-11-20T18:21:53.000Z"> 2024年11月20日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 1 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 生活 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p>其实也不算真正意义上的旅行，只不过是借着笔试的机会出来玩玩。兜兜转转，居然花了半天的时间逛了小半个广州。</p>
+<hr>
+<p>前段时间在投简历，很幸运地收到了一家公司的线下笔试邀约。公司地点位于海珠琶洲，是个好地方，毗邻珠江，不远处就是广州塔、珠江新城、东西双塔。因为是新开发的区域，所以道路条件也远比天河要好。这块区域主要是互联网公司的办公地，所以路上随处可见的是各大互联网公司的打工人。</p>
+<p>笔试约在昨天下午。昨天上午我有一门理论课和实验课，下课已经12点钟了，吃完饭再回到宿舍已经是12点半。笔试的开始时间是下午两点半，考虑了一下以前从大学城去琶洲的耗时，遂决定下午1点15分从大学城出发，到达大学城北地铁站之后再坐地铁去琶洲。</p>
+<p>结果1点15分出发，看了下高德地图，提示需要1小时20分钟后到达目的地。“这下完蛋了，要迟到了。”我这么想着，一面想着一面小跑以赶上即将到达公交站的公交车，幸运的是没有错过这趟车。假如错过了这趟车，再选择等下一辆开往地铁站的公交车，那就一定会迟到了。坐了差不多10分钟，公交车到达了大学城北地铁站。</p>
+<p>大学城北地铁站的站厅面积十分狭小，刷卡进入付费区之后就是两个电梯出入口，分别导向大学城北站的两个站台。下到站台，在站台的长凳上稍微坐了一下，等待了些许，地铁到达了大学城北地铁站。大学城北是广州地铁4号线的一个中间站点，4号线是广州目前唯一一条连接了天河和南沙的地铁线路，所以即使不是在上下班高峰期，地铁车厢内也相当拥挤。</p>
+<p>因为我的目的地是海珠区的琶洲，所以肯定不能4号线一坐坐到底，于是我选择在万胜围换乘8号线，坐到磨碟沙，出站之后走个1公里就能到达目的地了。</p>
+<p>结果出乎我的意料，光走出磨碟沙站就走了差不多十分钟。磨碟沙站是8号线和18号线的换乘车站，所以车站面积也相当大。根据高德地图的指引，我需要从H出口出站，然后走1公里之后就能到达目的地，但是H出口位于18号线区域，我乘坐的线路是8号线，所以下车之后我必须先徒步走到18号线的区域，才能找到H出口，才能离开车站。</p>
+<p>离开车站之后，走了差不多5分钟，就到达了目的地。这么一看，我在车站内的耗时远大于在车站外的耗时。目的地是琶洲的一座写字楼，我还是第一次来琶洲的写字楼，未免心生畏惧。在写字楼前台的指引下，我找到了电梯口，坐上电梯到达笔试地点。</p>
+<p>笔试的过程就不讲了，毕竟这不是本文的主题。</p>
+<p>我是3点30分交卷跑路的。毕竟难得来一次琶洲，不如在琶洲徒步逛一逛。徒步的路线我并没有记录，但是路上经过的几家公司的写字楼我却是记得很清楚：最开始先是小米大厦（很好奇，小米在广州也有Office吗？我印象里小米的Office主要在北京上海南京和武汉），然后是欢聚大厦，接着是阿里巴巴广州中心、在建的广州微信大楼和唯品会大厦。印象最深的是广州微信大楼，第一眼看上去确实很震撼，空中小屋的设计也相当独特，只不过看起来应该还得两三年才能完工，如果能在这里办公就太好了，可惜我的实力不允许我在这里打赛博螺丝。</p>
+<p>在琶洲，待的越久，越觉得自己是个土包子。可能我还是个学生，潜意识里觉得和这个环境有点格格不入，毕竟周围都是打工人。于是转了一圈之后，就打算打道回府，照原路回学校了。走路回地铁站的路上还看到了赫基大楼，是由赫基集团建设的一栋写字楼，字节跳动的广州Office就在那里。</p>
+<p>到达地铁站，依旧是徒步10分钟走到站台，依旧是8号线换乘4号线，一切看起来都很顺利，但是假如真的这么顺利的话，就不符合我这个标题了。</p>
+<p>在昨天的小旅行结束之后，我得到了两个教训：第一个就是以后坐车一定要按照高德地图的提示来，第二个就是——广外公交站不在广外大学城校区，在广外白云校区。</p>
+<p>没错，到达大学城北换乘公交车的时候出了岔子，我坐上了开往广外公交站的车。我以为这辆车是开到大学城的广外，没想到是开到白云区的广外。上车之后我还在暗暗的想“今天真是辛苦了お疲れ様”，结果车厢广播马上打破了我的幻想——“下一站是，仑头立交”。不在广州的读者应该不清楚这是什么地方，只要知道一个成语“南辕北辙”即可。我现在所做的事情简直就是南辕北辙，本来想回大学城的，结果坐上了公交车，又给我拉到天河了。</p>
+<p>当时时间已经是接近下午五点。那既然如此，只能先吃个饭再回大学城了。吃什么好呢？难得出来一次，我决定吃萨莉亚，毕竟经常在QQ群发萨莉亚企鹅的表情包，怎么能不吃萨莉亚呢？在高德地图搜索一番之后，最后还是选择去了曾经经常去的一家萨莉亚，位于天河区的岗顶，不过这可离仑头立交远得多了，差不多要20分钟的车程。因为这趟车并不直接经过岗顶，所以我必须在中间车站换乘其他公交。这样一来一回，又是花了差不多30分钟在路上。</p>
+<p>终于到达了岗顶，我最熟悉的地方。走在岗顶天桥上，我不禁想吟诗一句：</p>
+<blockquote>
+<p>岗顶纯K今犹在，不见当年唱K人。</p>
+</blockquote>
+<p>其实是大一大二两年经常和群里的群友来岗顶的纯K，大唱特唱二次元歌曲，只不过群友基本都大学毕业了，离开了广州，自然也就凑不齐唱K的人了。当然这是另外一码事，和本文的主题没啥关联。</p>
+<p>轻车熟路到达萨莉亚。我本来以为孤身一人来吃萨莉亚是一件很凄惨的事情，毕竟萨莉亚在日本是家庭餐厅，多用于聚餐，结果到了萨莉亚一看，发现有不少和我一样的孤身一人来品尝萨莉亚的美食。点了一碗奶油蘑菇汤，一份芝士焗饭，一份饮料畅饮，花了40元大洋，性价比相当高了。我不是美食家，没有鉴赏美食的能力，但是萨莉亚的出品还是值得保证的，基本上水平上乘，且价格不算贵，属于性价比很高的选择。可惜并不是所有城市都有萨莉亚，一般来讲只有大城市才会有。</p>
+<p>酒足饭饱之后，也该回学校了。遂离开萨莉亚，到达公交站，坐上B25路公交车，一路直达学校。B25算是通勤线路，所以车厢内的人也相当多，整辆车犹如沙丁鱼罐头。路上塞着耳机听歌，路上经过了琶洲大桥，正好能看到广州塔，此时耳机里放着藤井风的《帰ろう》，正好放到副歌段</p>
+<blockquote>
+<p>ああ 全て忘れて帰ろう</p>
+<p>ああ 全て流して帰ろう</p>
+<p>あの傷は疼けどこの渇き癒えねど</p>
+<p>もうどうでもいいの 吹き飛ばそう</p>
+<p>さわやかな風と帰ろう</p>
+<p>やさしく降る雨と帰ろう</p>
+<p>憎み合いの果てに何が生まれるの</p>
+<p>わたし、わたしが先に 忘れよう</p>
+</blockquote>
+<p>突然感觉，偶尔释放一下自己紧绷的神经，出来逛一逛，也挺好的。</p>
+<hr>
+<p>与其说是小旅行，还不如说是乌龙——坐错车，走错路，最后转了一圈才回学校，不过也算是难得找到一次机会出来玩一玩，出来玩的时候还不用考虑学业和找工作的事情，挺不错的。</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/meituan_bishi_2023/"><!-- Primary Meta Tags --><title>美团2023年秋招第一场笔试 个人题解 | Yonagi&#39;s Sekai</title><meta name="title" content="美团2023年秋招第一场笔试 个人题解 | Yonagi's Sekai"><meta name="description" content="Article: 美团2023年秋招第一场笔试 个人题解"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/meituan_bishi_2023/"><meta property="og:title" content="美团2023年秋招第一场笔试 个人题解 | Yonagi's Sekai"><meta property="og:description" content="Article: 美团2023年秋招第一场笔试 个人题解"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/meituan_bishi_2023/"><meta property="twitter:title" content="美团2023年秋招第一场笔试 个人题解 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 美团2023年秋招第一场笔试 个人题解"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="animate relative w-full aspect-[2/1] my-6 rounded-lg overflow-hidden"> <img src="https://unpkg.com/yonagi-blog-repo-img/img/cover/meituan.webp" alt="美团2023年秋招第一场笔试 个人题解" class="w-full h-full object-cover" loading="eager"> </div><div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 美团2023年秋招第一场笔试 个人题解 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-07-10T20:58:59.000Z"> 2024年7月10日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 </div> <div class="animate font-base text-sm">
+Tags: C++ / 算法 / leetcode / 笔试 </div> </div> <article class="animate"> <p><strong>以下题解为个人题解，仅提供大致思路和提供题解代码。本题解使用的编程语言为C++。本次笔试为模拟测试，得分70.5/100，ac数7/9。题解内容仅供参考</strong></p>
+<h1 id="美团2023年秋季校园招聘-第一场笔试技术类-题解c">美团2023年秋季校园招聘 第一场笔试【技术类】 题解（C++）</h1>
+<h2 id="t1-小美的外卖订单">T1. 小美的外卖订单</h2>
+<p>小美正在设计美团外卖的定价信息。已知外卖定价的规则如下：</p>
+<ol>
+<li>
+<p>每道菜有折扣价和原价。折扣价不能超过原价。</p>
+</li>
+<li>
+<p>订单有满 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑥</mi></mrow><annotation encoding="application/x-tex">𝑥</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 元减 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑦</mi></mrow><annotation encoding="application/x-tex">𝑦</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> 元的优惠。当购买的菜的价格总和不小于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑥</mi></mrow><annotation encoding="application/x-tex">𝑥</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 元时，总价格可以减 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑦</mi></mrow><annotation encoding="application/x-tex">𝑦</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> 元。“减”的价格不能超过“满”的价格。</p>
+</li>
+<li>
+<p>满减优惠和折扣价是互斥的，当且仅当每个菜都选择了原价才可以触发满减。</p>
+</li>
+<li>
+<p>系统会自动为客户计算最低价格的方案。</p>
+</li>
+</ol>
+<p>在设计定价时，原价、折扣价和满减的价格都必须是正实数。如果设计的定价发生问题，则会提示数据错误。</p>
+<p>请使用等价划分法设计测试用例，来测试该系统的功能。</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入一个正整数n，代表菜的总数。</span></span>
+<span class="line"><span>接下来的n行，每行输入两个实数ai和bi，代表每道菜的原价是ai，折扣价是bi。</span></span>
+<span class="line"><span>最后一行输入两个实数x和y，代表满元可以减元。</span></span>
+<span class="line"><span>1 &#x3C;= n &#x3C;= 1e5</span></span>
+<span class="line"><span>数据中所有实数的绝对值不超过1000。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>如果数据有误，则输出一行字符串"error"。</span></span>
+<span class="line"><span>否则输出一个小数，小数点后保留2位即可。该小数代表顾客购买了全部菜各一份时，订单的总价格。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>2</span></span>
+<span class="line"><span>10 5.5</span></span>
+<span class="line"><span>10 6.5</span></span>
+<span class="line"><span>15 3</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>12.00</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>虽然触发了满15元减3元，但使用折扣只需要花12元，低于使用满减的价格（20-3=17），因此最终系统会为客户推荐折扣价。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例2</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>2</span></span>
+<span class="line"><span>10 5.5</span></span>
+<span class="line"><span>10 6.5</span></span>
+<span class="line"><span>20 10</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>10.00</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>触发满20元减10元即可。满减价优于折扣价。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例3</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>2</span></span>
+<span class="line"><span>10 10.25</span></span>
+<span class="line"><span>10 3.5</span></span>
+<span class="line"><span>20 4.5</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>error</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>折扣价高于原价，数据错误。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>没啥难度，鉴定为纯纯的语法题</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583">e</span><span style="color:#79B8FF">5</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">double</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[maxn], </span><span style="color:#FFAB70">b</span><span style="color:#E1E4E8">[maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#F97583">	double</span><span style="color:#E1E4E8"> x, y;</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> b</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">&#x3C;</span><span style="color:#FFAB70"> b</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">||</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> ||</span><span style="color:#FFAB70"> b</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "error"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (x </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> y </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> ||</span><span style="color:#E1E4E8"> y </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "error"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    double</span><span style="color:#E1E4E8"> sum_manjian </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">, sum_zhekou </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        sum_manjian </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">        sum_zhekou </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> b</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (sum_manjian </span><span style="color:#F97583">>=</span><span style="color:#E1E4E8"> x) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        sum_manjian </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#B392F0">    printf</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"</span><span style="color:#79B8FF">%.2f</span><span style="color:#9ECBFF">"</span><span style="color:#E1E4E8">, </span><span style="color:#B392F0">min</span><span style="color:#E1E4E8">(sum_manjian, sum_zhekou));</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>如果使用C++语言的话，最后记得用printf并且要控制一下输出的小数位数。 笔者写这道题的时候因为忘记控制小数位数为2位，所以最开始就wa了一发</p>
+<hr>
+<h2 id="t2-小美的字符串匹配度">T2. 小美的字符串匹配度</h2>
+<p>小美有两个长度为𝑛<em>n</em>只包含小写字母的字符串 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑠</mi></mrow><annotation encoding="application/x-tex">𝑠</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">s</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑡</mi></mrow><annotation encoding="application/x-tex">𝑡</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span> , 小美定义“两个字符串的匹配度”为𝑖∈[1,𝑛]<em>i</em>∈[1,<em>n</em>]中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝑠</mi><mi>𝑖</mi></msub><mo>=</mo><msub><mi>𝑡</mi><mi>𝑖</mi></msub></mrow><annotation encoding="application/x-tex">𝑠_𝑖=𝑡_𝑖</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的数量，例如”abacd”和”aabdd”的匹配度就是2。</p>
+<p>现在你可以进行最多一次以下操作:
+对于字符串<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑡</mi></mrow><annotation encoding="application/x-tex">𝑡</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span>，选择两个索引<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑖</mi><mo separator="true">,</mo><mi>𝑗</mi></mrow><annotation encoding="application/x-tex">𝑖,𝑗</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span>(<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>≤</mo><mi>𝑖</mi><mo>&#x3C;</mo><mi>𝑗</mi><mo>≤</mo><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">1≤𝑖&#x3C;𝑗≤𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6986em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&#x3C;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>)，交换<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝑡</mi><mi>𝑖</mi></msub></mrow><annotation encoding="application/x-tex">𝑡_𝑖</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>​和<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝑡</mi><mi>𝑗</mi></msub></mrow><annotation encoding="application/x-tex">𝑡_𝑗</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9012em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>​。</p>
+<p>小美想知道，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑠</mi></mrow><annotation encoding="application/x-tex">𝑠</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">s</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑡</mi></mrow><annotation encoding="application/x-tex">𝑡</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span> 的最大字符串匹配度是多少？</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入一个整数n</span></span>
+<span class="line"><span>第二行输入一个长度为n的字符串s。</span></span>
+<span class="line"><span>第三行输入一个长度为n的字符串t。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输出一个整数，s和t的最大匹配度。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>5</span></span>
+<span class="line"><span>ababc</span></span>
+<span class="line"><span>babac</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>3</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>先把两个字符串遍历一轮，计算在没有交换的情况下的字符串匹配度</p>
+<p>对于没能匹配的字符，我个人考虑使用vector来存。遍历完数组之后，再把两个vector都遍历一次，就能得到存在交换的情况下最大的字符串匹配度了</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1010</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	string s, t;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> s;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> t;</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">	vector</span><span style="color:#F97583">&#x3C;char></span><span style="color:#E1E4E8"> svec, tvec;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">s</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#FFAB70"> t</span><span style="color:#E1E4E8">[i]) {</span></span>
+<span class="line"><span style="color:#E1E4E8">			res</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">		} </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">			svec.</span><span style="color:#B392F0">push_back</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">s</span><span style="color:#E1E4E8">[i]);</span></span>
+<span class="line"><span style="color:#E1E4E8">			tvec.</span><span style="color:#B392F0">push_back</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">t</span><span style="color:#E1E4E8">[i]);</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> exchange </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> svec.</span><span style="color:#B392F0">size</span><span style="color:#E1E4E8">(); i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; j </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> tvec.</span><span style="color:#B392F0">size</span><span style="color:#E1E4E8">(); j</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">svec</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#FFAB70"> tvec</span><span style="color:#E1E4E8">[j]) {</span></span>
+<span class="line"><span style="color:#E1E4E8">				exchange </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> exchange </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> ?</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> :</span><span style="color:#E1E4E8"> exchange;</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">svec</span><span style="color:#E1E4E8">[j] </span><span style="color:#F97583">==</span><span style="color:#FFAB70"> tvec</span><span style="color:#E1E4E8">[i]) {</span></span>
+<span class="line"><span style="color:#E1E4E8">				exchange </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> exchange </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> ?</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> :</span><span style="color:#E1E4E8"> exchange;</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">svec</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#FFAB70"> tvec</span><span style="color:#E1E4E8">[j] </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#FFAB70"> svec</span><span style="color:#E1E4E8">[j] </span><span style="color:#F97583">==</span><span style="color:#FFAB70"> tvec</span><span style="color:#E1E4E8">[i]) {</span></span>
+<span class="line"><span style="color:#E1E4E8">				exchange </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> exchange </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> ?</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> :</span><span style="color:#E1E4E8"> exchange;</span></span>
+<span class="line"><span style="color:#F97583">				break</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">	cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> exchange </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<hr>
+<h2 id="t3-小美的树上染色">T3. 小美的树上染色</h2>
+<p>小美拿到了一棵树，每个节点有一个权值。初始每个节点都是白色。</p>
+<p>小美有若干次操作，每次操作可以选择两个相邻的节点，如果它们都是白色且权值的乘积是完全平方数，小美就可以把这两个节点同时染红。</p>
+<p>小美想知道，自己最多可以染红多少个节点？</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入一个正整数n，代表节点的数量。</span></span>
+<span class="line"><span>第二行输入n个正整数ai，代表每个节点的权值。</span></span>
+<span class="line"><span>接下来的n - 1行，每行输入两个正整数u, v，代表节点u和节点v有一条边连接。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输出一个整数，表示最多可以染红的节点数量。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>3</span></span>
+<span class="line"><span>3 3 12</span></span>
+<span class="line"><span>1 2</span></span>
+<span class="line"><span>2 3</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>2</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>可以染红第二个和第三个节点。</span></span>
+<span class="line"><span>请注意，此时不能再染红第一个和第二个节点，因为第二个节点已经被染红。</span></span>
+<span class="line"><span>因此，最多染红 2 个节点。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>这道题是一道典型的图论题，我自己是非常讨厌图论的，打比赛的时候碰到图论题都是直接丢给队友做，但是这道图论题硬要说的话其实真没那么难</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/meituan2023q3t3.png" alt=""></p>
+<p>根据这张图可以知道，a和b是可以染色的，因为它们联通且它们的权值之积是完全平方，但是如果染了a和b，就无法给其他节点染色了。因此应当染上f-a或e-a和c-b或d-b。也就是染色要先从叶子节点开始染，如果把中间节点先染色了，那么很可能就没法继续染了</p>
+<p>实现方法：先染外层节点，然后往内层节点推进。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;algorithm></span></span>
+<span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#F97583">using</span><span style="color:#F97583"> namespace</span><span style="color:#B392F0"> std</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583">e</span><span style="color:#79B8FF">5</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"><span style="color:#6A737D">// 变量解释</span></span>
+<span class="line"><span style="color:#6A737D">// n：节点个数</span></span>
+<span class="line"><span style="color:#6A737D">// a：节点权值</span></span>
+<span class="line"><span style="color:#6A737D">// d：每个节点的边的数量</span></span>
+<span class="line"><span style="color:#6A737D">// red：是否被染色</span></span>
+<span class="line"><span style="color:#6A737D">// vis：是否遍历过</span></span>
+<span class="line"><span style="color:#6A737D">// e：图结构</span></span>
+<span class="line"><span style="color:#E1E4E8">ll n;</span></span>
+<span class="line"><span style="color:#E1E4E8">ll a[maxn], d[maxn], red[maxn], vis[maxn];</span></span>
+<span class="line"><span style="color:#E1E4E8">vector</span><span style="color:#F97583">&#x3C;int></span><span style="color:#E1E4E8"> e[maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios</span><span style="color:#E1E4E8">::</span><span style="color:#B392F0">sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 完全平方判断</span></span>
+<span class="line"><span style="color:#F97583">bool</span><span style="color:#B392F0"> isPow</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">ll</span><span style="color:#FFAB70"> x</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	ll y </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8">)</span><span style="color:#B392F0">sqrt</span><span style="color:#E1E4E8">(x);</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#E1E4E8"> y </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> y </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> x;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	ll res </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> a[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		int</span><span style="color:#E1E4E8"> u, v;</span></span>
+<span class="line"><span style="color:#E1E4E8">		cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> u </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> v;</span></span>
+<span class="line"><span style="color:#E1E4E8">		e[u].</span><span style="color:#B392F0">push_back</span><span style="color:#E1E4E8">(v);</span></span>
+<span class="line"><span style="color:#E1E4E8">		e[v].</span><span style="color:#B392F0">push_back</span><span style="color:#E1E4E8">(u);</span></span>
+<span class="line"><span style="color:#E1E4E8">		d[u]</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">		d[v]</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">	queue</span><span style="color:#F97583">&#x3C;int></span><span style="color:#E1E4E8"> que;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> (d[i] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">			que.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">(i);</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	while</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">que.</span><span style="color:#B392F0">empty</span><span style="color:#E1E4E8">()) {</span></span>
+<span class="line"><span style="color:#F97583">		int</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> que.</span><span style="color:#B392F0">front</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">		que.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">		vis[x] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">		for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> e[x].</span><span style="color:#B392F0">size</span><span style="color:#E1E4E8">(); i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">			int</span><span style="color:#E1E4E8"> y </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> e[x][i];</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#E1E4E8"> (vis[y]) {</span></span>
+<span class="line"><span style="color:#F97583">				continue</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#E1E4E8"> (red[x] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> &#x26;&#x26;</span><span style="color:#E1E4E8"> red[y] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> &#x26;&#x26;</span><span style="color:#B392F0"> isPow</span><span style="color:#E1E4E8">(a[x] </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> a[y])) {</span></span>
+<span class="line"><span style="color:#E1E4E8">				red[x] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">				red[y] </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">				res </span><span style="color:#F97583">+=</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#E1E4E8">			d[y]</span><span style="color:#F97583">--</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#E1E4E8"> (d[y] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">				que.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">(y);</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">	cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<hr>
+<h2 id="t4-小美的排列询问">T4. 小美的排列询问</h2>
+<p>小美拿到了一个排列。她想知道在这个排列中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> 是否是相邻的。你能帮帮她吗？</p>
+<p>排列是指一个长度为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 的数组，其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 每个元素恰好出现一次。</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入一个正整数n，代表排列的长度。</span></span>
+<span class="line"><span>第二行输入n个正整数ai，代表排列的元素。</span></span>
+<span class="line"><span>第三行输入两个正整数x和y，用空格隔开。</span></span>
+<span class="line"><span>1 &#x3C;= n &#x3C;= 200000</span></span>
+<span class="line"><span>1 &#x3C;= ai, x, y &#x3C;= n</span></span>
+<span class="line"><span>保证 x != y</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>如果x和y在排列中相邻，则输出"Yes"。否则输出"No"。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>4</span></span>
+<span class="line"><span>1 4 2 3</span></span>
+<span class="line"><span>2 4</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>Yes</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例2</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>5</span></span>
+<span class="line"><span>3 4 5 1 2</span></span>
+<span class="line"><span>3 2</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>No</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>又是一道送分题，这是真送分啊（不过美团的笔试对面试的影响程度比较低，无论是ak还是一道题都没a出来都可以约面的（<del>都会被泡池子</del>），取决于投递的业务组）</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 200000</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> x, y;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> ((</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> y) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> y </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> x)) {</span></span>
+<span class="line"><span style="color:#E1E4E8">			cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "Yes"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">			return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">	cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> "No"</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<hr>
+<h2 id="t5-小美的排列构造">T5. 小美的排列构造</h2>
+<p>小美定义一个数组 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑎</mi></mrow><annotation encoding="application/x-tex">𝑎</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span> 的权值计算如下：</p>
+<p>首先将 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑎</mi></mrow><annotation encoding="application/x-tex">𝑎</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span> 的每一对相邻两项求和，得到一个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑏</mi></mrow><annotation encoding="application/x-tex">𝑏</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span> 数组。那么 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑏</mi></mrow><annotation encoding="application/x-tex">𝑏</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span> 数组的最大值减最小值即为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑎</mi></mrow><annotation encoding="application/x-tex">𝑎</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span> 数组的权值。</p>
+<p>例如，若 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑎</mi><mo>=</mo><mo stretchy="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">𝑎=[2,1,3]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">]</span></span></span></span>，那么 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑏</mi><mo>=</mo><mo stretchy="false">[</mo><mn>3</mn><mo separator="true">,</mo><mn>4</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">𝑏=[3,4]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">4</span><span class="mclose">]</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑏</mi></mrow><annotation encoding="application/x-tex">𝑏</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span> 数组的极差是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>。因此 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑎</mi></mrow><annotation encoding="application/x-tex">𝑎</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span> 数组的权值为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>。</p>
+<p>现在小美希望你能构造一个长度为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 的排列，满足权值尽可能小。你能帮帮她吗？</p>
+<p>排列是指一个长度为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 的数组，其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 每个元素恰好出现一次。</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>一个正整数n，代表排列的长度。</span></span>
+<span class="line"><span>2 &#x3C;= n &#x3C;= 200000</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>一个合法的排列。如果有多解输出任意即可。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>3</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>2 1 3</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>这个数组的权值为 1。输出[2,3,1]等排列也是合法的。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>这道题是构造题。应付构造题其实没有什么特别好的办法，不像其他的题一样有一个大概的套路，最好的办法就是多写构造题，或者提高一点对数字的敏感度——即使是这样，有时候构造题也不一定能写出来。所以构造题可以很简单，也可以非常非常难</p>
+<p>但是这道构造题算是简单的了——个人感觉这道题放进Codeforce最多就1000分段的题</p>
+<p>什么是权值？<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span> 数组相邻两项的之和的最大最小之差就是权值。我们需要构造出权值最小的情况，那么就意味着我们需要尽可能构造出一种排列，使得 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span> 数组的每相邻两项的和都应该靠近某个值。这道题的简单之处就在于数组无论怎么变换都是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 的全排列的一种情况，如果稍微变形一下，变成给定任意数组求该数组排列的最小权值，而且数组长度动辄1e5甚至1e7，那就很难了</p>
+<p>那么我们用上一点灵性，就能想到一个点子——我们可以把最大最小值放在一起，这样每相邻的两项的和就接近于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n + 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>，最终得到的权值必然等于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 。例如，对于数组 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false">[</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>4</mn><mo separator="true">,</mo><mn>5</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">a = [1, 2, 3, 4, 5]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">5</span><span class="mclose">]</span></span></span></span>， 我可以将其变形为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false">[</mo><mn>1</mn><mo separator="true">,</mo><mn>5</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>4</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">a = [1, 5, 2, 4, 3]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">]</span></span></span></span> ，这样得到的权值就等于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 。这个地方可以用数学来证明，但是算法竞赛和笔试的时间往往不充裕，不允许我们进行数学证明，我们可以写几个样例来试一下这个思路到底是不是正确的</p>
+<p>根据样例1，我们可以得到变形后的数组 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false">[</mo><mn>1</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">a = [1, 3, 2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mclose">]</span></span></span></span>，求出的权值就为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 。读者可以尝试写出更多样例，最终还是会发现在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>></mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n > 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> 的情况下，数组 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span> 的最小值是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n + 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>，最大值是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n + 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>，权值为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> ；在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n = 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> 的情况下，权值就等于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn></mrow><annotation encoding="application/x-tex">3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>。但是经过我的实测，发现这道题并没有 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n = 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> 的数据……作为边界条件居然不设一个数据，出题人要背大锅</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 200000</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> l </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">, r </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i </span><span style="color:#F97583">+=</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#FFAB70">		a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> l</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">		a</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> r</span><span style="color:#F97583">--</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> (l </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> r) {</span></span>
+<span class="line"><span style="color:#F97583">			break</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> (l </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> r) {</span></span>
+<span class="line"><span style="color:#FFAB70">		a</span><span style="color:#E1E4E8">[n] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> l;</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> ' '</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">	cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<hr>
+<h2 id="t6-小美走公路">T6. 小美走公路</h2>
+<p>有一个环形的公路，上面共有 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 站，现在给定了顺时针第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑖</mi></mrow><annotation encoding="application/x-tex">𝑖</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 站到第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑖</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">𝑖+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7429em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 站之间的距离（特殊的，也给出了第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 站到第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 站的距离）。小美想沿着公路第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑥</mi></mrow><annotation encoding="application/x-tex">𝑥</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 站走到第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑦</mi></mrow><annotation encoding="application/x-tex">𝑦</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> 站，她想知道最短的距离是多少？</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入一个正整数n，代表站的数量。</span></span>
+<span class="line"><span>第二行输入个正整数ai，前n - 1个数代表顺时针沿着公路走，i站到第i + 1站之间的距离；最后一个正整数n代表顺时针沿着公路走，第n站到第 1 站的距离。·</span></span>
+<span class="line"><span>第三行输入两个正整数x和y，代表小美的出发地和目的地。</span></span>
+<span class="line"><span>1 &#x3C;= n &#x3C;= 1e5</span></span>
+<span class="line"><span>1 &#x3C;= ai &#x3C;= 1e9</span></span>
+<span class="line"><span>1 &#x3C;= x, y &#x3C;= n</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>一个正整数，代表小美走的最短距离</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>3</span></span>
+<span class="line"><span>1 2 2</span></span>
+<span class="line"><span>2 3</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>2</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例2</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>3</span></span>
+<span class="line"><span>1 2 2</span></span>
+<span class="line"><span>1 3</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>2</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>不算难的模拟，记得写着写着不要把方向和距离是啥搞混了就行</p>
+<p>还有就是这道题如果是用C++写的话，会爆int，记得开long long</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583">e</span><span style="color:#79B8FF">5</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"><span style="color:#E1E4E8">ll </span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#E1E4E8">	ll sum </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">		sum </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> x, y;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (x </span><span style="color:#F97583">></span><span style="color:#E1E4E8"> y) {</span></span>
+<span class="line"><span style="color:#B392F0">        swap</span><span style="color:#E1E4E8">(x, y);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (x </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> y) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">	ll l </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">, r </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> x; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> y; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		r </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> (r </span><span style="color:#F97583">></span><span style="color:#E1E4E8"> sum </span><span style="color:#F97583">/</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> sum </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> r </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">	} </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">		cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> r </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="t7-小美的好矩阵">T7. 小美的好矩阵</h2>
+<p>小美定义一个矩阵是好矩阵，当且仅当该矩阵满足：</p>
+<ol>
+<li>矩阵仅由’A’、‘B’、‘C’三种字符组成。且三种字符都出现过。</li>
+<li>矩阵相邻的字符都不相等。</li>
+</ol>
+<p>现在给定一个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi><mo>×</mo><mi>𝑚</mi></mrow><annotation encoding="application/x-tex">𝑛\times𝑚</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> 的矩阵，小美想知道有多少个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3\times3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>的子矩阵是好矩阵，你能帮帮她吗？</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入两个整数n, m，代表矩阵的行数和列数。</span></span>
+<span class="line"><span>接下来的n行，每行输入一个仅包含大写字母的长度为m的字符串。</span></span>
+<span class="line"><span>1 &#x3C;= n, m &#x3C;= 1000</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输出一个整数表示答案。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>4 4</span></span>
+<span class="line"><span>DABC</span></span>
+<span class="line"><span>ABAB</span></span>
+<span class="line"><span>BABA</span></span>
+<span class="line"><span>BBAB</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>1</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>有4个3*3的子矩阵。</span></span>
+<span class="line"><span>左上角的子矩阵出现了'D'，因此不合法。</span></span>
+<span class="line"><span>右上角的是好矩阵。</span></span>
+<span class="line"><span>左下角的存在两个相邻的字母相同，因此不合法。</span></span>
+<span class="line"><span>右下角的子矩阵里没有'C'，因此不合法。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>这道题我只过了样例……可能是我代码什么地方数组访问超界了，哎真的很可惜，这道题应该是一道比较简单的模拟题啊</p>
+<p>不给代码了，网上的题解代码应该也不少</p>
+<hr>
+<h2 id="t8-小美的蛋糕切割">T8. 小美的蛋糕切割</h2>
+<p>小美有一个矩形的蛋糕，共分成了 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi></mrow><annotation encoding="application/x-tex">𝑛</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>  行 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑚</mi></mrow><annotation encoding="application/x-tex">𝑚</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> 列，共 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑛</mi><mo>×</mo><mi>𝑚</mi></mrow><annotation encoding="application/x-tex">𝑛\times 𝑚</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> 个区域，每个区域是一个小正方形，已知蛋糕每个区域都有一个美味度。她想切一刀把蛋糕切成两部分，自己吃一部分，小团吃另一部分。</p>
+<p>小美希望两个人吃的部分的美味度之和尽可能接近，请你输出<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∣</mo><mi>𝑠</mi><mn>1</mn><mo>−</mo><mi>𝑠</mi><mn>2</mn><mo>∣</mo></mrow><annotation encoding="application/x-tex">∣𝑠1−𝑠2∣</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">s</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">s</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span></span></span></span>的最小值。（其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑠</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">𝑠1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord mathnormal">s</span><span class="mord">1</span></span></span></span> 代表小美吃的美味度，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑠</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">𝑠2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord mathnormal">s</span><span class="mord">2</span></span></span></span> 代表小团吃的美味度）。</p>
+<p>请务必保证，切下来的区域都是完整的，即不能把某个小正方形切成两个小区域。</p>
+<p><strong>时间限制</strong>：C/C++ 1秒，其他语言2秒</p>
+<p><strong>空间限制</strong>：C/C++ 256M，其他语言512M</p>
+<p><strong>输入描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输出两个正整数n和m，代表蛋糕区域的行数和列数。</span></span>
+<span class="line"><span>接下来的n行，每行输入m个正整数a[i,j]，用来表示每个区域的美味度。</span></span>
+<span class="line"><span>1 &#x3C;= n, m &#x3C;= 1e3</span></span>
+<span class="line"><span>1 &#x3C;= a[i, j] &#x3C;= 1e4</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>输出描述</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>一个整数，代表|s1 - s2|的最小值。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>示例1</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入例子：</span></span>
+<span class="line"><span>2 3</span></span>
+<span class="line"><span>1 1 4</span></span>
+<span class="line"><span>5 1 4</span></span>
+<span class="line"><span>输出例子：</span></span>
+<span class="line"><span>0</span></span>
+<span class="line"><span>例子说明：</span></span>
+<span class="line"><span>把蛋糕像这样切开：</span></span>
+<span class="line"><span>1 1 | 4</span></span>
+<span class="line"><span>5 1 | 4</span></span>
+<span class="line"><span>左边蛋糕美味度之和是8</span></span>
+<span class="line"><span>右边蛋糕美味度之和是8</span></span>
+<span class="line"><span>所以答案是0。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>114514是吧，好臭的题面（<del>哼哼啊啊啊啊啊啊</del>）</p>
+<p>（其实这道题最难绷的地方是题面样例数据是114514，然后题目要求计算”美味度之差“，太他妈搞了 ）(<del>美味しかったです</del>)（一三五红茶，二四六牡蛎，周日红茶，这就是美团homo的生活啊）</p>
+<p>二维前缀和维护美味度，然后遍历二维前缀和的下边界和右边界就能得到最小的差值</p>
+<p>还有一个经典老问题，就是这道题的一些数据求完总和会爆int，记得开long long</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;algorithm></span></span>
+<span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583">e</span><span style="color:#79B8FF">3</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"><span style="color:#E1E4E8">ll </span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[maxn][maxn];</span></span>
+<span class="line"><span style="color:#E1E4E8">ll </span><span style="color:#FFAB70">sum</span><span style="color:#E1E4E8">[maxn][maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> n, m;</span></span>
+<span class="line"><span style="color:#E1E4E8">	cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> m;</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; j </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> m; j</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">			cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i][j];</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">		for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; j </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> m; j</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#FFAB70">			sum</span><span style="color:#E1E4E8">[i][j] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">sum</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">][j] </span><span style="color:#F97583">+</span><span style="color:#FFAB70"> sum</span><span style="color:#E1E4E8">[i][j </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">-</span><span style="color:#FFAB70"> sum</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">][j </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">+</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i][j]);</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	int</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> INT32_MAX;</span></span>
+<span class="line"><span style="color:#E1E4E8">	ll totalSum </span><span style="color:#F97583">=</span><span style="color:#FFAB70"> sum</span><span style="color:#E1E4E8">[n][m];</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> m; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		ll left </span><span style="color:#F97583">=</span><span style="color:#FFAB70"> sum</span><span style="color:#E1E4E8">[n][i];</span></span>
+<span class="line"><span style="color:#E1E4E8">		ll right </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> totalSum </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> left;</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">abs</span><span style="color:#E1E4E8">(left </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> right) </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> res) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            res </span><span style="color:#F97583">=</span><span style="color:#B392F0"> abs</span><span style="color:#E1E4E8">(left </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> right);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">		ll up </span><span style="color:#F97583">=</span><span style="color:#FFAB70"> sum</span><span style="color:#E1E4E8">[i][m];</span></span>
+<span class="line"><span style="color:#E1E4E8">		ll down </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> totalSum </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> up;</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">abs</span><span style="color:#E1E4E8">(up </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> down) </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> res) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            res </span><span style="color:#F97583">=</span><span style="color:#B392F0"> abs</span><span style="color:#E1E4E8">(up </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> down);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">	cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="t9-小美的字符串变换">T9. 小美的字符串变换</h2>
+<p>这道题没写，时间不够了</p>
+<hr> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

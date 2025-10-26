@@ -1,0 +1,458 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/cuckoo_filter/"><!-- Primary Meta Tags --><title>简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？ | Yonagi&#39;s Sekai</title><meta name="title" content="简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？ | Yonagi's Sekai"><meta name="description" content="Article: 简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/cuckoo_filter/"><meta property="og:title" content="简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？ | Yonagi's Sekai"><meta property="og:description" content="Article: 简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/cuckoo_filter/"><meta property="twitter:title" content="简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？ | Yonagi's Sekai"><meta property="twitter:description" content="Article: 简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？ </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-11-01T08:56:01.000Z"> 2024年11月1日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 / 缓存 </div> <div class="animate font-base text-sm">
+Tags: 布隆过滤器 / 布谷鸟过滤器 </div> </div> <article class="animate"> <p>其实我一直想研究一下布谷鸟过滤器，但苦于找不到一个合适的契机。真正促使我查找布谷鸟过滤器相关的资料并决定写这篇博客的原因，还要追溯到半个月之前欢聚时代的一场面试。</p>
+<p>面试官：“你的xxxxx功能用到了布隆过滤器，但假如是xxxx从数据库中删掉了，布隆过滤器里面的数据怎么处理？”</p>
+<p>我：“如果是这样的话，因为布隆过滤器是无法删除数据的，所以只能在删数据之前做一个特判，然后拿一个Set之类的数据类型存起来……其实还有一个更好的解决方案，就是布谷鸟过滤器，它可以实现元素的删除，解决了布隆过滤器无法删除元素的问题……”说到这里就断了，究其本质还是对布谷鸟过滤器不太熟悉。所以想借着这个契机，和大家简单聊聊布谷鸟过滤器，以及——布谷鸟过滤器真的是比布隆过滤器更好的选择吗？</p>
+<hr>
+<h2 id="在布谷鸟之前布隆过滤器的缺点与展望">在布谷鸟之前：布隆过滤器的缺点与展望</h2>
+<p>在开讲布谷鸟过滤器之前，我想先简单回顾一下布隆过滤器。</p>
+<p>布隆过滤器（Bloom Filter）是一种特殊的数据结构，其本质是一个位数组和若干个哈希函数的组合。在元素存入布隆过滤器时，首先要对元素进行哈希运算，得到哈希值<code>hash 1、hash 2、...、hash n</code> ，然后将坐标为<code>hash 1、hash 2、...、hash n</code>的位标记成 <code>1</code> 以实现元素的存储。当需要判断元素是否存在于布隆过滤器中时，也是基于同样的操作，只需要先计算出哈希值，再判断哈希值对应的位是否被标记成 <code>1</code>，就能判断元素是否存在于布隆过滤器中。布隆过滤器有一个很明显的好处，就是我们只需要进行 <code>n</code> 次运算就能判断出元素是否存在于布隆过滤器中，其时间复杂度相较于其他数据类型而言有明显的改善，但是布隆过滤器有两个明显的缺点，第一个缺点就是布隆过滤器的误判，由于可能存在哈希碰撞的问题，不同的元素通过哈希函数计算之后得到了相同的哈希值，进而可能会出现 “元素本来不存在于布隆过滤器，但布隆过滤器却判断其存在” 的情况，也就是我们常说的 “误判”；第二个缺点就是布隆过滤器无法删除元素，因为布隆过滤器本质上存储的是元素经过哈希运算之后得到的哈希值对应的bit值而不是元素本身，所以对于布隆过滤器而言，删除元素本来就是一件很不现实的事情——毕竟如果草率地将哈希值对应的bit值标记为 <code>0</code> 来表示元素被删除，就会出现其他元素被布隆过滤器“误判”为“不存在”的情况，因为其他元素计算出来的哈希值和被删除元素计算出来的哈希值很有可能是相同的，如果直接将bit值标记为 <code>0</code>，那么布隆过滤器需要判断其他元素是否存在的时候就会因为这个bit值被标记成了<code>0</code>而将其他元素误判为“不存在”。</p>
+<p>基于这些问题，我们提出了一个展望：我们希望能够设计出一个新的数据结构，这个数据结构继承了布隆过滤器的“优良传统”，也就是能够实现快速判断元素是否存在，也摈弃了布隆过滤器的“缺陷”，也就是误判和无法删除元素的问题。介于此，布谷鸟过滤器由此诞生。</p>
+<h2 id="布谷鸟过滤器鸠占鹊巢">布谷鸟过滤器：鸠占鹊巢</h2>
+<p>2014年，来自CMU、Harvard 和 Intel 的团队基于布谷鸟哈希算法设计出了一个新的数据结构，他们将其命名为“Cuckoo Filter”，中文译名即为“布谷鸟过滤器”。在团队发表的文章 <a href="https://www.cs.cmu.edu/~binfan/papers/conext14_cuckoofilter.pdf">“Cuckoo Filter: Practically Better Than Bloom”</a> 的引言部分，简单提到了布谷鸟过滤器和布隆过滤器的对比，颇有一种“碰瓷”的意味。</p>
+<blockquote>
+<p>We propose a new data structure called the cuckoo filter that can replace Bloom filters for approximate set membership tests. Cuckoo filters support adding and removing items dynamically while achieving even higher performance than Bloom filters. For applications that store many items and target moderately low false positive rates, cuckoo filters have lower space overhead than space-optimized Bloom filters. Our experimental results also show that cuckoo filters outperform previous data structures that extend Bloom filters to support deletions substantially in both time and space.</p>
+</blockquote>
+<p>文章提到，布谷鸟过滤器相较于布隆过滤器，有以下几点明显的优势：</p>
+<ol>
+<li>支持动态地添加和删除元素 (It supports adding and removing items dynamically)</li>
+<li>比传统的布隆过滤器有更好的查询性能，即使布谷鸟过滤器即将被填满 (It provides higher lookup performance than traditional Bloom filters, even when close to full)</li>
+<li>比其他替代方案（如 Quotient Filter）更容易实现 (It is easier to implement than alternatives such as the quotient filter)</li>
+<li>如果误判率小于 3% ，那么它的空间占用比布隆过滤器更小 (It uses less space than Bloom filters in many practical applications, if the target false positive rate is less than 3%)</li>
+</ol>
+<p>布谷鸟过滤器是基于布谷鸟哈希算法实现的，所以先介绍布谷鸟哈希算法。</p>
+<hr>
+<p>布谷鸟哈希算法的特性可以用一个成语来概括，那就是“鸠占鹊巢”，也就是本小节的标题。布谷鸟哈希算法是使用两个哈希函数对同一个元素进行哈希运算，得到两个哈希值，进而得到在桶中存储的位置，此时</p>
+<ul>
+<li>若两个位置都为空，则随机选择一个位置将元素放入；</li>
+<li>若只有一个位置为空，则将元素放入这个空位置；</li>
+<li>若两个位置都不为空，则将两个位置上的元素随机“踢”走一个，新元素占据其位置，被“踢”走的元素通过哈希运算重新寻找新的位置。</li>
+</ul>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.32/img/content/Cuckoo hash.webp" alt=""></p>
+<p>当存入布谷鸟过滤器的元素足够多时，这种“踢出”已有元素的情况就会越来越频繁，所以一般会设置一个 <strong>踢出阈值</strong>，当超出这个阈值，布谷鸟过滤器就会进行扩容，减少频繁地“踢出元素”对插入性能的影响。</p>
+<hr>
+<p>而布谷鸟过滤器本身的插入过程，具体可以如下图所示。</p>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.32/img/content/Cuckoo Filter.webp" alt=""></p>
+<p>图中的 (a) 和 (b) 展示了布谷鸟过滤器的插入过程，和布谷鸟哈希算法的插入流程基本同理，因此不再赘述。基本的布谷鸟过滤器由两个或多个哈希函数构成，布谷鸟过滤器的哈希表的基本单位又称为“条目” (entry) ，每个条目存储元素的 “指纹” (fingerprint)，指纹指的是哈希函数生成的 n 位比特位，一般根据能接受的最大误判率来设置。具体的布谷鸟过滤器的哈希表如图 (c) 所示。</p>
+<h3 id="布谷鸟过滤器的插入">布谷鸟过滤器的插入</h3>
+<p>与传统的布谷鸟哈希不同，布谷鸟过滤器采用了两个并不独立的哈希函数</p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>1</mn></msub><mo>=</mo><mi>h</mi><mi>a</mi><mi>s</mi><mi>h</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">i_1 = hash(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ha</span><span class="mord mathnormal">s</span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>2</mn></msub><mo>=</mo><msub><mi>i</mi><mn>1</mn></msub><mo>⊕</mo><mi>h</mi><mi>a</mi><mi>s</mi><mi>h</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">i_2 = i_1 \oplus hash(f)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ha</span><span class="mord mathnormal">s</span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span></span></span></span></p>
+<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 是指待插入的元素，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> 是指元素的指纹，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>i</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">i_1, i_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 即为计算出来的两个哈希值。具体来讲，第一个桶的索引是通过某个哈希函数计算出来，第二个是使用第一个索引和 <strong>指纹的哈希</strong> 做了一个异或操作，由于异或运算的特性，所以我们可以通过当前桶的索引 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">i_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和存储在桶中的指纹 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> 计算出备用桶的索引 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">i_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。 计算指纹 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> 的哈希这一步是不是冗余的呢？并不是。因为指纹只是 <code>key</code> 映射出来的少量bit位置，假如不进行哈希操作，那么计算出来的备用位置和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">i_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 差别很小，例如采用8位的指纹时，如果直接计算 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>⊕</mo><msub><mi>i</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">f \oplus i_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> ，那么最多改变 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">i_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 的低八位，也就是在数值上最多相差256，不利于均匀分配。</p>
+<h3 id="布谷鸟过滤器的查找">布谷鸟过滤器的查找</h3>
+<p>布谷鸟过滤器的查找也很简单。根据上述提及的插入方法，只需要用同样的方式计算出两个桶的位置和指纹 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> ，再判断对应的桶内是否能够和指纹 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> 匹配，如果可以匹配，则认为元素存在，返回 <code>true</code>，反之则不存在，返回 <code>false</code>。</p>
+<h3 id="布谷鸟过滤器的删除">布谷鸟过滤器的删除</h3>
+<p>布隆过滤器不能实现删除元素的功能，如果要选择删除元素就必须重建布隆过滤器。布谷鸟过滤器则实现了删除功能，只需要从哈希表中删除对应的指纹和对应的项，即可实现删除。具体来讲，只需要在给定的两个候选桶中检查是否有匹配的指纹，如果有则直接删除匹配指纹的一个副本</p>
+<h2 id="没有银弹">没有银弹</h2>
+<p>布谷鸟过滤器真的完美吗？它真的能成为布隆过滤器的“替代品”吗？</p>
+<blockquote>
+<p>软件工程领域有一个相当知名的说法，“There is no single development, in either technology or management technique, which by itself promises even one order of magnitude improvement within a decade in productivity, in reliability, in simplicity.”，用一句话总结就是，“No silver bullet”，没有银弹。</p>
+</blockquote>
+<p>正如这个子标题，我想表达的是，布谷鸟过滤器也有自己的缺陷，而且它并不是布隆过滤器的替代品。</p>
+<ol>
+<li><strong>布谷鸟过滤器的删除功能并不完美，存在误删的可能性</strong>。由于删除的时候只是删除了一份指纹副本，不能判断这个副本属于被删除的 <code>key</code> 的指纹。</li>
+<li><strong>插入时间复杂度比较高</strong>。随着已插入元素的增多，“踢出”元素的情况会越来越频繁，对于被“踢出”的元素而言，需要重新计算其索引，提高了插入时间复杂度，但总体来看，插入的时间复杂度还是维持在较低的水平。</li>
+<li><strong>存储空间必须为2的倍数</strong>，空间利用率较低。</li>
+<li><strong>对于同一个元素，布谷鸟过滤器最多可以插入<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∗</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">k * b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span> 次</strong>，这里的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> 是指哈希函数的个数，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span> 是指桶的尺寸。如果布谷鸟过滤器支持删除，则必须存储同一项的多个副本。 插入同一项 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∗</mo><mi>b</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k * b + 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7778em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">b</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 次将导致插入失败。 这类似于计数布隆过滤器，其中重复插入会导致计数器溢出。</li>
+</ol>
+<p>介于此，我个人认为，布谷鸟过滤器是布隆过滤器的一个 “上位”替代，它实现了删除功能，也解决了布隆过滤器存在的误判问题，但是布谷鸟过滤器本身存在一些缺陷，所以它并不是完美的，也没法成为布隆过滤器的“替代品”。实际情况是，布隆过滤器的使用场景依然广泛，布隆过滤器也没有完全被布谷鸟过滤器所替代。</p>
+<h2 id="与其他过滤器的比较">与其他过滤器的比较</h2>
+<p><img src="https://unpkg.com/yonagi-blog-repo-img@1.1.32/img/content/compare-with-other-filter.webp" alt=""></p>
+<p>上图是布隆过滤器、布谷鸟过滤器和其他过滤器在误判率和元素空间成本上的比较。由图可知，布谷鸟过滤器在空间成本上比布隆过滤器更加出色，存储空间会更小。</p>
+<h2 id="布谷鸟过滤器的实现">布谷鸟过滤器的实现</h2>
+<p>因为笔者擅长使用Java，所以这里给出了布谷鸟过滤器Java版的实现，仅供读者参考。C++版本的实现在布谷鸟过滤器的 <a href="https://github.com/efficient/cuckoofilter">Github仓库</a> 已有提供，其他版本的布谷鸟过滤器可以在 Github 上自行查找。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> java.util.Random;</span></span>
+<span class="line"><span style="color:#F97583">public</span><span style="color:#F97583"> class</span><span style="color:#B392F0"> CuckooFilter</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> static</span><span style="color:#F97583"> final</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> MAXIMUM_CAPACITY </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#79B8FF"> 30</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D">    //最大的踢出次数</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> final</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> MAX_NUM_KICKS </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 500</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D">    //桶的个数</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> capacity;</span></span>
+<span class="line"><span style="color:#6A737D">    //存入元素个数</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> size </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D">    //存放桶的数组</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> Bucket</span><span style="color:#E1E4E8">[] buckets;</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#E1E4E8"> Random random;</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    //构造函数</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#B392F0"> cuckooFilter</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#FFAB70"> capacity</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        capacity </span><span style="color:#F97583">=</span><span style="color:#B392F0"> tableSizeFor</span><span style="color:#E1E4E8">(capacity);</span></span>
+<span class="line"><span style="color:#79B8FF">        this</span><span style="color:#E1E4E8">.capacity </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> capacity;</span></span>
+<span class="line"><span style="color:#E1E4E8">        buckets </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#F97583"> Bucket</span><span style="color:#E1E4E8">[capacity];</span></span>
+<span class="line"><span style="color:#E1E4E8">        random </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Random</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> capacity; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            buckets[i] </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Bucket</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    /*</span></span>
+<span class="line"><span style="color:#6A737D">     * 向布谷鸟过滤器中插入一个元素</span></span>
+<span class="line"><span style="color:#6A737D">     *</span></span>
+<span class="line"><span style="color:#6A737D">     * 插入成功，返回true</span></span>
+<span class="line"><span style="color:#6A737D">     * 过滤器已满或插入数据为空，返回false</span></span>
+<span class="line"><span style="color:#6A737D">     */</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> insert</span><span style="color:#E1E4E8">(Object </span><span style="color:#FFAB70">o</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (o </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        </span></span>
+<span class="line"><span style="color:#F97583">        byte</span><span style="color:#E1E4E8"> f </span><span style="color:#F97583">=</span><span style="color:#B392F0"> fingerprint</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> i2 </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">^</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(f);</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (buckets[i1].</span><span style="color:#B392F0">insert</span><span style="color:#E1E4E8">(f) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> buckets[i2].</span><span style="color:#B392F0">insert</span><span style="color:#E1E4E8">(f)) {</span></span>
+<span class="line"><span style="color:#6A737D">            //有空位置</span></span>
+<span class="line"><span style="color:#E1E4E8">            size</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span><span style="color:#6A737D">//插入成功</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#6A737D">        //没有空位置，relocate再插入</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#B392F0"> relocateAndInsert</span><span style="color:#E1E4E8">(i1, i2, f);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    /**</span></span>
+<span class="line"><span style="color:#6A737D">     * 对插入的值进行校验，只有当未插入过该值时才会插入成功</span></span>
+<span class="line"><span style="color:#6A737D">     * 若过滤器中已经存在该值，会插入失败返回false</span></span>
+<span class="line"><span style="color:#6A737D">     */</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> insertUnique</span><span style="color:#E1E4E8">(Object </span><span style="color:#FFAB70">o</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (o </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> null</span><span style="color:#F97583"> ||</span><span style="color:#B392F0"> contains</span><span style="color:#E1E4E8">(o))</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#B392F0"> insert</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    /**</span></span>
+<span class="line"><span style="color:#6A737D">     * 随机在两个位置挑选一个将其中的一个值标记为旧值，</span></span>
+<span class="line"><span style="color:#6A737D">     * 用新值覆盖旧值，旧值会在重复上面的步骤进行插入</span></span>
+<span class="line"><span style="color:#6A737D">     */</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> relocateAndInsert</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#FFAB70"> i1</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">int</span><span style="color:#FFAB70"> i2</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">byte</span><span style="color:#FFAB70"> f</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        boolean</span><span style="color:#E1E4E8"> flag </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> random.</span><span style="color:#B392F0">nextBoolean</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> itemp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> flag </span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> i2;</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> MAX_NUM_KICKS; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">            //在桶中随机找一个位置</span></span>
+<span class="line"><span style="color:#F97583">            int</span><span style="color:#E1E4E8"> position </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> random.</span><span style="color:#B392F0">nextInt</span><span style="color:#E1E4E8">(Bucket.BUCKET_SIZE);</span></span>
+<span class="line"><span style="color:#6A737D">            //踢出</span></span>
+<span class="line"><span style="color:#E1E4E8">            f </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> buckets[itemp].</span><span style="color:#B392F0">swap</span><span style="color:#E1E4E8">(position, f);</span></span>
+<span class="line"><span style="color:#E1E4E8">            itemp </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> itemp </span><span style="color:#F97583">^</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(f);</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> (buckets[itemp].</span><span style="color:#B392F0">insert</span><span style="color:#E1E4E8">(f)) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                size</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        } </span><span style="color:#6A737D">//超过最大踢出次数，插入失败</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    /**</span></span>
+<span class="line"><span style="color:#6A737D">     * 如果此过滤器包含对象的指纹，返回true</span></span>
+<span class="line"><span style="color:#6A737D">     */</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> contains</span><span style="color:#E1E4E8">(Object </span><span style="color:#FFAB70">o</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8">(o </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        byte</span><span style="color:#E1E4E8"> f </span><span style="color:#F97583">=</span><span style="color:#B392F0"> fingerprint</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> i2 </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">^</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(f);</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> buckets[i1].</span><span style="color:#B392F0">contains</span><span style="color:#E1E4E8">(f) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> buckets[i2].</span><span style="color:#B392F0">contains</span><span style="color:#E1E4E8">(f);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    /**</span></span>
+<span class="line"><span style="color:#6A737D">     * 从布谷鸟过滤器中删除元素</span></span>
+<span class="line"><span style="color:#6A737D">     * 为了安全地删除，此元素之前必须被插入过</span></span>
+<span class="line"><span style="color:#6A737D">     */</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> delete</span><span style="color:#E1E4E8">(Object </span><span style="color:#FFAB70">o</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8">(o </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        byte</span><span style="color:#E1E4E8"> f </span><span style="color:#F97583">=</span><span style="color:#B392F0"> fingerprint</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(o);</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> i2 </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> i1 </span><span style="color:#F97583">^</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(f);</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> buckets[i1].</span><span style="color:#B392F0">delete</span><span style="color:#E1E4E8">(f) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> buckets[i2].</span><span style="color:#B392F0">delete</span><span style="color:#E1E4E8">(f);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    /**</span></span>
+<span class="line"><span style="color:#6A737D">     * 过滤器中元素个数</span></span>
+<span class="line"><span style="color:#6A737D">     */</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> int</span><span style="color:#B392F0"> size</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> size;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    //过滤器是否为空</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> isEmpty</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> size </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    //得到指纹</span></span>
+<span class="line"><span style="color:#F97583">    private</span><span style="color:#F97583"> byte</span><span style="color:#B392F0"> fingerprint</span><span style="color:#E1E4E8">(Object </span><span style="color:#FFAB70">o</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> h </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> o.</span><span style="color:#B392F0">hashCode</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">+=</span><span style="color:#F97583"> ~</span><span style="color:#E1E4E8">(h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 15</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">>></span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 3</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">>></span><span style="color:#79B8FF"> 6</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">+=</span><span style="color:#F97583"> ~</span><span style="color:#E1E4E8">(h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 11</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">>></span><span style="color:#79B8FF"> 16</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">        byte</span><span style="color:#E1E4E8"> hash </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">byte</span><span style="color:#E1E4E8">) h;</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (hash </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> Bucket.NULL_FINGERPRINT)</span></span>
+<span class="line"><span style="color:#E1E4E8">            hash </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 40</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> hash;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    //哈希函数</span></span>
+<span class="line"><span style="color:#F97583">    public</span><span style="color:#F97583"> int</span><span style="color:#B392F0"> hash</span><span style="color:#E1E4E8">(Object </span><span style="color:#FFAB70">key</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> h </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> key.</span><span style="color:#B392F0">hashCode</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 6</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">>></span><span style="color:#79B8FF"> 17</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 9</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 4</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 3</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        h </span><span style="color:#F97583">^=</span><span style="color:#E1E4E8"> (h </span><span style="color:#F97583">>></span><span style="color:#79B8FF"> 15</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> h </span><span style="color:#F97583">&#x26;</span><span style="color:#E1E4E8"> (capacity </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">    //hashMap的源码 有一个tableSizeFor的方法，目的是将传进来的参数转变为2的n次方的数值</span></span>
+<span class="line"><span style="color:#F97583">    static</span><span style="color:#F97583"> final</span><span style="color:#F97583"> int</span><span style="color:#B392F0"> tableSizeFor</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#FFAB70"> cap</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        int</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> cap </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        n </span><span style="color:#F97583">|=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>>></span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        n </span><span style="color:#F97583">|=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>>></span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        n </span><span style="color:#F97583">|=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>>></span><span style="color:#79B8FF"> 4</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        n </span><span style="color:#F97583">|=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>>></span><span style="color:#79B8FF"> 8</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        n </span><span style="color:#F97583">|=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>>></span><span style="color:#79B8FF"> 16</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> (n </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">?</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> :</span><span style="color:#E1E4E8"> (n </span><span style="color:#F97583">>=</span><span style="color:#E1E4E8"> MAXIMUM_CAPACITY) </span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> MAXIMUM_CAPACITY </span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#F97583">    static</span><span style="color:#F97583"> class</span><span style="color:#B392F0"> Bucket</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> static</span><span style="color:#F97583"> final</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> FINGERPINT_SIZE </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D">        //桶大小为4</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> static</span><span style="color:#F97583"> final</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> BUCKET_SIZE </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 4</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> static</span><span style="color:#F97583"> final</span><span style="color:#F97583"> byte</span><span style="color:#E1E4E8"> NULL_FINGERPRINT </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">        private</span><span style="color:#F97583"> final</span><span style="color:#F97583"> byte</span><span style="color:#E1E4E8">[] fps </span><span style="color:#F97583">=</span><span style="color:#F97583"> new</span><span style="color:#F97583"> byte</span><span style="color:#E1E4E8">[BUCKET_SIZE];</span></span>
+<span class="line"><span style="color:#6A737D">        //在桶中插入</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> insert</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">byte</span><span style="color:#FFAB70"> fingerprint</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> fps.length; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (fps[i] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> NULL_FINGERPRINT) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                    fps[i] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> fingerprint;</span></span>
+<span class="line"><span style="color:#F97583">                    return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">        //在桶中删除</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> delete</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">byte</span><span style="color:#FFAB70"> fingerprint</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> fps.length; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (fps[i] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> fingerprint) {</span></span>
+<span class="line"><span style="color:#E1E4E8">                    fps[i] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> NULL_FINGERPRINT;</span></span>
+<span class="line"><span style="color:#F97583">                    return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D">        //桶中是否含此指纹</span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> boolean</span><span style="color:#B392F0"> contains</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">byte</span><span style="color:#FFAB70"> fingerprint</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> fps.length; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (fps[i] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> fingerprint)</span></span>
+<span class="line"><span style="color:#F97583">                    return</span><span style="color:#79B8FF"> true</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#F97583">        public</span><span style="color:#F97583"> byte</span><span style="color:#B392F0"> swap</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#FFAB70"> position</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">byte</span><span style="color:#FFAB70"> fingerprint</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            byte</span><span style="color:#E1E4E8"> tmpfg </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> fps[position];</span></span>
+<span class="line"><span style="color:#E1E4E8">            fps[position] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> fingerprint;</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8"> tmpfg;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="结语">结语</h2>
+<p>在这篇博客中，我们简单地回顾了一下布隆过滤器，在了解了布隆过滤器的优点和缺点的基础上，我们又进一步引入了布谷鸟过滤器，布谷鸟过滤器较布隆过滤器有四点明显优势：</p>
+<ol>
+<li>实现了元素的动态删除</li>
+<li>查询性能更好</li>
+<li>不存在误判的情况</li>
+<li>空间占用的表现更加出色</li>
+</ol>
+<p>但是布谷鸟过滤器也有明显的缺点，例如布谷鸟过滤器的空间利用率较低，布谷鸟过滤器的删除功能可能会导致误删等。实际开发场景下，布谷鸟过滤器也没有完全替代布隆过滤器，具体的选择要根据具体的业务场景来判断，选择合适的数据结构来满足开发需求。</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

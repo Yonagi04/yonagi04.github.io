@@ -1,0 +1,435 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/structure_of_class_file/"><!-- Primary Meta Tags --><title>JVM专题——类文件结构 | Yonagi&#39;s Sekai</title><meta name="title" content="JVM专题——类文件结构 | Yonagi's Sekai"><meta name="description" content="Article: JVM专题——类文件结构"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/structure_of_class_file/"><meta property="og:title" content="JVM专题——类文件结构 | Yonagi's Sekai"><meta property="og:description" content="Article: JVM专题——类文件结构"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/structure_of_class_file/"><meta property="twitter:title" content="JVM专题——类文件结构 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JVM专题——类文件结构"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> JVM专题——类文件结构 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-04-01T17:19:16.000Z"> 2024年4月1日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 未分类 </div> <div class="animate font-base text-sm">
+Tags: 无 </div> </div> <article class="animate"> <p><strong>本文部分内容节选自Java Guide和《深入理解Java虚拟机》, Java Guide地址: <a href="https://javaguide.cn/java/jvm/class-file-structure.html">https://javaguide.cn/java/jvm/class-file-structure.html</a></strong></p>
+<blockquote>
+<p>🚀 <a href="https://yonagi04.github.io/posts/2024/bc3a3d7c4c51/">基础（上）</a> → 🚀 <a href="https://yonagi04.github.io/posts/2024/da1a14d471aa/">基础（中）</a> → 🚀<a href="https://yonagi04.github.io/posts/2024/3c15992991b1/">基础（下）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/2dcdc762ee3e/">集合（上）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/5972154ca625/">集合（下）</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/4e86d54ab314/">JVM专题1</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/82639aae6f65/">JVM专题2</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/fddd546e0d7f/">JVM专题4</a></p>
+</blockquote>
+<h1 id="class-类文件结构">Class 类文件结构</h1>
+<p>Class文件是一组以8个字节为基础单位的二进制流，各个数据项目严格按照顺序紧凑地排列在文件之中，中间没有添加任何分隔符， 这使得整个Class文件中存储的内容几乎全部是程序运行的必要数据， 没有空隙存在。当遇到需要占用8个字节以上空间的数据项时，则会按照高位在前的方式分割成若干个8个字节进行存储。</p>
+<p><code>ClassFile</code> 结构如下</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>ClassFile {</span></span>
+<span class="line"><span>    u4             magic; //Class 文件的标志</span></span>
+<span class="line"><span>    u2             minor_version;//Class 的小版本号</span></span>
+<span class="line"><span>    u2             major_version;//Class 的大版本号</span></span>
+<span class="line"><span>    u2             constant_pool_count;//常量池的数量</span></span>
+<span class="line"><span>    cp_info        constant_pool[constant_pool_count-1];//常量池</span></span>
+<span class="line"><span>    u2             access_flags;//Class 的访问标记</span></span>
+<span class="line"><span>    u2             this_class;//当前类</span></span>
+<span class="line"><span>    u2             super_class;//父类</span></span>
+<span class="line"><span>    u2             interfaces_count;//接口数量</span></span>
+<span class="line"><span>    u2             interfaces[interfaces_count];//一个类可以实现多个接口</span></span>
+<span class="line"><span>    u2             fields_count;//字段数量</span></span>
+<span class="line"><span>    field_info     fields[fields_count];//一个类可以有多个字段</span></span>
+<span class="line"><span>    u2             methods_count;//方法数量</span></span>
+<span class="line"><span>    method_info    methods[methods_count];//一个类可以有个多个方法</span></span>
+<span class="line"><span>    u2             attributes_count;//此类的属性表中的属性数</span></span>
+<span class="line"><span>    attribute_info attributes[attributes_count];//属性表集合</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<h2 id="魔数与class文件版本号">魔数与Class文件版本号</h2>
+<p>每个Class文件的头四个字节被称为 <strong>魔数</strong> , 它用来判断这个文件是否是一个能够被Java虚拟机接收的Class文件. Java虚拟机规定魔数必须是 <strong>0xCAFEBABE</strong> , 否则虚拟机会拒绝加载这个Class文件</p>
+<p>紧接着魔数的四个字节是 <strong>Class文件的版本号</strong> , 第5和第6字节是 <strong>次版本号</strong> , 第7和第8字节是 <strong>主版本号</strong> . 高版本的JDK能够向下兼容低版本的Class文件, 但是低版本的JDK不能向上兼容高版本的Class文件</p>
+<h2 id="常量池">常量池</h2>
+<p>紧接着魔数和Class文件版本号之后的是 <strong>常量池入口</strong> . 常量池可以比喻为Class文件中的资源仓库, 它是Class文件结构中与其他项目关联最多的数据, 同时也是占用Class文件空间最大的数据项目之一, 另外它还是Class文件中第一个出现的表类型数据项目</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    u2             constant_pool_count;//常量池的数量</span></span>
+<span class="line"><span>    cp_info        constant_pool[constant_pool_count-1];//常量池</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>常量池的数量是 <code>constant_pool_count - 1</code> (常量池计数器是从1开始计数的, 常量池索引为0表示 “不引用任何一个常量池项”)</p>
+<p>常量池中主要存放两大类常量: <strong>字面量</strong> 和 <strong>符号引用</strong> . 字面量比较接近于 Java 语言中的常量概念, 而符号引用属于编译原理的概念, 主要包括以下几类变量</p>
+<ul>
+<li>被模块导入或者开放的包</li>
+<li>类和接口的全限定名</li>
+<li>字段的名称和描述符</li>
+<li>方法的名称和描述符</li>
+<li>方法句柄和方法类型</li>
+<li>动态调用点和动态常量</li>
+</ul>
+<p>常量池中每一个常量都是一个表, 到JDK13版本目前有17个不同类型的常量</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>类型</th><th>标志</th><th>描述</th></tr></thead><tbody><tr><td>CONSTANT_Utf8_info</td><td>1</td><td>UTF-8编码的字符串</td></tr><tr><td>CONSTANT_Integer_info</td><td>3</td><td>整型字面量</td></tr><tr><td>CONSTANT_Float_info</td><td>4</td><td>浮点型字面量</td></tr><tr><td>CONSTANT_Long_info</td><td>5</td><td>长整型字面量</td></tr><tr><td>CONSTANT_Double_info</td><td>6</td><td>双精度浮点型字面量</td></tr><tr><td>CONSTANT_Class_info</td><td>7</td><td>类或接口的符号引用</td></tr><tr><td>CONSTANT_String_info</td><td>8</td><td>字符串类型字面量</td></tr><tr><td>CONSTANT_Fieldref_info</td><td>9</td><td>字段的符号引用</td></tr><tr><td>CONSTANT_Methodref_info</td><td>10</td><td>类中方法的符号引用</td></tr><tr><td>CONSTANT_InterfaceMethodref_info</td><td>11</td><td>接口中方法的符号引用</td></tr><tr><td>CONSTANT_NameAndType_info</td><td>12</td><td>字段或方法的部分符号引用</td></tr><tr><td>CONSTANT_MethodHandle_info</td><td>15</td><td>表示方法句柄</td></tr><tr><td>CONSTANT_MethodType_info</td><td>16</td><td>表示方法类型</td></tr><tr><td>CONSTANT_Dynamic_info</td><td>17</td><td>表示一个动态计算常量</td></tr><tr><td>CONSTANT_InvokeDynamic_info</td><td>18</td><td>表示一个动态方法调用点</td></tr><tr><td>CONSTANT_Module_info</td><td>19</td><td>表示一个模块</td></tr><tr><td>CONSTANT_Package_info</td><td>20</td><td>表示一个模块中开放或者导出的包</td></tr></tbody></table>
+<h2 id="访问标志">访问标志</h2>
+<p>在常量池结束之后, 紧接着的2个字节代表 <strong>访问标志</strong> , 用于识别一些类或者接口层次的访问信息, 包括: 这个Class是类还是接口; 是否为 public 或者abstract; 如果是类的话, 是否被声明为 final</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>标志名称</th><th>标志值</th><th>含义</th></tr></thead><tbody><tr><td>ACC_PUBLIC</td><td>0x0001</td><td>是否为public</td></tr><tr><td>ACC_FINAL</td><td>0x0010</td><td>是否为final</td></tr><tr><td>ACC_SUPER</td><td>0x0020</td><td>是否使用invokespecial字节码指令的新语义</td></tr><tr><td>ACC_INTERFACE</td><td>0x0200</td><td>是否是一个接口</td></tr><tr><td>ACC_ABSTRACT</td><td>0x0400</td><td>是否为abstract</td></tr><tr><td>ACC_SYNTHETIC</td><td>0x1000</td><td>标识这个类并非由用户代码产生的</td></tr><tr><td>ACC_ANNOTATION</td><td>0x2000</td><td>标识这是一个注解</td></tr><tr><td>ACC_ENUM</td><td>0x4000</td><td>标识这是一个枚举</td></tr><tr><td>ACC_MODULE</td><td>0x8000</td><td>标识这是一个模块</td></tr></tbody></table>
+<h2 id="类索引-父类索引和接口索引集合">类索引, 父类索引和接口索引集合</h2>
+<p>类索引, 父类索引和接口索引都按顺序排列在访问标志之后, 类索引和父类索引用两个u2类型的索引值表示, 它们各自指向一个类型为CONSTANT_Class_info的类描述符常量, 通过CONSTANT_Class_info类型的常量中的索引值可以找到定义在 CONSTANT_Utf8_info类型的常量中的全限定名字符串</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    u2             this_class;//当前类</span></span>
+<span class="line"><span>    u2             super_class;//父类</span></span>
+<span class="line"><span>    u2             interfaces_count;//接口数量</span></span>
+<span class="line"><span>    u2             interfaces[interfaces_count];//一个类可以实现多个接口</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>类索引用于确定这个类的全限定名，父类索引用于确定这个类的父类的全限定名，由于 Java 语言的单继承，所以父类索引只有一个，除了 <code>java.lang.Object</code> 之外，所有的 Java 类都有父类，因此除了 <code>java.lang.Object</code> 外，所有 Java 类的父类索引都不为 0。</p>
+<h2 id="字段表集合">字段表集合</h2>
+<p>字段表用于描述接口或类中声明的变量. 字段包括类级变量以及实例变量, 但不包括在方法内部声明的局部变量</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    u2             fields_count;//字段数量</span></span>
+<span class="line"><span>    field_info     fields[fields_count];//一个类会可以有个字段</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>字段表结构</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>field_info {</span></span>
+<span class="line"><span>	u2		access_flags;</span></span>
+<span class="line"><span>	u2		name_index;</span></span>
+<span class="line"><span>	u2		descriptor_index;</span></span>
+<span class="line"><span>	u2		atributes_count;</span></span>
+<span class="line"><span>	attribute_info		attributes[attributes_count];</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<ul>
+<li><strong>access_flags</strong> : 字段的作用域 (<code>public</code> , <code>private</code> , <code>protected</code> 修饰符), 是实例变量还是类变量, 可否被序列化, 可变性( <code>final</code> 修饰 ) , 可见性(<code>volatile</code>)</li>
+<li><strong>name_index</strong> : 对常量池的引用, 表示的字段的名称</li>
+<li><strong>descriptor_index</strong> : 对常量池的引用, 标识字段和方法的描述符</li>
+<li><strong>attributes_count</strong> : 一个字段还会拥有一些额外的属性, attributes_count 存放属性的个数</li>
+<li><strong>attributes[attributes_count]</strong> : 存放具体属性具体内容</li>
+</ul>
+<p>上述这些信息中, 各个修饰符都是布尔值, 要么有某个修饰符, 要么没有, 很适合使用标志位来表示. 而字段叫什么名字, 字段被定义为什么数据类型这些都是无法固定的, 只能引用常量池中常量来描述</p>
+<h2 id="方法表集合">方法表集合</h2>
+<p>Class文件存储格式中对于方法的描述和对字段的描述几乎是一模一样的, 方法表的结构如同字段表一样, 依次包括了访问标志, 名称索引, 描述符索引, 属性表集合等</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>    u2             methods_count;//方法数量</span></span>
+<span class="line"><span>    method_info    methods[methods_count];//一个类可以有个多个方法</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>方法表结构</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>method_info {</span></span>
+<span class="line"><span>	u2		access_flags;</span></span>
+<span class="line"><span>	u2		name_index;</span></span>
+<span class="line"><span>	u2		descriptor_index;</span></span>
+<span class="line"><span>	u2		attributes_count;</span></span>
+<span class="line"><span>	attribute_info		attributes[attributes_count];</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>因为 <code>volatile</code> 和 <code>transient</code> 修饰符不能修饰方法, 所以方法表的访问标志中没有这两个对应的标志, 但是增加了 <code>synchronized</code> , <code>native</code> , <code>abstract</code> 等关键字修饰方法, 所以也就多了这些关键字对应的标志</p>
+<h2 id="属性表集合">属性表集合</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>   u2             attributes_count;//此类的属性表中的属性数</span></span>
+<span class="line"><span>   attribute_info attributes[attributes_count];//属性表集合</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>与 Class 文件中其他的数据项目要求严格的顺序, 长度, 内容不同, 属性表集合的限制稍微宽松一点, 不再要求各个属性表具有严格的顺序, 并且Java虚拟机规范允许只要不与已有属性名重复, 任何人实现的编译器都可以向属性表中写入自己定义的属性信息, Java虚拟机运行时会忽略掉它不认识的属性</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

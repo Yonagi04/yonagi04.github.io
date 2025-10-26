@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/"><!-- Primary Meta Tags --><title>Blog | Yonagi&#39;s Sekai</title><meta name="title" content="Blog | Yonagi's Sekai"><meta name="description" content="A collection of articles on topics I am passionate about."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/"><meta property="og:title" content="Blog | Yonagi's Sekai"><meta property="og:description" content="A collection of articles on topics I am passionate about."><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/"><meta property="twitter:title" content="Blog | Yonagi's Sekai"><meta property="twitter:description" content="A collection of articles on topics I am passionate about."><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5">  <div class="space-y-10"> <div class="animate font-semibold text-black dark:text-white">
+Blog
+</div> <div class="space-y-4"> <section class="animate space-y-4"> <div> <ul class="flex flex-col gap-4"> <li> <a href="/blog/first_intern_in_beijing" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 第一次实习之北京之旅 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2025/05/02 </div> </div> </a> </li><li> <a href="/blog/how_to_learn_jpn" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 我是如何学习日语的 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2025/01/21 </div> </div> </a> </li> </ul> </div> </section><section class="animate space-y-4"> <div> <ul class="flex flex-col gap-4"> <li> <a href="/blog/kindaishi_nihon" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 大日本帝国是如何被低智商民粹主义反噬的？ </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/12/30 </div> </div> </a> </li><li> <a href="/blog/mirai_no_kigaku" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 以后的一点计划 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/12/21 </div> </div> </a> </li><li> <a href="/blog/small_trip_in_guangzhou" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 半天的广州小旅行 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/11/20 </div> </div> </a> </li><li> <a href="/blog/anti_plagiarism" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 个人博客对繁体自动化镜像搬运的反制 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/11/14 </div> </div> </a> </li><li> <a href="/blog/cuckoo_filter" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 简谈布谷鸟过滤器：它是比布隆过滤器更好的选择吗？ </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/11/01 </div> </div> </a> </li><li> <a href="/blog/happy_1024" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> Yonagi&#39;s Sekai祝大家1024程序员节快乐 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/10/24 </div> </div> </a> </li><li> <a href="/blog/rocket_mq" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 深入RocketMQ消息队列——消息原理 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/10/02 </div> </div> </a> </li><li> <a href="/blog/review_of_interview" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 本周面试总结 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/09/14 </div> </div> </a> </li><li> <a href="/blog/database_and_cache" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 数据库与缓存一致性的解决方案 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/08/29 </div> </div> </a> </li><li> <a href="/blog/found_bestway_of_jiuye" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 找到了就业的极佳选择 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/08/26 </div> </div> </a> </li><li> <a href="/blog/enqing_gfw" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 面对Yonagi&#39;s Sekai被墙，我的一点应对措施 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/08/10 </div> </div> </a> </li><li> <a href="/blog/caffine" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> Java最强本地缓存——Caffeine </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/07/25 </div> </div> </a> </li><li> <a href="/blog/meituan_bishi_2023" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 美团2023年秋招第一场笔试 个人题解 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/07/10 </div> </div> </a> </li><li> <a href="/blog/review_daer" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 大二总结 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/07/09 </div> </div> </a> </li><li> <a href="/blog/horizon_4" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 简单聊聊地平线4 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/07/08 </div> </div> </a> </li><li> <a href="/blog/new_nijigen_game" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 二次元新游品鉴之鸣潮与学园偶像大师 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/05/25 </div> </div> </a> </li><li> <a href="/blog/lock_in_juc" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JUC专题——Java中的锁 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/05/19 </div> </div> </a> </li><li> <a href="/blog/meituan_bishi_2024" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 美团2024年春招第一场笔试【技术类】 个人题解 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/05/12 </div> </div> </a> </li><li> <a href="/blog/vim_rc_setup" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> .vimrc文件的自定义配置——包括括号补全、代码高亮等 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/17 </div> </div> </a> </li><li> <a href="/blog/basic_of_juc" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JUC专题——Java并发基础 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/16 </div> </div> </a> </li><li> <a href="/blog/implements_of_juc" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JUC专题——Java并发机制的底层实现原理 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/16 </div> </div> </a> </li><li> <a href="/blog/garbage_collection_in_jvm" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JVM专题——垃圾回收 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/05 </div> </div> </a> </li><li> <a href="/blog/structure_of_memory_in_jvm" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JVM专题——内存结构 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/05 </div> </div> </a> </li><li> <a href="/blog/load_class_to_jvm" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JVM专题——类文件加载 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/02 </div> </div> </a> </li><li> <a href="/blog/structure_of_class_file" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> JVM专题——类文件结构 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/01 </div> </div> </a> </li><li> <a href="/blog/push_hexo_repo_to_github" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> Hexo将Github Page部署到Github时可能发生的一点问题 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/04/01 </div> </div> </a> </li><li> <a href="/blog/acm" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 关于ACM的一点往事 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/03/23 </div> </div> </a> </li><li> <a href="/blog/black_apple" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> 基于VMware虚拟机安装MacOS BigSur系统 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/03/16 </div> </div> </a> </li><li> <a href="/blog/cpp_oop" class="block py-4"> <div class="flex justify-between items-start"> <div class="flex-1 truncate"> <div class="font-semibold"> C++面向对象程序设计 知识点 </div> <div class="text-sm">  </div> </div> <div class="text-sm text-gray-500 ml-4"> 2024/03/15 </div> </div> </a> </li> </ul> </div> </section> </div> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>

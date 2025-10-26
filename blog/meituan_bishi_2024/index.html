@@ -1,0 +1,514 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/meituan_bishi_2024/"><!-- Primary Meta Tags --><title>美团2024年春招第一场笔试【技术类】 个人题解 | Yonagi&#39;s Sekai</title><meta name="title" content="美团2024年春招第一场笔试【技术类】 个人题解 | Yonagi's Sekai"><meta name="description" content="Article: 美团2024年春招第一场笔试【技术类】 个人题解"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/meituan_bishi_2024/"><meta property="og:title" content="美团2024年春招第一场笔试【技术类】 个人题解 | Yonagi's Sekai"><meta property="og:description" content="Article: 美团2024年春招第一场笔试【技术类】 个人题解"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/meituan_bishi_2024/"><meta property="twitter:title" content="美团2024年春招第一场笔试【技术类】 个人题解 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 美团2024年春招第一场笔试【技术类】 个人题解"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="animate relative w-full aspect-[2/1] my-6 rounded-lg overflow-hidden"> <img src="https://unpkg.com/yonagi-blog-repo-img/img/cover/meituan.webp" alt="美团2024年春招第一场笔试【技术类】 个人题解" class="w-full h-full object-cover" loading="eager"> </div><div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 美团2024年春招第一场笔试【技术类】 个人题解 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-05-12T13:27:58.000Z"> 2024年5月12日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 </div> <div class="animate font-base text-sm">
+Tags: C++ / 算法 / leetcode / 笔试 </div> </div> <article class="animate"> <p><strong>以下题解为个人题解，不提供具体思路，仅提供题解代码。本题解使用的编程语言为C++。本次笔试为模拟测试，得分79/100，ac数3/5。题解内容仅供参考</strong></p>
+<h1 id="美团2024年春季校园招聘-第一场笔试技术类-题解c">美团2024年春季校园招聘 第一场笔试【技术类】 题解（C++）</h1>
+<p><img src="https://picx.zhimg.com/70/v2-6e12abf18ff2b83f47ee63825572016a_1440w.image?source=172ae18b&#x26;biz_tag=Post" alt="美团0309春招第一场笔试"></p>
+<h2 id="t1-小美的平衡矩阵">T1. 小美的平衡矩阵</h2>
+<p>小美拿到了一个𝑛∗𝑛的矩阵，其中每个元素是 0 或者 1。
+小美认为一个矩形区域是完美的，当且仅当该区域内 0 的数量恰好等于 1 的数量。
+现在，小美希望你回答有多少个𝑖∗𝑖的完美矩形区域。你需要回答1≤𝑖≤𝑛的所有答案。</p>
+<p>时间限制：C/C++ 1秒，其他语言2秒</p>
+<p>空间限制：C/C++ 256M，其他语言512M</p>
+<p>输入描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入一个正整数n，代表矩阵大小。</span></span>
+<span class="line"><span>接下来的n行，每行输入一个长度为n的 01 串，用来表示矩阵。</span></span>
+<span class="line"><span>1 &#x3C;= n &#x3C;= 200</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输出n行，第i行输出i*i的完美矩形区域的数量。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>示例1</p>
+<p>输入例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>4</span></span>
+<span class="line"><span>1010</span></span>
+<span class="line"><span>0101</span></span>
+<span class="line"><span>1100</span></span>
+<span class="line"><span>0011</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>0</span></span>
+<span class="line"><span>7</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF">&#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> N </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 210</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">char</span><span style="color:#FFAB70"> g</span><span style="color:#E1E4E8">[N][N];</span></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[N][N], </span><span style="color:#FFAB70">ans</span><span style="color:#E1E4E8">[N], n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> get</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#FFAB70"> x1</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">int</span><span style="color:#FFAB70"> y1</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">int</span><span style="color:#FFAB70"> x2</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">int</span><span style="color:#FFAB70"> y2</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[x2][y2] </span><span style="color:#F97583">-</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[x1 </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">][y2] </span><span style="color:#F97583">-</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[x2][y1 </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">+</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[x1 </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">][y1 </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">];</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; j </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; j</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> g</span><span style="color:#E1E4E8">[i][j];</span></span>
+<span class="line"><span style="color:#FFAB70">            s</span><span style="color:#E1E4E8">[i][j] </span><span style="color:#F97583">=</span><span style="color:#FFAB70"> g</span><span style="color:#E1E4E8">[i][j] </span><span style="color:#F97583">-</span><span style="color:#9ECBFF"> '0'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; j </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; j</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#FFAB70">            s</span><span style="color:#E1E4E8">[i][j] </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">][j] </span><span style="color:#F97583">+</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[i][j </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">-</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[i </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">][j </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">];</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; j </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; j</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">            for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; k </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; k</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (i </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> &#x3C;=</span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> &#x3C;=</span><span style="color:#E1E4E8"> n) {</span></span>
+<span class="line"><span style="color:#F97583">                    int</span><span style="color:#E1E4E8"> x </span><span style="color:#F97583">=</span><span style="color:#B392F0"> get</span><span style="color:#E1E4E8">(i, j, i </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">, j </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">-</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">                    if</span><span style="color:#E1E4E8"> (x </span><span style="color:#F97583">*</span><span style="color:#79B8FF"> 2</span><span style="color:#F97583"> ==</span><span style="color:#E1E4E8"> k </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> k) {</span></span>
+<span class="line"><span style="color:#FFAB70">                        ans</span><span style="color:#E1E4E8">[k]</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">                    }</span></span>
+<span class="line"><span style="color:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#FFAB70"> ans</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<hr>
+<h2 id="t2-小美的数组询问">T2. 小美的数组询问</h2>
+<p>小美拿到了一个由正整数组成的数组，但其中有一些元素是未知的（用 0 来表示）。
+现在小美想知道，如果那些未知的元素在区间[𝑙,𝑟][<em>l</em>,<em>r</em>]范围内随机取值的话，数组所有元素之和的最小值和最大值分别是多少？
+共有𝑞次询问。</p>
+<p>时间限制：C/C++ 1秒，其他语言2秒</p>
+<p>空间限制：C/C++ 256M，其他语言512M</p>
+<p>输入描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入两个正整数n, q，代表数组大小和询问次数。</span></span>
+<span class="line"><span>第二行输入n个整数ai，其中如果输入的ai为 0，那么说明是未知的。</span></span>
+<span class="line"><span>接下来的q行，每行输入两个正整数l, r ，代表一次询问。</span></span>
+<span class="line"><span>1 &#x3C;= n, q &#x3C;= 1e5</span></span>
+<span class="line"><span>0 &#x3C;= ai &#x3C;= 1e9</span></span>
+<span class="line"><span>1 &#x3C;= l &#x3C;= r &#x3C;= 1e9</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输出q行，每行输出两个正整数，代表所有元素之和的最小值和最大值。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>示例1</p>
+<p>输入例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>3 2</span></span>
+<span class="line"><span>1 0 3</span></span>
+<span class="line"><span>1 2</span></span>
+<span class="line"><span>4 4</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>5 6</span></span>
+<span class="line"><span>8 8</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>例子说明：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>只有第二个元素是未知的。</span></span>
+<span class="line"><span>第一次询问，数组最小的和是 1+1+3=5，最大的和是 1+2+3=6。</span></span>
+<span class="line"><span>第二次询问，显然数组的元素和必然为 8。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF">&#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"><span style="color:#E1E4E8">ll maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583">e</span><span style="color:#79B8FF">5</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">    ll </span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[maxn];</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> n, q;</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> q;</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> cnt </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    ll sum </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            cnt</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">        sum </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> (q</span><span style="color:#F97583">--</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        ll l, r;</span></span>
+<span class="line"><span style="color:#E1E4E8">        cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> l </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> r;</span></span>
+<span class="line"><span style="color:#E1E4E8">        cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> sum </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> cnt </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> l </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> ' '</span><span style="color:#F97583"> &#x3C;&#x3C;</span><span style="color:#E1E4E8"> sum </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> cnt </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> r </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<hr>
+<h2 id="t3-小美的mt">T3. 小美的MT</h2>
+<p>MT 是美团的缩写，因此小美很喜欢这两个字母。
+现在小美拿到了一个仅由大写字母组成字符串，她可以最多操作𝑘次，每次可以修改任意一个字符。小美想知道，操作结束后最多共有多少个’M’和’T’字符？</p>
+<p>时间限制：C/C++ 1秒，其他语言2秒</p>
+<p>空间限制：C/C++ 256M，其他语言512M</p>
+<p>输入描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入两个正整数n, k，代表字符串长度和操作次数。</span></span>
+<span class="line"><span>第二行输入一个长度为n的、仅由大写字母组成的字符串。</span></span>
+<span class="line"><span>1 &#x3C;= k &#x3C;= n &#x3C;= 1e5</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输出操作结束后最多共有多少个'M'和'T'字符。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>示例1</p>
+<p>输入例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>5 2</span></span>
+<span class="line"><span>MTUAN</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>4</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>例子说明：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>修改第三个和第五个字符，形成的字符串为 MTTAM，这样共有 4 个'M'和'T'。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF">&#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> n, k;</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> k;</span></span>
+<span class="line"><span style="color:#E1E4E8">    string s;</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> s;</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> cnt </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> s.</span><span style="color:#B392F0">length</span><span style="color:#E1E4E8">(); i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">s</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> 'M'</span><span style="color:#F97583"> ||</span><span style="color:#FFAB70"> s</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> 'T'</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            cnt</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> cnt </span><span style="color:#F97583">+</span><span style="color:#B392F0"> min</span><span style="color:#E1E4E8">(k, n </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> cnt) </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="t4-小美的朋友关系">T4. 小美的朋友关系</h2>
+<p>小美认为，在人际交往中，但是随着时间的流逝，朋友的关系也是会慢慢变淡的，最终朋友关系就淡忘了。
+现在初始有一些朋友关系，存在一些事件会导致两个人淡忘了他们的朋友关系。小美想知道某一时刻中，某两人是否可以通过朋友介绍互相认识？
+事件共有 2 种：
+1 u v：代表编号 u 的人和编号 v 的人淡忘了他们的朋友关系。
+2 u v：代表小美查询编号 u 的人和编号 v 的人是否能通过朋友介绍互相认识。</p>
+<p>注：介绍可以有多层，比如 2 号把 1 号介绍给 3 号，然后 3 号再把 1 号介绍给 4 号，这样 1 号和 4 号就认识了。</p>
+<p>时间限制：C/C++ 1秒，其他语言2秒</p>
+<p>空间限制：C/C++ 256M，其他语言512M</p>
+<p>输入描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入三个正整数n, m, q，代表总人数，初始的朋友关系数量，发生的事件数量。</span></span>
+<span class="line"><span>接下来的m行，每行输入两个正整数u, v，代表初始编号的人u和编号的人v是朋友关系。</span></span>
+<span class="line"><span>接下来的q行，每行输入三个正整数op, u, v，含义如题目描述所述。</span></span>
+<span class="line"><span>1 &#x3C;= n &#x3C;= 1e9</span></span>
+<span class="line"><span>1 &#x3C;= m, q &#x3C;= 1e5</span></span>
+<span class="line"><span>1 &#x3C;= u, v &#x3C;= n</span></span>
+<span class="line"><span>1 &#x3C;= op &#x3C;= 2</span></span>
+<span class="line"><span>保证至少存在一次查询操作。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>对于每次 2 号操作，输出一行字符串代表查询的答案。如果编号 u 的人和编号 v 的人能通过朋友介绍互相认识，则输出"Yes"。否则输出"No"。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>示例1</p>
+<p>输入例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>5 3 5</span></span>
+<span class="line"><span>1 2</span></span>
+<span class="line"><span>2 3</span></span>
+<span class="line"><span>4 5</span></span>
+<span class="line"><span>1 1 5</span></span>
+<span class="line"><span>2 1 3</span></span>
+<span class="line"><span>2 1 4</span></span>
+<span class="line"><span>1 1 2</span></span>
+<span class="line"><span>2 1 3</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Yes</span></span>
+<span class="line"><span>No</span></span>
+<span class="line"><span>No</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>例子说明：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一次事件，1 号和 5 号本来就不是朋友，所以无事发生。</span></span>
+<span class="line"><span>第二次事件是询问，1 号和 3 号可以通过 2 号的介绍认识。</span></span>
+<span class="line"><span>第三次事件是询问，显然 1 号和 4 号无法互相认识。</span></span>
+<span class="line"><span>第四次事件，1 号和 2 号淡忘了。</span></span>
+<span class="line"><span>第五次事件，此时 1 号无法再经过 2 号和 3 号互相认识了。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>本题未AC。但是读者可以根据我提供的思路尝试完成本题：本题实际上要求使用并查集，需要考虑离散化+离线处理，并且要考虑重边的情况</p>
+<hr>
+<h2 id="t5-小美的区间删除">T5. 小美的区间删除</h2>
+<p>小美拿到了一个大小为𝑛的数组，她希望删除一个区间后，使得剩余所有元素的乘积末尾至少有𝑘个 0。小美想知道，一共有多少种不同的删除方案？</p>
+<p>时间限制：C/C++ 1秒，其他语言2秒</p>
+<p>空间限制：C/C++ 256M，其他语言512M</p>
+<p>输入描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一行输入两个正整数n, k。</span></span>
+<span class="line"><span>第二行输入n个正整数ai，代表小美拿到的数组。</span></span>
+<span class="line"><span>1 &#x3C;= n, k &#x3C;= 1e5</span></span>
+<span class="line"><span>1 &#x3C;= ai &#x3C;= 1e9</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出描述：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>一个整数，代表删除的方案数。</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>示例1</p>
+<p>输入例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>5 2</span></span>
+<span class="line"><span>2 5 3 4 20</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>输出例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>4</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>例子说明：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>第一个方案，删除[3]。</span></span>
+<span class="line"><span>第二个方案，删除[4]。</span></span>
+<span class="line"><span>第三个方案，删除[3,4]。</span></span>
+<span class="line"><span>第四个方案，删除[2]。</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<p>本题未完全ac，通过样例数19/20</p>
+<p>读者可根据下面的参考代码，修改参考代码并尝试完成本题</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="c"><code><span class="line"><span style="color:#F97583">#include</span><span style="color:#9ECBFF">&#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#E1E4E8">using namespace std;</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8"> maxn </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583">e</span><span style="color:#79B8FF">5</span><span style="color:#F97583"> +</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">typedef</span><span style="color:#F97583"> long</span><span style="color:#F97583"> long</span><span style="color:#E1E4E8"> ll;</span></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[maxn], </span><span style="color:#FFAB70">cnt2</span><span style="color:#E1E4E8">[maxn], </span><span style="color:#FFAB70">cnt5</span><span style="color:#E1E4E8">[maxn];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> io</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout.</span><span style="color:#B392F0">tie</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">    ios::sync_with_stdio</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> get</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">int</span><span style="color:#FFAB70"> x</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">int</span><span style="color:#FFAB70"> p</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    while</span><span style="color:#E1E4E8"> (x </span><span style="color:#F97583">%</span><span style="color:#E1E4E8"> p </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        x </span><span style="color:#F97583">/=</span><span style="color:#E1E4E8"> p;</span></span>
+<span class="line"><span style="color:#E1E4E8">        res</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> res;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    io</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> n, k;</span></span>
+<span class="line"><span style="color:#E1E4E8">    cin </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> n </span><span style="color:#F97583">>></span><span style="color:#E1E4E8"> k;</span></span>
+<span class="line"><span style="color:#F97583">    int</span><span style="color:#E1E4E8"> c2 </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">, c5 </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        cin </span><span style="color:#F97583">>></span><span style="color:#FFAB70"> a</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> n; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#FFAB70">        cnt2</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">=</span><span style="color:#B392F0"> get</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[i], </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#FFAB70">        cnt5</span><span style="color:#E1E4E8">[i] </span><span style="color:#F97583">=</span><span style="color:#B392F0"> get</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">[i], </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        c2 </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> cnt2</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">        c5 </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> cnt5</span><span style="color:#E1E4E8">[i];</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    ll res </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">int</span><span style="color:#E1E4E8"> l </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">, r </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; r </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> n; r</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">        c2 </span><span style="color:#F97583">-=</span><span style="color:#FFAB70"> cnt2</span><span style="color:#E1E4E8">[r];</span></span>
+<span class="line"><span style="color:#E1E4E8">        c5 </span><span style="color:#F97583">-=</span><span style="color:#FFAB70"> cnt5</span><span style="color:#E1E4E8">[r];</span></span>
+<span class="line"><span style="color:#F97583">        while</span><span style="color:#E1E4E8"> (</span><span style="color:#B392F0">min</span><span style="color:#E1E4E8">(c2, c5) </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> k) {</span></span>
+<span class="line"><span style="color:#E1E4E8">            c2 </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> cnt2</span><span style="color:#E1E4E8">[l];</span></span>
+<span class="line"><span style="color:#E1E4E8">            c5 </span><span style="color:#F97583">+=</span><span style="color:#FFAB70"> cnt5</span><span style="color:#E1E4E8">[l];</span></span>
+<span class="line"><span style="color:#E1E4E8">            l</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">        res </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> (r </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> l </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">    cout </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#E1E4E8"> res </span><span style="color:#F97583">&#x3C;&#x3C;</span><span style="color:#9ECBFF"> '</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>
