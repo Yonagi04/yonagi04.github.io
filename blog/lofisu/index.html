@@ -1,0 +1,845 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/lofisu/"><!-- Primary Meta Tags --><title>关于 LofiSu：一个靠包装形象实现上位的欺诈者 | Yonagi&#39;s Sekai</title><meta name="title" content="关于 LofiSu：一个靠包装形象实现上位的欺诈者 | Yonagi's Sekai"><meta name="description" content="Article: 关于 LofiSu：一个靠包装形象实现上位的欺诈者"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/lofisu/"><meta property="og:title" content="关于 LofiSu：一个靠包装形象实现上位的欺诈者 | Yonagi's Sekai"><meta property="og:description" content="Article: 关于 LofiSu：一个靠包装形象实现上位的欺诈者"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/lofisu/"><meta property="twitter:title" content="关于 LofiSu：一个靠包装形象实现上位的欺诈者 | Yonagi's Sekai"><meta property="twitter:description" content="Article: 关于 LofiSu：一个靠包装形象实现上位的欺诈者"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DNSn8Jsb.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-sm px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog"> 
+Blog
+ </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-sm px-5"> <div class="animate relative w-full aspect-[2/1] my-6 rounded-lg overflow-hidden"> <img src="https://unpkg.com/yonagi-blog-repo-img@1.1.41/img/cover/lofisu.png" alt="关于 LofiSu：一个靠包装形象实现上位的欺诈者" class="w-full h-full object-cover" loading="eager"> </div><div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 关于 LofiSu：一个靠包装形象实现上位的欺诈者 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2026-05-23T15:00:00.000Z"> 2026年5月23日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 10 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 生活 </div> <div class="animate font-base text-sm">
+Tags: 生活 </div> </div> <article class="animate"> <p><strong>注：以下内容是作者认识的一位同学在使用 Codex 挖掘 Github 用户 Lofisu 的历史 Commit、PR、Issues记录后自动生成的一篇文章，为保护该同学身份，作者代为发布，因此本文不代表作者观点。如有疑问请咨询OpenAI的奥特曼。</strong></p>
+<p><strong>如果你不知道Lofisu是谁，以及不知道关于此人的节奏，请看请看【喜提xx在coding拉黑 - 小概率事件 | 小红书 - 你的生活兴趣社区】 😆 DzeeYPQzbjoaBuO 😆<a href="https://www.xiaohongshu.com/discovery/item/6a10211800000000360338b7?source=webshare&#x26;xhsshare=pc_web&#x26;xsec_token=CBeDokCm1qFist5kVvMvB3Z-505NgL9ya3aBE2m726W-k=&#x26;xsec_source=pc_share">https://www.xiaohongshu.com/discovery/item/6a10211800000000360338b7?source=webshare&#x26;xhsshare=pc_web&#x26;xsec_token=CBeDokCm1qFist5kVvMvB3Z-505NgL9ya3aBE2m726W-k=&#x26;xsec_source=pc_share</a></strong></p>
+<blockquote>
+<p>前言：
+她不是空壳，也不是纯骗子；她有真实产出，尤其集中在<strong>站点前端、文档、交互和页面型实现</strong>。</p>
+<p>但她最强的能力，不是某个<strong>单点技术标签</strong>，而是把<strong>有限但真实的经历</strong>，排布成一个<strong>明显更高位的身份叙事</strong>。</p>
+<p>把 PR、issue、README、个人 GitHub repo 结构和 connection 方式放在一起看，会发现她很会占位、抬位、进入高势能项目，再把这些转成外部形象。</p>
+<p>所以我真正反感的，不是她“会包装”，而是她把<strong>能力、关系、头衔都工具化成上升材料</strong>。</p>
+</blockquote>
+<p>如果我完全不认识她，只看公开材料，我对她的第一印象不会是“骗子”，而会是另一种更典型、也更复杂的人：</p>
+<p>她有真实材料，有执行力，有一些能拿得出手的公开产出，也非常懂得怎么把这些产出重新排列，最后制造出一个明显高于事实边界的整体印象。</p>
+<p>换句话说，她的问题恰恰不在于“完全没有东西”，而在于她不是空的，所以她的包装不是凭空捏造，而是更麻烦的一种形式：把真实但边界明确的经历，讲成更高位、更完整、更有力量的身份叙事。</p>
+<p>我对她的整体判断，也正是从这里开始的。</p>
+<p>这篇文章想把之前那几篇拆开的内容重新合成一条完整叙事线：</p>
+<ol>
+<li>只看公开事实，我对她的第一印象是什么。</li>
+<li>她到底做过哪些真实可核验的事。</li>
+<li>她 README 里哪些话成立，哪些话成立但容易误导，哪些话我不能替她确认。</li>
+<li>她是怎么一步步把自己从“前端开发”讲成“AI Full-Stack / Apache Committer / DeerFlow Maintainer / AI Infra”的。</li>
+<li>最后，为什么即便承认她有真实产出，我依然对这种人保留很强的反感。</li>
+</ol>
+<h2 id="一先只看事实我对她的第一印象是什么">一、先只看事实：我对她的第一印象是什么</h2>
+<p>如果只看公开记录，不看任何私下故事，我会先得出三个很明确的印象。</p>
+<h3 id="1-她不是空壳">1. 她不是空壳</h3>
+<p>这一点必须先说清楚。</p>
+<p>她在公开仓库里确实有真实记录，而且不是完全靠嘴：</p>
+<ul>
+<li><code>apache/fory-site</code>：公开可见 <code>12</code> 次 contribution、<code>18</code> 个 PR</li>
+<li><code>bytedance/deer-flow</code>：公开可见 <code>100</code> 次 contribution、<code>5</code> 条作者 PR</li>
+<li><code>Tencent/omi</code>：公开可见 <code>2</code> 次 contribution、<code>2</code> 条 PR</li>
+<li><code>alibaba/spring-ai-alibaba</code>：公开可见 <code>2</code> 条 PR</li>
+</ul>
+<p>所以如果有人想把她概括成“纯空壳”“全靠吹”，我觉得这是不准确的。她不是没有东西。</p>
+<h3 id="2-她最扎实的公开工作重心其实相当一致">2. 她最扎实的公开工作重心，其实相当一致</h3>
+<p>如果把这些仓库放在一起看，她最稳定、最容易核实的工作类型，高度集中在：</p>
+<ul>
+<li>站点前端</li>
+<li>文档与国际化</li>
+<li>页面组件与响应式适配</li>
+<li>Citation / thread / settings / navigation 这类产品交互层功能</li>
+<li>页面型、工作流型、可视化型实现</li>
+<li>中间件 bugfix 和周边 API</li>
+</ul>
+<p>这组重心本身没有问题，甚至可以说是很扎实的一类产出。但它和她后来对外呈现出来的高位身份之间，存在明显的叙事跃迁。</p>
+<h3 id="3-她非常懂怎么讲故事">3. 她非常懂怎么讲故事</h3>
+<p>如果一个人的 profile 仓库总提交大约 <code>282</code>，其中 <code>README.md</code> 一项就占 <code>150</code> 次，且仅 <code>2026-03-09</code> 一天就改了 <code>13</code> 次 README，这基本已经不是“顺手写个主页”了。</p>
+<p>这说明她在做一件非常明确的事：</p>
+<blockquote>
+<p>她在持续经营一个面向招聘市场和流量市场的个人品牌页。</p>
+</blockquote>
+<p>这就是我只看事实得出的第一印象：<br>
+不是“假”，而是“会”；不是“空”，而是“很懂怎么把有限但真实的东西排布成一个更高位的自己”。</p>
+<h2 id="二公开事实核查她到底做过哪些真实可核验的事">二、公开事实核查：她到底做过哪些真实可核验的事</h2>
+<h3 id="1-apache身份是真的但公开最扎实的证据主要在官网站点侧">1. Apache：身份是真的，但公开最扎实的证据主要在官网站点侧</h3>
+<p>先说结论：<code>Apache Committer</code> 这个身份本身是真的。</p>
+<p>ASF 官方 committer 名单里确实有 <code>lofisu</code>，而且挂在 <code>fory</code> / <code>incubator</code> 名下。所以这件事不能直接说她是假的。</p>
+<p>但如果继续往下看公开贡献，问题就出现了。</p>
+<p>她最扎实的 Apache 公开记录，主要不在 <code>apache/fory</code> 主仓库，而在 <code>apache/fory-site</code> 官网仓库。</p>
+<p><code>apache/fory-site</code> 当前公开能看到的是：</p>
+<ul>
+<li><code>12</code> 次 contribution</li>
+<li><code>18</code> 个 PR</li>
+<li>活跃高峰大致集中在 <code>2024 年 8 月到 11 月</code></li>
+<li><code>2025 年 4 月</code> 和 <code>2025 年 6 月</code> 还能看到零星继续</li>
+</ul>
+<p>更关键的是，PR 内容非常统一，集中在官网和站点侧，而不是主仓库核心逻辑。公开能点开的 PR 包括：</p>
+<ul>
+<li><code>#141</code> 国际化配置和简体中文版本</li>
+<li><code>#147</code> 官网动画效果与 FAQ 文档</li>
+<li><code>#152</code> 新增 user page</li>
+<li><code>#177</code> 首页语言卡片和代码展示模块</li>
+<li><code>#181</code> JavaScript icon 404 与复制按钮</li>
+<li><code>#193</code> 语言 quick start 路径</li>
+<li><code>#198</code> 首页语言卡片路由跳转</li>
+<li><code>#202</code> 移动端 CSS 适配</li>
+<li><code>#213</code> 组件结构重构、Tailwind 响应式、性能优化</li>
+<li><code>#216</code> 文档版本化支持，最终 <code>closed</code></li>
+<li><code>#264</code> 首页 Scala/Kotlin 代码示例</li>
+</ul>
+<p>也就是说，如果你看她 Apache 这部分最强的公开记录，能看到的是：</p>
+<ul>
+<li>站点前端</li>
+<li>国际化</li>
+<li>组件</li>
+<li>文档</li>
+<li>首页展示</li>
+<li>响应式和视觉交互</li>
+</ul>
+<p>反过来看 <code>apache/fory</code> 主仓库，公开信号就弱很多：</p>
+<ul>
+<li>默认分支按作者筛 commit：<code>0</code></li>
+<li>公开 PR：<code>1</code></li>
+<li>那 <code>1</code> 条还是 <code>#1867</code>，标题是 <code>docs: Update Rust README.md</code></li>
+<li>最终状态：<code>closed</code>，未合并</li>
+<li>改动文件：只有 <code>rust/README.md</code></li>
+</ul>
+<p>所以更准确的说法不是“她只是改过官网，不算 Apache Committer”，而是：</p>
+<blockquote>
+<p>她的 Apache 身份是真的，但她公开最强的贡献证据，主要支撑的是 Apache 官网/站点建设，而不是主仓库核心实现。</p>
+</blockquote>
+<p>这就是第一处叙事落差。<br>
+身份是真的，但外界最容易脑补出来的那种“深度参与核心引擎”的印象，并不由当前公开记录直接支持。</p>
+<h3 id="2-deerflow贡献很多但重心明显偏前端交互状态和周边-api">2. DeerFlow：贡献很多，但重心明显偏前端、交互、状态和周边 API</h3>
+<p><code>DeerFlow</code> 是她公开材料里最容易让人觉得“这个人很猛”的部分。</p>
+<p>因为数字本身确实不低：</p>
+<ul>
+<li>contributors 里公开显示 <code>100</code> 次 contribution</li>
+<li>公开作者 PR 目前能稳定查到 <code>5</code> 条</li>
+</ul>
+<p>具体是：</p>
+<ul>
+<li><code>#1063</code> <code>feat: memory management API with injection toggle and fact deletion</code></li>
+<li><code>#1064</code> 同题，当前仍是 <code>open</code></li>
+<li><code>#1077</code> <code>fix(frontend): fix new-chat navigation stale state issue</code></li>
+<li><code>#1081</code> <code>fix(middleware): 修复 runtime.context 为 None 的崩溃问题，并解除标题生成对对话的阻塞</code></li>
+<li><code>#1088</code> <code>fix(frontend): fix new-thread history 404/422 errors</code></li>
+</ul>
+<p>如果继续看 PR 正文，会发现她做的也不是没有技术含量的小修。比如：</p>
+<h4 id="1063--1064"><code>#1063 / #1064</code></h4>
+<p>公开正文里明确写了：</p>
+<ul>
+<li>新增 <code>PATCH /api/memory/config</code></li>
+<li>新增 <code>DELETE /api/memory/facts/{id}</code></li>
+<li>修复 <code>injection_enabled</code> 的跨进程竞态问题</li>
+<li>前端记忆设置页新增“在对话中注入记忆”开关</li>
+<li>Fact 从 Markdown 表格改成交互式列表</li>
+<li>配套改了 memory 相关前后端代码和测试</li>
+</ul>
+<p>这说明她不是只在 README 或页面文案层面打转，这条线里确实碰到了接口、状态持久化、前后端联动和测试。</p>
+<h4 id="1077"><code>#1077</code></h4>
+<p>这条是已合并 PR。正文写得很具体：</p>
+<ul>
+<li>把 <code>history.replaceState</code> 改成 <code>router.replace()</code></li>
+<li>修复 Next.js 内部路由状态不同步</li>
+<li>调整 <code>ChatLayout</code> remount 逻辑</li>
+</ul>
+<p>这是一个很明确的前端导航状态 bugfix。</p>
+<h4 id="1081"><code>#1081</code></h4>
+<p>这条虽然没合并，但正文也说明了她碰过 middleware 层问题：</p>
+<ul>
+<li>修复 <code>runtime.context</code> 为空导致的崩溃</li>
+<li>把标题生成从同步阻塞改成异步后台任务，避免对话被卡 <code>5-10 秒</code></li>
+</ul>
+<h4 id="1088"><code>#1088</code></h4>
+<p>这条也是很典型的前端线程状态问题：</p>
+<ul>
+<li>修复新线程首次发送消息时触发异常 <code>history</code> 请求</li>
+<li>对应 <code>404 / 422</code></li>
+<li>关联到 <code>fetchStateHistory</code>、Agent chat 页的 <code>history.replaceState</code> 和线程状态残留</li>
+</ul>
+<p>但关键不在于“她有没有做事”，而在于：<br>
+把这些 PR 标题、正文和改动文件放在一起看，方向其实非常统一。</p>
+<p>她在 DeerFlow 的公开最强重心，明显落在：</p>
+<ul>
+<li><code>frontend</code></li>
+<li><code>citations</code></li>
+<li><code>thread state</code></li>
+<li><code>memory settings</code></li>
+<li><code>navigation</code></li>
+<li><code>UI / interaction</code></li>
+<li><code>middleware bugfix</code></li>
+<li>周边 API</li>
+</ul>
+<p>这并不等于这些工作不重要。问题在于，这和外界一看到 <code>Maintainer of ByteDance/DeerFlow</code>、<code>AI Infra</code> 时，自动脑补出来的那种“核心底层维护者”形象，并不是一回事。</p>
+<p>更关键的是，DeerFlow README 当前公开列出的 <code>Key Contributors / core authors</code> 是：</p>
+<ul>
+<li><code>Daniel Walnut</code></li>
+<li><code>Henry Li</code></li>
+</ul>
+<p>公开列名里，我没有看到她被写进 core authors。</p>
+<p>所以这件事更准确的结论是：</p>
+<ul>
+<li>她在 DeerFlow 绝对不是零贡献，也不是轻飘飘蹭热度。</li>
+<li>她做过的东西里有一部分确实是实打实的前后端联动和问题修复。</li>
+<li>但从公开证据看，她的可见重心仍然明显偏前端、交互、状态管理和周边 API。</li>
+<li><code>Maintainer</code> 这个词，按我现在能独立核实到的公开页面，证据仍然不够。</li>
+</ul>
+<p>也就是说，这一项不是“完全虚构”，而是：</p>
+<blockquote>
+<p>贡献真实，而且不轻，但头衔强度仍然写得偏高。</p>
+</blockquote>
+<h3 id="3-tencent-omi贡献存在但体量不大">3. Tencent Omi：贡献存在，但体量不大</h3>
+<p><code>Tencent/omi</code> 这部分也值得单独说，因为它很典型。</p>
+<p>公开能看到的是：</p>
+<ul>
+<li><code>2</code> 次 contribution</li>
+<li><code>2</code> 条 PR：<code>#913</code>、<code>#914</code></li>
+<li>其中 <code>#914</code> 于 <code>2024-07-20</code> 合并</li>
+</ul>
+<p><code>#914</code> 的 PR 正文写得很清楚：完成的是一个 <code>TDesign</code> 风格企业官网模板 issue。<br>
+改动文件也只有这几个核心文件：</p>
+<ul>
+<li><code>packages/omi-templates/src/pages/company.tsx</code></li>
+<li><code>packages/omi-templates/src/routes.tsx</code></li>
+<li><code>packages/omi-templates/src/store.ts</code></li>
+</ul>
+<p>这说明 <code>Open Source Contributor — Tencent Omi</code> 这半句是成立的。<br>
+但它支撑的是一条体量不大的模板页面 PR 线，而不是一个分量很重、持续时间很长的项目角色。</p>
+<h3 id="4-spring-ai-alibaba有记录但仍然指向页面和交互层">4. Spring AI Alibaba：有记录，但仍然指向页面和交互层</h3>
+<p>这部分比我一开始预想的稍微多一点。</p>
+<p>公开能看到 <code>2</code> 条 PR：</p>
+<ul>
+<li><code>#189</code> <code>Doc : Added contribution guidelines document</code>
+<ul>
+<li>已合并</li>
+<li>改了 <code>CONTRIBUTING.md</code>、<code>README.md</code>、<code>README-zh.md</code></li>
+</ul>
+</li>
+<li><code>#208</code> <code>[Feat] Complete Low-Code AI Workflow Page Implementation</code>
+<ul>
+<li>已关闭，未合并</li>
+<li>正文非常长，内容包括：
+<ul>
+<li>低代码 AI workflow 页面</li>
+<li>背景画布和 mini-map</li>
+<li>节点 CRUD</li>
+<li>NodeEditorDrawer</li>
+<li>连接线和交互逻辑</li>
+<li>后续保存/加载配置预留</li>
+</ul>
+</li>
+<li>改动文件集中在 <code>graph-ui/src/pages/Graph/Design/*</code></li>
+</ul>
+</li>
+</ul>
+<p>这条信息很关键，因为它再次把她的公开工作重心拉回到了一个非常稳定的方向：</p>
+<ul>
+<li>页面</li>
+<li>交互</li>
+<li>可视化</li>
+<li>工作流编辑器</li>
+<li>产品侧前端</li>
+</ul>
+<p>而不是大家最容易脑补出来的“高位基础设施角色”。</p>
+<h3 id="5-higress-和-openyurt主仓库层面当前公开证据偏空">5. Higress 和 OpenYurt：主仓库层面当前公开证据偏空</h3>
+<p>这两项恰好能说明她 README 里最典型的一种包装方法。</p>
+<p>至少在当前主仓库公开作者记录里：</p>
+<ul>
+<li><code>alibaba/higress</code>
+<ul>
+<li>公开 PR：<code>0</code></li>
+<li>公开作者 commit：<code>0</code></li>
+</ul>
+</li>
+<li><code>openyurtio/openyurt</code>
+<ul>
+<li>公开 PR：<code>0</code></li>
+<li>公开作者 commit：<code>0</code></li>
+</ul>
+</li>
+</ul>
+<p>这并不绝对排除她在别的关联仓库、官网仓库、镜像仓库或者其他身份邮箱下做过事。<br>
+但如果写严谨版，就不能把它们直接写成“我已经在主仓库层面核验过的贡献”。</p>
+<p>这也是她公开叙事中一个很典型的技巧：</p>
+<blockquote>
+<p>把强弱差异很大的几段经历并排摆，最后给外部读者制造出一种“每一项都很扎实”的整体观感。</p>
+</blockquote>
+<h3 id="6-issue-行为她不只是提-pr也会先用-issue-占位试探需求建立角色感">6. Issue 行为：她不只是提 PR，也会先用 issue 占位、试探需求、建立角色感</h3>
+<p>这部分是我后面继续用 <code>gh</code> 补查时，才更明确确认下来的。</p>
+<p>她在这些相关仓库里，不是只提交 PR，也会主动发不少 issue。<br>
+而且这些 issue 的风格非常统一。</p>
+<p>如果粗分，大概有两类。</p>
+<p>第一类，是相对正常的 bug 反馈或使用问题：</p>
+<ul>
+<li><code>spring-ai-alibaba#619</code>：<code>Service接口缺失StudioUi无法启动</code></li>
+<li><code>openyurt.io#443</code>：本地 <code>npm run serve</code> 后改代码浏览器不刷新</li>
+<li><code>higress-group.github.io#306</code>：按钮文字在不同设备上的换行问题</li>
+</ul>
+<p>这类 issue 说明她并不是完全不碰真实问题。</p>
+<p>但更值得注意的是第二类，也是她更高频的一类：</p>
+<ul>
+<li>“这个需求要不要做，我可以做”</li>
+<li>“官网要不要 team page，我可以写”</li>
+<li>“要不要 AOS 动画 / 国际化 / Twind 响应式 / Graph UI 方案”</li>
+</ul>
+<p>典型例子包括：</p>
+<ul>
+<li><code>apache/fory-site#139</code>：希望官网支持中英文切换，并明确写“如果社区需要的话我可以做这个 issue”</li>
+<li><code>apache/fory-site#149</code>：提 team page，并写 <code>I will submit PR within two days</code></li>
+<li><code>openyurt.io#446</code>：问官网要不要 team page，并写 <code>I can write one</code></li>
+<li><code>openyurt.io#441</code>：问官网要不要 AOS 动画，并写 <code>I can try to pull request</code></li>
+<li><code>spring-ai-alibaba#162</code>：直接问有没有前端开发需求、前端架构是什么、能不能给前端 issue 打标签，明确争取进入项目</li>
+<li><code>spring-ai-alibaba#170</code>：主动给 Graph UI 提技术选型建议</li>
+<li><code>higress-group.github.io#294</code>：问官网要不要 team page</li>
+<li><code>higress-group.github.io#287</code>：问官网要不要 AOS 动画</li>
+<li><code>apache/fory#1793</code>：直接开了一个 <code>Fury FAQ</code> issue，后来还被维护者反问 <code>Do we really need this issue?</code></li>
+</ul>
+<p>把这些 issue 放在一起看，会发现她有一个非常稳定的动作模式：</p>
+<ul>
+<li>先进入维护者视野</li>
+<li>先把“我有想法”“我能做”“我正在参与”公开摆出来</li>
+<li>再把后续 PR、页面实现或个人履历，接到同一条线里</li>
+</ul>
+<p>这套动作本身并不违规。<br>
+在开源社区里，先提 issue 再做 PR，本来就是正常操作。</p>
+<p>但问题在于，当它和她后来的 README 叙事、头衔排布、connection 建立方式放在一起看时，它呈现出来的就不是单纯的“正常参与”，而更像一种很成熟的角色经营：</p>
+<blockquote>
+<p>她不是在等别人给她一个位置，而是会主动寻找一个低风险、高可见度、又正好适合自己前端/官网型能力发挥的位置，先用 issue 占位，再用 PR 把这个位置坐实。</p>
+</blockquote>
+<p>这会进一步解释我为什么一直觉得，她最强的能力之一，不只是做事，而是很会“进入叙事”。</p>
+<p>顺带一提，<code>deer-flow</code> 这边我暂时没有查到她自己主动发起 issue 的公开记录。<br>
+也就是说，她并不是每个项目都靠 issue 立位；在 DeerFlow 这里，她的可见度主要还是来自 PR 本身。</p>
+<h3 id="7-pr--issue-英文样本能用但并不构成她高位形象的强支撑">7. PR / Issue 英文样本：能用，但并不构成她高位形象的强支撑</h3>
+<p>这部分我一开始其实没有特别在意，但后面把她一些公开 PR / issue 的英文正文抽样看下来后，印象也慢慢稳定了。</p>
+<p>如果写得严谨一点，我不会说她“完全不会英文”。<br>
+她显然能完成基础的英文标题、PR 描述和简单互动。</p>
+<p>但如果有人因为她这些项目经历，就自动脑补成“她还有很强的国际化技术沟通能力”，那当前公开样本也支撑不了这么高的判断。</p>
+<p>比较典型的样本包括：</p>
+<ul>
+<li><code>apache/fory-site#199</code>：把 <code>navigator</code> 写成 <code>navigatior</code>，正文是一整段很长的 run-on sentence</li>
+<li><code>apache/fory-site#198</code>：<code>setting Chinese to default, should be set according to the user's navigator.language</code></li>
+<li><code>apache/fory-site#193</code>：<code>language quick start Button lost language path</code></li>
+<li><code>openyurt.io#450</code>：<code>Created the team page ... fetched each person's API information with JSON. git commit</code></li>
+<li><code>openyurt.io#441</code>：<code>If openyurt website need AOS animations ... I can try to pull request</code></li>
+</ul>
+<p>这些句子的问题倒不一定严重到“看不懂”，但直译感、模板感、不自然感都比较明显。<br>
+而且很多 PR 的 review 互动本身并不多，常常就是发上去后被简单通过，所以它们也不足以支撑“高水平英文协作能力”的印象。</p>
+<p>更准确一点的说法应该是：</p>
+<blockquote>
+<p>她的英文公开样本是“够用”，但远谈不上这是她形象里一个特别强、特别高位的支撑项。</p>
+</blockquote>
+<p>如果非要继续往下压缩一句，那就是：</p>
+<blockquote>
+<p>她真正强的，不是英文，而是选点、行动、进入项目视野，以及把这些东西重新排布成一个更高位的自己。</p>
+</blockquote>
+<h2 id="三readme-对比她是怎么把自己讲成今天这个版本的">三、README 对比：她是怎么把自己讲成今天这个版本的</h2>
+<p>她的 GitHub profile 仓库本身，就是最直观的证据。</p>
+<p>这个仓库：</p>
+<ul>
+<li>总提交大约 <code>282</code></li>
+<li>其中 <code>README.md</code> 就有 <code>150</code> 次提交</li>
+<li>仅 <code>2026-03-09</code> 一天 README 就改了 <code>13</code> 次</li>
+</ul>
+<p>如果对比时间线，会看到非常明显的身份升级轨迹。</p>
+<h3 id="1-最早版本前端学生--前端爱好者">1. 最早版本：前端学生 / 前端爱好者</h3>
+<p><code>2024-03-17</code> 创建 README 时，她写的是：</p>
+<ul>
+<li><code>I’m interested in front-end development</code></li>
+<li><code>I’m currently learning React</code></li>
+</ul>
+<p>这时候她对外最自然的身份是前端方向，这一点非常清楚。</p>
+<h3 id="2-中间版本前端工程师--开源爱好者">2. 中间版本：前端工程师 + 开源爱好者</h3>
+<p>后面的 README 逐步出现：</p>
+<ul>
+<li><code>A Front-End Development Engineer</code></li>
+<li><code>Love Open Source</code></li>
+<li><code>Dream to be Apache Commiter</code></li>
+</ul>
+<p>这还是一个很典型的前端 / 开源成长线。</p>
+<h3 id="3-2026-03-09-集中重构aiapachedeerflowinfra-一起就位">3. <code>2026-03-09</code> 集中重构：AI、Apache、DeerFlow、Infra 一起就位</h3>
+<p>到 <code>2026-03-09</code> 这一轮密集 README 重写，公开叙事突然变得非常完整：</p>
+<ul>
+<li><code>AI Full-Stack Developer</code></li>
+<li><code>Apache Committer</code></li>
+<li><code>Maintainer of ByteDance/DeerFlow</code></li>
+<li><code>Currently looking for a full‑stack AI agent developer position</code></li>
+<li><code>Douyin AI4SE RL&#x26;Infra</code></li>
+</ul>
+<p>如果只看这一天的 README 变更轨迹，你几乎能直接看到一个人如何把自己从“前端 / 开源 / 学生成长线”，升级成“AI / Infra / Agent / Apache / DeerFlow / 求职市场高势能候选人”。</p>
+<p>这说明什么？</p>
+<p>说明她根本不是自然地“把做过的事写上去”，而是在非常清楚地经营一个面向招聘市场和流量市场的个人品牌页。</p>
+<p>这也是我为什么一直说，她的问题不是“没有东西”，而是：</p>
+<blockquote>
+<p>她太会用有限但真实的东西，包装出一个比真实位置更高的自己。</p>
+</blockquote>
+<h3 id="4-把-profile-readme-放回整个个人-github-repo-结构里看会更清楚">4. 把 profile README 放回整个个人 GitHub repo 结构里看，会更清楚</h3>
+<p>如果把 <code>LofiSu/LofiSu</code> 这个 profile 仓库先排除掉，只看她账号下其他公开 repo，我看到的就不是“很多长期维护的原创工程”，而是另一种更有结构感的分布。</p>
+<p>当前我拉到的非 profile 公共仓库里，大约是：</p>
+<ul>
+<li><code>50</code> 个 fork</li>
+<li><code>13</code> 个原创仓库</li>
+</ul>
+<p>也就是说，数量上绝对主体是 fork，而不是原创 repo。</p>
+<p>更关键的是，这些 fork 的方向并不是随机分布，而是高度贴着她阶段性的技术叙事和求职叙事走：</p>
+<ul>
+<li><code>deer-flow</code></li>
+<li><code>OpenViking</code></li>
+<li><code>codex</code></li>
+<li><code>claude-code</code></li>
+<li><code>deer-code</code></li>
+<li><code>MiroFlow</code></li>
+<li><code>playwright-mcp</code></li>
+<li><code>spring-ai-alibaba</code></li>
+<li><code>dify</code></li>
+<li><code>Flowise</code></li>
+<li><code>langfuse</code></li>
+<li><code>ComfyUI</code></li>
+</ul>
+<p>这条线其实非常清楚：</p>
+<blockquote>
+<p>AI Agent / MCP / workflow / coding agent / low-code / 可视化 / 前端工具链。</p>
+</blockquote>
+<p>反过来看她自己的原创仓库，最有可见度的大概是这几类：</p>
+<ul>
+<li><code>Agent_Kimi_ClaudeCode</code>：<code>18</code> stars，<code>8</code> 个 commit</li>
+<li><code>myBlog</code>：<code>13</code> stars，<code>108</code> 个 commit</li>
+<li><code>LLM-NoteBook</code>：<code>11</code> stars，<code>34</code> 个 commit</li>
+<li><code>InBrowserMcp</code>：<code>9</code> stars，<code>18</code> 个 commit</li>
+<li>其他原创仓库则大多是 <code>IELTS</code>、<code>Happy-Agent-Dev-Learning</code>、<code>mcp-server</code>、<code>React-Student-Admin</code>、<code>Huawei-web-Vmall-HTML-CSS-JavaScript</code>、<code>StickerSmash</code>、<code>SuKaAI</code>、<code>lofisu-2026</code></li>
+</ul>
+<p>这组原创仓库的气质也很稳定：</p>
+<ul>
+<li>博客</li>
+<li>笔记</li>
+<li>教程 / 学习路线</li>
+<li>demo / 小项目</li>
+<li>agent 实战分享</li>
+<li>个人学习记录</li>
+</ul>
+<p>也就是说，个人 GitHub 除了 profile 仓库之外，真正支撑她“原创工程感”的 repo 并不算多。<br>
+更明显的结构其实是：</p>
+<blockquote>
+<p>她会很快贴近一个上升赛道，fork 一批当下高势能项目，把自己放进这一波技术叙事里；与此同时，再用少量原创内容型 repo 补足“我也在持续产出”的个人品牌结构。</p>
+</blockquote>
+<p>最近的 public events 更能说明这个问题。</p>
+<p>如果只看最近 <code>100</code> 条公开事件，并且排除 <code>LofiSu/LofiSu</code> 这个个人主页仓库，几乎所有公开活跃度都压在 <code>deer-flow</code> 这条线上：</p>
+<ul>
+<li><code>26</code> 条 <code>PushEvent</code> 落在 <code>LofiSu/deer-flow</code></li>
+<li><code>7</code> 条 <code>PullRequestEvent</code> 落在 <code>bytedance/deer-flow</code></li>
+<li><code>6</code> 条 <code>CreateEvent</code> 落在 <code>LofiSu/deer-flow</code></li>
+<li><code>2</code> 条 <code>DeleteEvent</code> 落在 <code>LofiSu/deer-flow</code></li>
+<li>其余只剩 <code>1</code> 条 <code>OpenViking</code> 的 fork 事件，以及 DeerFlow 上的零星 watch / member / comment 事件</li>
+</ul>
+<p>这意味着什么？</p>
+<p>意味着她当前最强的公开 coding 活跃度，并不是分散在很多原创 repo 上，而是高度集中在一个高势能的 fork / upstream 叙事里。</p>
+<p>如果一个人只看她 profile README，很容易感觉她背后有一个庞大而繁忙的个人开源矩阵；<br>
+但把个人 GitHub repo 结构也拆开看以后，会更接近事实的描述其实是：</p>
+<ul>
+<li>大量 fork 构成她的赛道贴附层</li>
+<li>少量原创博客 / 笔记 / demo 构成她的内容产出层</li>
+<li>真正近期高频、最能制造“她很活跃”印象的公开 coding 事件，主要集中在 DeerFlow 这条线上</li>
+</ul>
+<h2 id="四把-readme-里的话逐句拆开会看到什么">四、把 README 里的话逐句拆开，会看到什么</h2>
+<p>她 README 里最值得拆的，不是那些空泛修饰，而是几句带强身份含义的话。</p>
+<h3 id="1-ai-full-stack-developer">1. <code>AI Full-Stack Developer</code></h3>
+<p>这句本质上不是客观头衔，而是自我定位。<br>
+问题在于，她公开最扎实的作品重心，长期来看仍然明显偏：</p>
+<ul>
+<li>站点前端</li>
+<li>文档</li>
+<li>交互</li>
+<li>Citation / thread / settings</li>
+<li>页面型和工作流型实现</li>
+</ul>
+<p>所以这句更像市场化求职定位，而不是一个外部世界已经替她盖章的客观身份。</p>
+<h3 id="2-apache-committer">2. <code>Apache Committer</code></h3>
+<p>这句成立。<br>
+但它最强的公开证据，主要支撑的是 Apache 官网/站点建设，而不是主仓库核心实现。</p>
+<p>所以如果有人顺着这句话自动脑补成“她深度参与的是 Apache Fory 核心引擎”，那就已经超过公开证据本身。</p>
+<h3 id="3-maintainer-of-bytedancedeerflow">3. <code>Maintainer of ByteDance/DeerFlow</code></h3>
+<p>这句里，“在 DeerFlow 有真实贡献”是真的。<br>
+但“Maintainer”这个词，按当前能公开核实到的页面，证据仍然不够。尤其是 DeerFlow README 里公开列出来的 <code>Key Contributors / core authors</code> 并没有她。</p>
+<p>所以更稳妥的说法应该是：她是活跃贡献者，而不是我能直接替她盖章的公开 maintainer。</p>
+<h3 id="4-tencent-rhino-bird--tencent-omi">4. <code>Tencent Rhino Bird ... Tencent Omi</code></h3>
+<p><code>Omi contributor</code> 这半句成立。<br>
+但如果把整句话读成“她在 Omi 这边有分量很重的长期项目角色”，那就是放大。公开代码侧支撑的，只是一条体量不大的模板页面 PR 线。</p>
+<p>至于“犀牛鸟课题实战奖”本身，我目前只能说她有自述和截图，尚未找到独立官方公示来完成外部核验。</p>
+<h3 id="5-alibaba-open-source-contributor--higress--openyurt--spring-ai-alibaba">5. <code>Alibaba Open Source Contributor — Higress · OpenYurt · Spring AI Alibaba</code></h3>
+<p>这句是她 README 里最典型的一种写法。</p>
+<p>因为：</p>
+<ul>
+<li><code>Spring AI Alibaba</code>：公开证据不为空</li>
+<li><code>Higress</code>：主仓库公开证据当前是 <code>0</code></li>
+<li><code>OpenYurt</code>：主仓库公开证据当前也是 <code>0</code></li>
+</ul>
+<p>如果她写的是 <code>Spring AI Alibaba Contributor</code>，我不会说这句完全站不住。<br>
+但把三者并列打包成一句统一的 <code>Alibaba Open Source Contributor</code>，就明显比当前主仓库公开证据更满。</p>
+<h2 id="五从事实切入我会如何描述这个人">五、从事实切入，我会如何描述这个人</h2>
+<p>如果我刻意不带情绪，只根据这些公开记录来描述她，我会这么写：</p>
+<p>她是一个有真实公开产出的人，而且不是零散产出。她在 Apache Fory Site、DeerFlow、Omi、Spring AI Alibaba 这些地方都留下了一定程度的公开痕迹。她最扎实的工作重心长期集中在站点前端、文档、交互、线程状态、Citation、页面型和可视化型实现。她也会主动通过 issue 进入项目视野，先提出需求、方案或切入口，再把 PR 和履历接到这条线上。她的个人 GitHub repo 结构本身也很说明问题：大量 fork 负责贴近热点和赛道，少量原创博客 / 笔记 / demo 负责补足持续产出感。她很会整理这些材料，也很懂怎么把它们重新排列成一套更高位的身份叙事。</p>
+<p>如果一定要浓缩成一句话，那就是：</p>
+<blockquote>
+<p>她不是没东西，她是太会用有限但真实的东西，包装出一个比真实位置更高的自己。</p>
+</blockquote>
+<h2 id="六为什么我最后还是对这种人反感">六、为什么我最后还是对这种人反感</h2>
+<p>如果事情只停留在“她很会包装”，其实我未必会这么反感。</p>
+<p>因为这个时代里，会包装的人太多了。尤其在 AI 圈，这几乎已经成了半公开的默认技能。<br>
+真正让我反感的，不只是她会讲故事，而是她讲故事的方式，和她建立 connection 的方式，看起来越来越像同一套机制：</p>
+<ul>
+<li>快速占位</li>
+<li>快速抬升</li>
+<li>快速连接</li>
+<li>快速筛选</li>
+<li>快速丢弃</li>
+</ul>
+<p>而且这种“快速占位”，不只体现在私下社交里，也体现在她对开源项目的进入方式里：<br>
+先找一个前端/官网型切口，用 issue 试探、用 PR 落地、用 README 抬位，最后把这些动作拼成一个更强的外部角色。</p>
+<p>如果没有我和她那次私下交集，我对她的判断可能停留在：</p>
+<blockquote>
+<p>这个人很会做品牌、很会做 connection，也很懂怎么在 AI 叙事里给自己抬位。</p>
+</blockquote>
+<p>但加上那段私人经历之后，我对她的判断就变成了：</p>
+<blockquote>
+<p>这个人的社交方式带有很强的工具性。她不是在稳定建立关系，而是在快速扫描、快速接近、快速筛选，然后快速丢弃。</p>
+</blockquote>
+<p>这也是为什么我对她的最终判断不是“骗子”，而是另一种我同样不喜欢的人：</p>
+<blockquote>
+<p>她是那种很懂当代技术圈游戏规则、也很会借这些规则往上走的人。她有真实产出，但也很会把这些产出包装成更强的身份；她会建立 connection，但这种 connection 给人的感觉更像资源操作，而不是关系本身。这样的人可以很会赢，但未必很值得尊重。</p>
+</blockquote>
+<h2 id="七如果把视角再拉高一点我会怎么评价这类人">七、如果把视角再拉高一点：我会怎么评价这类人</h2>
+<p>如果我不只是在评价她，而是在评价“她所代表的这一类人”，我会把这类人定义为：</p>
+<blockquote>
+<p>高执行力、强叙事、强机会感，但边界感偏弱的上升型人格。</p>
+</blockquote>
+<p>如果再把这种人的印象拆成三个层级，我会觉得大概是这样：</p>
+<h3 id="1-第一眼印象">1. 第一眼印象</h3>
+<p>第一眼看过去，往往会觉得这种人：</p>
+<ul>
+<li>很会做事</li>
+<li>很会表达</li>
+<li>很会抓机会</li>
+<li>履历很满</li>
+<li>好像到处都在参与，而且参与得都不浅</li>
+</ul>
+<p>也就是说，第一眼最容易形成的感觉通常不是“假”，而是：</p>
+<blockquote>
+<p>这个人很会、很活跃、很上进，而且上升势头很强。</p>
+</blockquote>
+<p>这也是为什么这类人很容易在短时间内获得关注。<br>
+因为她们给外界提供的是一种高密度、高完成度、高势能的整体印象。</p>
+<h3 id="2-细挖一下后的印象">2. 细挖一下后的印象</h3>
+<p>当你开始看具体 PR、issue、repo、时间线、贡献边界之后，印象就会发生第一次变化。</p>
+<p>这时你通常会发现：</p>
+<ul>
+<li>她不是空壳，确实做过一些东西</li>
+<li>但很多“强身份”背后的真实重心，比表面印象更窄</li>
+<li>很多经历并不是假的，而是被排布得特别会说话</li>
+<li>她最强的能力未必是单点技术深度，而是选点、占位、进入叙事、放大观感</li>
+</ul>
+<p>也就是说，细挖一下后的感觉不再是“哇，这个人好强”，而更像是：</p>
+<blockquote>
+<p>她不是没有东西，她是特别会把现有的东西讲成一个更强的自己。</p>
+</blockquote>
+<p>这一步其实最容易让人进入一种复杂感受：<br>
+你开始不舒服，但还不至于一句话把她打成假的，因为她确实有真实材料。</p>
+<h3 id="3-彻底深挖后的印象">3. 彻底深挖后的印象</h3>
+<p>等你把公开贡献、issue 行为、个人 GitHub repo 结构、README 迭代、英文样本、以及她和人建立 connection 的方式全部放在一起看，印象就会再变一次。</p>
+<p>这时她给人的感觉通常不再只是“很会包装”，而会更接近：</p>
+<ul>
+<li>她很懂系统奖励什么</li>
+<li>她很懂如何在边界内抬升观感</li>
+<li>她很懂怎样把项目、头衔、社交都变成上升材料</li>
+<li>她不是在稳定建立位置，而是在持续经营一个可被市场高估的位置</li>
+</ul>
+<p>到这一步，真正让人不适的东西就不只是包装本身，而是：</p>
+<blockquote>
+<p>她整个人像一个被高度经营过的上升装置。</p>
+</blockquote>
+<p>你会开始感觉，她不是单纯在“表达自己”，而是在“设计别人如何理解她”；<br>
+她不是单纯在“建立关系”，而是在“配置资源接口”；<br>
+她不是单纯在“积累经历”，而是在“制造一个高于事实边界的自己”。</p>
+<p>这也是为什么这类人越深挖，往往越容易让人反感。<br>
+不是因为你发现了某条惊天假话，而是因为你越来越清楚地看见：</p>
+<blockquote>
+<p>她的很多动作，单独看都可以解释；但全部拼起来，就是一套非常成熟、非常工具化、也非常不让我尊重的上升机制。</p>
+</blockquote>
+<p>她们通常不是空壳，也不是完全不会做事。<br>
+恰恰相反，她们往往很会读环境、很会选赛道、很会找切口，也很会在一个项目里迅速找到“最容易被看见、最适合自己发挥、又最容易转化成身份叙事”的位置。</p>
+<p>所以如果只看能力面，我会承认这类人有几种真实且不弱的能力：</p>
+<ul>
+<li>会判断市场奖励什么</li>
+<li>会选择高势能叙事</li>
+<li>会快速进入项目视野</li>
+<li>会把碎片化经历整理成连续故事</li>
+<li>会把“事实正确”与“印象抬升”之间的空间利用到极致</li>
+</ul>
+<p>但问题也恰恰出在最后一点。</p>
+<p>她们最让人不舒服的，不一定是“造假”，而是：</p>
+<blockquote>
+<p>每一条单独拿出来，可能都不完全错；但整体拼起来，就是在持续诱导别人高估她的位置。</p>
+</blockquote>
+<p>这会带来一种很强的不适感，因为它不是赤裸裸的欺骗，而是一种边界被精确操控后的失真。<br>
+你很难一句话把她打成“假的”，但你又能明显感觉到，她呈现出来的自己，已经高于公开事实真正能稳稳支撑的位置。</p>
+<p>如果这种模式再进一步进入社交关系里，就会更让人本能反感。<br>
+因为这时候被工具化的，不只是头衔、项目和履历，还有人本身。</p>
+<p>于是这类人会呈现出一个很典型的双重性：</p>
+<ul>
+<li>从功利结果看，她们往往是有效的</li>
+<li>从信任和尊重看，她们往往是可疑的</li>
+</ul>
+<p>我会承认她们“很会赢”，但我不会轻易把她们归到“真正值得尊重的强者”里。<br>
+因为我对强者的标准从来不只是会不会往上走，而是：</p>
+<ul>
+<li>能力和位置是否匹配</li>
+<li>表达和事实是否对齐</li>
+<li>关系和人是否被当成纯资源</li>
+</ul>
+<p>所以如果非要再压成一句最短的判断，那就是：</p>
+<blockquote>
+<p>这类人通常很会经营形象，也很会利用系统，但未必配得上她们试图让别人相信的那个自己。</p>
+</blockquote>
+<p>而我对这类人的本能不适，本质上也不是“讨厌会包装的人”，而是：</p>
+<blockquote>
+<p>我厌恶一种把能力、关系、身份都变成可操作展示品的上升方式。</p>
+</blockquote>
+<h2 id="八结论">八、结论</h2>
+<p>如果只问一句：LofiSu 有没有完全胡说八道？</p>
+<p>没有。她有不少真实材料。</p>
+<p>但如果问得更准确一点：</p>
+<p>她是不是很会把真实但边界明确的材料，重新排列、重新包装，最后产出一个比事实位置更高的自己？</p>
+<p>我的答案是：是，而且这几乎就是她最核心的能力。</p>
+<p>说得再直白一点：</p>
+<p>她最厉害的地方，不是她写了多少假话，而是她太会用有限但真实的话，制造出一个明显高于事实边界的整体印象。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>当前 README：<a href="https://github.com/LofiSu/LofiSu/blob/main/README.md">https://github.com/LofiSu/LofiSu/blob/main/README.md</a></li>
+<li>GitHub 主页：<a href="https://github.com/LofiSu">https://github.com/LofiSu</a></li>
+<li>GitHub 仓库列表：<a href="https://github.com/LofiSu?tab=repositories">https://github.com/LofiSu?tab=repositories</a></li>
+<li>2024-03-17 初始 README 提交：<a href="https://github.com/LofiSu/LofiSu/commit/95eb84708fb586d2a6de8726fa217b7f8171984c">https://github.com/LofiSu/LofiSu/commit/95eb84708fb586d2a6de8726fa217b7f8171984c</a></li>
+<li>2026-03-09 README 重构提交：<a href="https://github.com/LofiSu/LofiSu/commit/47ebda5cf43b23b1b37cf17dcce7f131411b49ed">https://github.com/LofiSu/LofiSu/commit/47ebda5cf43b23b1b37cf17dcce7f131411b49ed</a></li>
+<li>2026-03-09 README 重构提交：<a href="https://github.com/LofiSu/LofiSu/commit/660710f6042bffa27f6a9ac0406e7f5bb76ac013">https://github.com/LofiSu/LofiSu/commit/660710f6042bffa27f6a9ac0406e7f5bb76ac013</a></li>
+<li><code>Agent_Kimi_ClaudeCode</code>：<a href="https://github.com/LofiSu/Agent_Kimi_ClaudeCode">https://github.com/LofiSu/Agent_Kimi_ClaudeCode</a></li>
+<li><code>myBlog</code>：<a href="https://github.com/LofiSu/myBlog">https://github.com/LofiSu/myBlog</a></li>
+<li><code>LLM-NoteBook</code>：<a href="https://github.com/LofiSu/LLM-NoteBook">https://github.com/LofiSu/LLM-NoteBook</a></li>
+<li><code>InBrowserMcp</code>：<a href="https://github.com/LofiSu/InBrowserMcp">https://github.com/LofiSu/InBrowserMcp</a></li>
+<li>ASF committer 名单：<a href="https://home.apache.org/committer-index.html#lofisu">https://home.apache.org/committer-index.html#lofisu</a></li>
+<li>ASF 项目名单：<a href="https://home.apache.org/committers-by-project.html#fory">https://home.apache.org/committers-by-project.html#fory</a></li>
+<li>Apache Fory Site commits by author：<a href="https://github.com/apache/fory-site/commits/main/?author=LofiSu">https://github.com/apache/fory-site/commits/main/?author=LofiSu</a></li>
+<li>Apache Fory Site PR 搜索：<a href="https://github.com/apache/fory-site/pulls?q=is%3Apr+author%3ALofiSu">https://github.com/apache/fory-site/pulls?q=is%3Apr+author%3ALofiSu</a></li>
+<li>Apache Fory Site PR <code>#141</code>：<a href="https://github.com/apache/fory-site/pull/141">https://github.com/apache/fory-site/pull/141</a></li>
+<li>Apache Fory Site PR <code>#147</code>：<a href="https://github.com/apache/fory-site/pull/147">https://github.com/apache/fory-site/pull/147</a></li>
+<li>Apache Fory Site PR <code>#152</code>：<a href="https://github.com/apache/fory-site/pull/152">https://github.com/apache/fory-site/pull/152</a></li>
+<li>Apache Fory Site PR <code>#177</code>：<a href="https://github.com/apache/fory-site/pull/177">https://github.com/apache/fory-site/pull/177</a></li>
+<li>Apache Fory Site PR <code>#181</code>：<a href="https://github.com/apache/fory-site/pull/181">https://github.com/apache/fory-site/pull/181</a></li>
+<li>Apache Fory Site PR <code>#193</code>：<a href="https://github.com/apache/fory-site/pull/193">https://github.com/apache/fory-site/pull/193</a></li>
+<li>Apache Fory Site PR <code>#198</code>：<a href="https://github.com/apache/fory-site/pull/198">https://github.com/apache/fory-site/pull/198</a></li>
+<li>Apache Fory Site PR <code>#202</code>：<a href="https://github.com/apache/fory-site/pull/202">https://github.com/apache/fory-site/pull/202</a></li>
+<li>Apache Fory Site PR <code>#213</code>：<a href="https://github.com/apache/fory-site/pull/213">https://github.com/apache/fory-site/pull/213</a></li>
+<li>Apache Fory Site PR <code>#216</code>：<a href="https://github.com/apache/fory-site/pull/216">https://github.com/apache/fory-site/pull/216</a></li>
+<li>Apache Fory Site PR <code>#264</code>：<a href="https://github.com/apache/fory-site/pull/264">https://github.com/apache/fory-site/pull/264</a></li>
+<li>Apache Fory main commits by author：<a href="https://github.com/apache/fory/commits/main/?author=LofiSu">https://github.com/apache/fory/commits/main/?author=LofiSu</a></li>
+<li>Apache Fory PR <code>#1867</code>：<a href="https://github.com/apache/fory/pull/1867">https://github.com/apache/fory/pull/1867</a></li>
+<li>DeerFlow repo：<a href="https://github.com/bytedance/deer-flow">https://github.com/bytedance/deer-flow</a></li>
+<li>DeerFlow PR <code>#1063</code>：<a href="https://github.com/bytedance/deer-flow/pull/1063">https://github.com/bytedance/deer-flow/pull/1063</a></li>
+<li>DeerFlow PR <code>#1064</code>：<a href="https://github.com/bytedance/deer-flow/pull/1064">https://github.com/bytedance/deer-flow/pull/1064</a></li>
+<li>DeerFlow PR <code>#1077</code>：<a href="https://github.com/bytedance/deer-flow/pull/1077">https://github.com/bytedance/deer-flow/pull/1077</a></li>
+<li>DeerFlow PR <code>#1081</code>：<a href="https://github.com/bytedance/deer-flow/pull/1081">https://github.com/bytedance/deer-flow/pull/1081</a></li>
+<li>DeerFlow PR <code>#1088</code>：<a href="https://github.com/bytedance/deer-flow/pull/1088">https://github.com/bytedance/deer-flow/pull/1088</a></li>
+<li>DeerFlow README <code>Key Contributors</code>：<a href="https://github.com/bytedance/deer-flow#key-contributors">https://github.com/bytedance/deer-flow#key-contributors</a></li>
+<li>Tencent Omi PR <code>#913</code>：<a href="https://github.com/Tencent/omi/pull/913">https://github.com/Tencent/omi/pull/913</a></li>
+<li>Tencent Omi PR <code>#914</code>：<a href="https://github.com/Tencent/omi/pull/914">https://github.com/Tencent/omi/pull/914</a></li>
+<li>Spring AI Alibaba PR <code>#189</code>：<a href="https://github.com/alibaba/spring-ai-alibaba/pull/189">https://github.com/alibaba/spring-ai-alibaba/pull/189</a></li>
+<li>Spring AI Alibaba PR <code>#208</code>：<a href="https://github.com/alibaba/spring-ai-alibaba/pull/208">https://github.com/alibaba/spring-ai-alibaba/pull/208</a></li>
+<li>Apache Fory Site issue <code>#139</code>：<a href="https://github.com/apache/fory-site/issues/139">https://github.com/apache/fory-site/issues/139</a></li>
+<li>Apache Fory Site issue <code>#149</code>：<a href="https://github.com/apache/fory-site/issues/149">https://github.com/apache/fory-site/issues/149</a></li>
+<li>Apache Fory Site issue <code>#212</code>：<a href="https://github.com/apache/fory-site/issues/212">https://github.com/apache/fory-site/issues/212</a></li>
+<li>Apache Fory issue <code>#1793</code>：<a href="https://github.com/apache/fory/issues/1793">https://github.com/apache/fory/issues/1793</a></li>
+<li>Spring AI Alibaba issue <code>#162</code>：<a href="https://github.com/alibaba/spring-ai-alibaba/issues/162">https://github.com/alibaba/spring-ai-alibaba/issues/162</a></li>
+<li>Spring AI Alibaba issue <code>#170</code>：<a href="https://github.com/alibaba/spring-ai-alibaba/issues/170">https://github.com/alibaba/spring-ai-alibaba/issues/170</a></li>
+<li>Spring AI Alibaba issue <code>#619</code>：<a href="https://github.com/alibaba/spring-ai-alibaba/issues/619">https://github.com/alibaba/spring-ai-alibaba/issues/619</a></li>
+<li>Higress 主仓库：<a href="https://github.com/alibaba/higress">https://github.com/alibaba/higress</a></li>
+<li>Higress 官网 issue <code>#287</code>：<a href="https://github.com/higress-group/higress-group.github.io/issues/287">https://github.com/higress-group/higress-group.github.io/issues/287</a></li>
+<li>Higress 官网 issue <code>#294</code>：<a href="https://github.com/higress-group/higress-group.github.io/issues/294">https://github.com/higress-group/higress-group.github.io/issues/294</a></li>
+<li>Higress 官网 issue <code>#306</code>：<a href="https://github.com/higress-group/higress-group.github.io/issues/306">https://github.com/higress-group/higress-group.github.io/issues/306</a></li>
+<li>OpenYurt 主仓库：<a href="https://github.com/openyurtio/openyurt">https://github.com/openyurtio/openyurt</a></li>
+<li>OpenYurt 官网 issue <code>#441</code>：<a href="https://github.com/openyurtio/openyurt.io/issues/441">https://github.com/openyurtio/openyurt.io/issues/441</a></li>
+<li>OpenYurt 官网 issue <code>#443</code>：<a href="https://github.com/openyurtio/openyurt.io/issues/443">https://github.com/openyurtio/openyurt.io/issues/443</a></li>
+<li>OpenYurt 官网 issue <code>#446</code>：<a href="https://github.com/openyurtio/openyurt.io/issues/446">https://github.com/openyurtio/openyurt.io/issues/446</a></li>
+</ul> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-sm px-5">   <div class="flex justify-between items-center"> <div>
+&copy; 2025 | Yonagi&#39;s Sekai </div> <!-- <div class="flex flex-wrap gap-1 items-center">
+        <button
+          id="light-theme-button"
+          aria-label="Light theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="dark-theme-button"
+          aria-label="Dark theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button
+          id="system-theme-button"
+          aria-label="System theme"
+          class="group size-8 flex items-center justify-center rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+      </div> --> </div>  </div> </footer> </body></html>
