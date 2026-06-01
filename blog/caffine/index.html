@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/caffine/"><!-- Primary Meta Tags --><title>Java最强本地缓存——Caffeine | Yonagi&#39;s Sekai</title><meta name="title" content="Java最强本地缓存——Caffeine | Yonagi's Sekai"><meta name="description" content="Article: Java最强本地缓存——Caffeine"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/caffine/"><meta property="og:title" content="Java最强本地缓存——Caffeine | Yonagi's Sekai"><meta property="og:description" content="Article: Java最强本地缓存——Caffeine"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/caffine/"><meta property="twitter:title" content="Java最强本地缓存——Caffeine | Yonagi's Sekai"><meta property="twitter:description" content="Article: Java最强本地缓存——Caffeine"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+<!DOCTYPE html><html lang="zh-CN"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/caffine/"><!-- RSS auto-discovery --><link rel="alternate" type="application/rss+xml" title="Java最强本地缓存——Caffeine | Yonagi's Sekai | RSS" href="/rss.xml"><!-- Primary Meta Tags --><title>Java最强本地缓存——Caffeine | Yonagi&#39;s Sekai</title><meta name="title" content="Java最强本地缓存——Caffeine | Yonagi's Sekai"><meta name="description" content="Article: Java最强本地缓存——Caffeine"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/caffine/"><meta property="og:title" content="Java最强本地缓存——Caffeine | Yonagi's Sekai"><meta property="og:description" content="Article: Java最强本地缓存——Caffeine"><!-- Twitter --><meta property="twitter:card" content="summary"><meta property="twitter:url" content="https://yonagi04.github.io/blog/caffine/"><meta property="twitter:title" content="Java最强本地缓存——Caffeine | Yonagi's Sekai"><meta property="twitter:description" content="Article: Java最强本地缓存——Caffeine"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
   function init() {
     preloadTheme();
     onScroll();
@@ -106,13 +106,15 @@ function toggleTheme(dark) {
   document.addEventListener("DOMContentLoaded", () => init());
   document.addEventListener("astro:after-swap", () => init());
   preloadTheme();
-</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous"><link rel="stylesheet" href="/_astro/_slug_.CiZogSSC.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold text-lg"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog">  <div class="text-md">
+</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous"><link rel="stylesheet" href="/_astro/_slug_.1TjzH4Yf.css">
+<style>.code-block-wrapper:hover .copy-btn{opacity:1}.dark .copy-btn{background:#ffffff1a;color:#fff9}
+</style><script type="module" src="/_astro/hoisted.DYQcBFdO.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold text-lg"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog">  <div class="text-md">
 Blog
 </div>  </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> Java最强本地缓存——Caffeine </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-07-25T09:47:32.000Z"> 2024年7月25日 </time> </div>
 &bull;
 <div class="font-base text-sm"> 4 min read </div> </div> <div class="animate font-base text-sm">
-Categories: 未分类 </div> <div class="animate font-base text-sm">
-Tags: 无 </div> </div> <article class="animate max-w-none"> <p>缓存（Cache）在计算机中无处不在。缓存本质上是一种用空间换时间的手段——通过将数据存储在更快的存储媒介上，减少响应的时间，使得下一次访问这些数据的时候能够获得加速的效果。从缓存类型来看，缓存还分为 <strong>本地缓存</strong> 和 <strong>分布式缓存</strong> 两种类型。分布式缓存（如 Redis 集群）除了要解决数据读取效率问题外，还要解决集群环境下的数据不一致问题。本文将简单地介绍一种高性能的本地缓存库——Caffeine，以及Caffeine 的使用、驱逐策略、刷新策略，以及如何在 SpringBoot 中使用 Caffeine</p>
+Categories:  未分类 </div> <div class="animate font-base text-sm">
+Tags:  无 </div> </div> <article class="animate max-w-none"> <p>缓存（Cache）在计算机中无处不在。缓存本质上是一种用空间换时间的手段——通过将数据存储在更快的存储媒介上，减少响应的时间，使得下一次访问这些数据的时候能够获得加速的效果。从缓存类型来看，缓存还分为 <strong>本地缓存</strong> 和 <strong>分布式缓存</strong> 两种类型。分布式缓存（如 Redis 集群）除了要解决数据读取效率问题外，还要解决集群环境下的数据不一致问题。本文将简单地介绍一种高性能的本地缓存库——Caffeine，以及Caffeine 的使用、驱逐策略、刷新策略，以及如何在 SpringBoot 中使用 Caffeine</p>
 <h2 id="caffeine-简介">Caffeine 简介</h2>
 <p><a href="https://github.com/ben-manes/caffeine">Caffeine</a> 是基于Java 1.8的高性能本地缓存库，由 Guava 演变而来，它的性能比Guava也更好，官方声称在基准测试中， <a href="https://github.com/ben-manes/caffeine/wiki/Benchmarks">Caffeine 的缓存命中率已经接近于最优值</a>，且 <a href="https://github.com/ben-manes/caffeine/wiki/Memory-overhead">Caffeine 的内存占用情况也优于 Guava</a></p>
 <p>实际上，Caffeine 这种本地缓存和 ConcurrentHashMap 很像——都支持并发，都支持 O(1) 时间复杂度的存取。两者的主要区别在于：</p>
@@ -321,7 +323,72 @@ Tags: 无 </div> </div> <article class="animate max-w-none"> <p>缓存（Cache�
 <ul>
 <li>在 Cache 中，sync 表示是否需要所有线程同步等待</li>
 <li>在 LoadingCache 中，sync 表示在读取不存在/被驱逐的 key 时，是否执行被注解方法</li>
-</ul> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+</ul> </article>  <nav class="animate mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4" aria-label="Post navigation"> <a href="/blog/meituan_bishi_2023" class="group block p-4 rounded-lg border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-300"> <div class="text-xs text-black/40 dark:text-white/40 mb-1">← 上一篇</div> <div class="font-medium text-sm group-hover:text-black dark:group-hover:text-white transition-colors truncate"> 美团2023年秋招第一场笔试 个人题解 </div> </a> <a href="/blog/enqing_gfw" class="group block p-4 rounded-lg border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-300 text-right"> <div class="text-xs text-black/40 dark:text-white/40 mb-1">下一篇 →</div> <div class="font-medium text-sm group-hover:text-black dark:group-hover:text-white transition-colors truncate"> 面对Yonagi&#39;s Sekai被墙，我的一点应对措施 </div> </a> </nav>   <div class="animate mt-12"> <div class="giscus-wrapper"></div><script>(function(){const REPO = "yonagi04/yonagi04.github.io";
+const REPO_ID = "R_kgDOLgoHNQ";
+const CATEGORY = "Announcements";
+const CATEGORY_ID = "DIC_kwDOLgoHNc4Cd_nd";
+
+  function getGiscusTheme() {
+    const stored = localStorage.getItem("theme");
+    if (stored === "light") return "light";
+    if (stored === "dark") return "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function loadGiscus() {
+    const wrapper = document.querySelector(".giscus-wrapper");
+    if (!wrapper) return;
+
+    // Clear previous Giscus iframe (important for SPA navigation)
+    wrapper.innerHTML = "";
+
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.setAttribute("data-repo", REPO);
+    script.setAttribute("data-repo-id", REPO_ID);
+    script.setAttribute("data-category", CATEGORY);
+    script.setAttribute("data-category-id", CATEGORY_ID);
+    script.setAttribute("data-mapping", "pathname");
+    script.setAttribute("data-strict", "0");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "0");
+    script.setAttribute("data-input-position", "bottom");
+    script.setAttribute("data-theme", getGiscusTheme());
+    script.setAttribute("data-lang", "zh-CN");
+    script.setAttribute("data-loading", "lazy");
+    script.crossOrigin = "anonymous";
+    script.async = true;
+    wrapper.appendChild(script);
+  }
+
+  function updateGiscusTheme() {
+    const iframe = document.querySelector(".giscus-wrapper iframe");
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: getGiscusTheme() } } },
+        "https://giscus.app"
+      );
+    }
+  }
+
+  // Initialize on first load
+  loadGiscus();
+
+  // Reinitialize on View Transition navigation
+  document.addEventListener("astro:after-swap", loadGiscus);
+
+  // Follow theme changes
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+    if (!localStorage.getItem("theme") || localStorage.getItem("theme") === "system") {
+      updateGiscusTheme();
+    }
+  });
+  // Listen for manual theme toggle (the theme buttons in Footer trigger this)
+  var observer = new MutationObserver(function () {
+    updateGiscusTheme();
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+})();</script> </div>  </div>   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Java最强本地缓存——Caffeine","description":"Article: Java最强本地缓存——Caffeine","datePublished":"2024-07-25T09:47:32.000Z","dateModified":"2024-07-25T09:47:32.000Z","url":"https://yonagi04.github.io/blog/caffine/","author":{"@type":"Person","name":"Yonagi's Sekai"}}</script>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
 Back to top
 </div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
 &copy; 2026 Yonagi&#39;s Sekai. All rights reserved.

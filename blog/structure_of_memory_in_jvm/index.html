@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/structure_of_memory_in_jvm/"><!-- Primary Meta Tags --><title>JVM专题——内存结构 | Yonagi&#39;s Sekai</title><meta name="title" content="JVM专题——内存结构 | Yonagi's Sekai"><meta name="description" content="Article: JVM专题——内存结构"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/structure_of_memory_in_jvm/"><meta property="og:title" content="JVM专题——内存结构 | Yonagi's Sekai"><meta property="og:description" content="Article: JVM专题——内存结构"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/structure_of_memory_in_jvm/"><meta property="twitter:title" content="JVM专题——内存结构 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JVM专题——内存结构"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+<!DOCTYPE html><html lang="zh-CN"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/structure_of_memory_in_jvm/"><!-- RSS auto-discovery --><link rel="alternate" type="application/rss+xml" title="JVM专题——内存结构 | Yonagi's Sekai | RSS" href="/rss.xml"><!-- Primary Meta Tags --><title>JVM专题——内存结构 | Yonagi&#39;s Sekai</title><meta name="title" content="JVM专题——内存结构 | Yonagi's Sekai"><meta name="description" content="Article: JVM专题——内存结构"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/structure_of_memory_in_jvm/"><meta property="og:title" content="JVM专题——内存结构 | Yonagi's Sekai"><meta property="og:description" content="Article: JVM专题——内存结构"><!-- Twitter --><meta property="twitter:card" content="summary"><meta property="twitter:url" content="https://yonagi04.github.io/blog/structure_of_memory_in_jvm/"><meta property="twitter:title" content="JVM专题——内存结构 | Yonagi's Sekai"><meta property="twitter:description" content="Article: JVM专题——内存结构"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
   function init() {
     preloadTheme();
     onScroll();
@@ -106,13 +106,15 @@ function toggleTheme(dark) {
   document.addEventListener("DOMContentLoaded", () => init());
   document.addEventListener("astro:after-swap", () => init());
   preloadTheme();
-</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous"><link rel="stylesheet" href="/_astro/_slug_.CiZogSSC.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold text-lg"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog">  <div class="text-md">
+</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous"><link rel="stylesheet" href="/_astro/_slug_.1TjzH4Yf.css">
+<style>.code-block-wrapper:hover .copy-btn{opacity:1}.dark .copy-btn{background:#ffffff1a;color:#fff9}
+</style><script type="module" src="/_astro/hoisted.DYQcBFdO.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold text-lg"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog">  <div class="text-md">
 Blog
 </div>  </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5"> <div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> JVM专题——内存结构 </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2024-04-05T09:38:09.000Z"> 2024年4月5日 </time> </div>
 &bull;
 <div class="font-base text-sm"> 3 min read </div> </div> <div class="animate font-base text-sm">
-Categories: 未分类 </div> <div class="animate font-base text-sm">
-Tags: 无 </div> </div> <article class="animate max-w-none"> <p><strong>本文部分内容节选自Java Guide和《深入理解Java虚拟机》, Java Guide地址: <a href="https://javaguide.cn/java/jvm/memory-area.html">https://javaguide.cn/java/jvm/memory-area.html</a></strong></p>
+Categories:  未分类 </div> <div class="animate font-base text-sm">
+Tags:  无 </div> </div> <article class="animate max-w-none"> <p><strong>本文部分内容节选自Java Guide和《深入理解Java虚拟机》, Java Guide地址: <a href="https://javaguide.cn/java/jvm/memory-area.html">https://javaguide.cn/java/jvm/memory-area.html</a></strong></p>
 <blockquote>
 <p>🚀 <a href="https://yonagi04.github.io/posts/2024/bc3a3d7c4c51/">基础（上）</a> → 🚀 <a href="https://yonagi04.github.io/posts/2024/da1a14d471aa/">基础（中）</a> → 🚀<a href="https://yonagi04.github.io/posts/2024/3c15992991b1/">基础（下）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/2dcdc762ee3e/">集合（上）</a> → 🤩<a href="https://yonagi04.github.io/posts/2024/5972154ca625/">集合（下）</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/4e86d54ab314/">JVM专题1</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/82639aae6f65/">JVM专题2</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/7a285a73570d/">JVM专题3</a> → 🤗<a href="https://yonagi04.github.io/posts/2024/fddd546e0d7f/">JVM专题4</a></p>
 </blockquote>
@@ -237,7 +239,72 @@ Tags: 无 </div> </div> <article class="animate max-w-none"> <p><strong>本文�
 <li>如果使用直接指针访问的话, Java堆中对象的内存布局就必须考虑如何放置访问类型数据的相关信息, reference中存储的直接就是对象地址, 如果只是访问对象本身的话, 就不需要多一次间接访问的开销</li>
 </ul>
 <p><img src="https://unpkg.com/yonagi-blog-repo-img/img/content/access-location-of-object-handle-direct-pointer.png" alt=""></p>
-<p>使用指针访问的最大好处就是速度更快, 节省了一次指针定位的时间开销. 对于HotSpot而言, 主要使用第二种方式进行对象访问</p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+<p>使用指针访问的最大好处就是速度更快, 节省了一次指针定位的时间开销. 对于HotSpot而言, 主要使用第二种方式进行对象访问</p> </article>  <nav class="animate mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4" aria-label="Post navigation"> <a href="/blog/load_class_to_jvm" class="group block p-4 rounded-lg border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-300"> <div class="text-xs text-black/40 dark:text-white/40 mb-1">← 上一篇</div> <div class="font-medium text-sm group-hover:text-black dark:group-hover:text-white transition-colors truncate"> JVM专题——类文件加载 </div> </a> <a href="/blog/garbage_collection_in_jvm" class="group block p-4 rounded-lg border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-300 text-right"> <div class="text-xs text-black/40 dark:text-white/40 mb-1">下一篇 →</div> <div class="font-medium text-sm group-hover:text-black dark:group-hover:text-white transition-colors truncate"> JVM专题——垃圾回收 </div> </a> </nav>   <div class="animate mt-12"> <div class="giscus-wrapper"></div><script>(function(){const REPO = "yonagi04/yonagi04.github.io";
+const REPO_ID = "R_kgDOLgoHNQ";
+const CATEGORY = "Announcements";
+const CATEGORY_ID = "DIC_kwDOLgoHNc4Cd_nd";
+
+  function getGiscusTheme() {
+    const stored = localStorage.getItem("theme");
+    if (stored === "light") return "light";
+    if (stored === "dark") return "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function loadGiscus() {
+    const wrapper = document.querySelector(".giscus-wrapper");
+    if (!wrapper) return;
+
+    // Clear previous Giscus iframe (important for SPA navigation)
+    wrapper.innerHTML = "";
+
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.setAttribute("data-repo", REPO);
+    script.setAttribute("data-repo-id", REPO_ID);
+    script.setAttribute("data-category", CATEGORY);
+    script.setAttribute("data-category-id", CATEGORY_ID);
+    script.setAttribute("data-mapping", "pathname");
+    script.setAttribute("data-strict", "0");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "0");
+    script.setAttribute("data-input-position", "bottom");
+    script.setAttribute("data-theme", getGiscusTheme());
+    script.setAttribute("data-lang", "zh-CN");
+    script.setAttribute("data-loading", "lazy");
+    script.crossOrigin = "anonymous";
+    script.async = true;
+    wrapper.appendChild(script);
+  }
+
+  function updateGiscusTheme() {
+    const iframe = document.querySelector(".giscus-wrapper iframe");
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: getGiscusTheme() } } },
+        "https://giscus.app"
+      );
+    }
+  }
+
+  // Initialize on first load
+  loadGiscus();
+
+  // Reinitialize on View Transition navigation
+  document.addEventListener("astro:after-swap", loadGiscus);
+
+  // Follow theme changes
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+    if (!localStorage.getItem("theme") || localStorage.getItem("theme") === "system") {
+      updateGiscusTheme();
+    }
+  });
+  // Listen for manual theme toggle (the theme buttons in Footer trigger this)
+  var observer = new MutationObserver(function () {
+    updateGiscusTheme();
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+})();</script> </div>  </div>   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"JVM专题——内存结构","description":"Article: JVM专题——内存结构","datePublished":"2024-04-05T09:38:09.000Z","dateModified":"2024-04-05T09:38:09.000Z","url":"https://yonagi04.github.io/blog/structure_of_memory_in_jvm/","author":{"@type":"Person","name":"Yonagi's Sekai"}}</script>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
 Back to top
 </div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
 &copy; 2026 Yonagi&#39;s Sekai. All rights reserved.
