@@ -1,0 +1,282 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon.ico" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.16.18"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.BOOGhInR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.D273HNI0.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.CvHVDnm4.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.DUWh3m6k.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://yonagi04.github.io/blog/prompt_caching/"><!-- Primary Meta Tags --><title>从PagedAttention到DeepSeek-V4：简谈Prompt Cache | Yonagi&#39;s Sekai</title><meta name="title" content="从PagedAttention到DeepSeek-V4：简谈Prompt Cache | Yonagi's Sekai"><meta name="description" content="Article: 从PagedAttention到DeepSeek-V4：简谈Prompt Cache"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://yonagi04.github.io/blog/prompt_caching/"><meta property="og:title" content="从PagedAttention到DeepSeek-V4：简谈Prompt Cache | Yonagi's Sekai"><meta property="og:description" content="Article: 从PagedAttention到DeepSeek-V4：简谈Prompt Cache"><meta property="og:image" content="https://yonagi04.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://yonagi04.github.io/blog/prompt_caching/"><meta property="twitter:title" content="从PagedAttention到DeepSeek-V4：简谈Prompt Cache | Yonagi's Sekai"><meta property="twitter:description" content="Article: 从PagedAttention到DeepSeek-V4：简谈Prompt Cache"><meta property="twitter:image" content="https://yonagi04.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system") {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="https://unpkg.com/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous"><link rel="stylesheet" href="/_astro/_slug_.CiZogSSC.css"><script type="module" src="/_astro/hoisted.RlhmG3H2.js"></script></head> <body> <header> <link rel="stylesheet" href="https://unpkg.com/katex@0.16.9/dist/katex.min.css" integrity="sha384-5IMT6/8xSOPdFjD/xHw5/R5S8QvP4sYf6T0rXG6L4PjS0N0J5O5F4M0E0X0F0V0F" crossorigin="anonymous"> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/">  <div class="font-semibold text-lg"> Yonagi&#39;s Sekai </div>  </a> <nav class="flex gap-1"> <a href="/blog">  <div class="text-md">
+Blog
+</div>  </a> <span>    </span> <a href="/rss.xml" class="flex items-center px-2 underline" aria-label="RSS Feed">  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white-500"> <circle cx="6.18" cy="17.82" r="2.18"></circle> <path d="M4 4.44v3.06a12.5 12.5 0 0 1 12.5 12.5h3.06C19.56 10.61 13.39 4.44 4 4.44z"></path> <path d="M4 10.69v3.06a6.25 6.25 0 0 1 6.25 6.25h3.06A9.31 9.31 0 0 0 4 10.69z"></path> </svg>  </a> </nav> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5"> <div class="animate relative w-full aspect-[2/1] my-6 rounded-lg overflow-hidden"> <img src="https://unpkg.com/yonagi-blog-repo-img@1.1.42/img/cover/deepseek.webp" alt="从PagedAttention到DeepSeek-V4：简谈Prompt Cache" class="w-full h-full object-cover" loading="eager"> </div><div class="space-y-1 my-10"> <div class="animate text-2xl font-semibold text-black dark:text-white"> 从PagedAttention到DeepSeek-V4：简谈Prompt Cache </div> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2026-06-01T11:00:00.000Z"> 2026年6月1日 </time> </div>
+&bull;
+<div class="font-base text-sm"> 5 min read </div> </div> <div class="animate font-base text-sm">
+Categories: 技术 </div> <div class="animate font-base text-sm">
+Tags: LLM / Prompt Cache / AI Infra </div> </div> <article class="animate max-w-none"> <p>2026年4月24日，DeepSeek 推出了 <code>DeepSeek-V4-Preview</code> 模型，宣布 LLM 进入百万级上下文普惠时代。不过更加引人注意的是，V4系列的全模型输入缓存命中的价格都调整到了原价的1/10，而Pro系列模型的价格也调整到了原定价的1/4，在不久之前还宣布永久降价。这种近乎腰斩的定价策略引发了广泛讨论，为什么在缓存命中时的价格会这么便宜？DeepSeek的底气在哪里？</p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/price_of_ds.webp" alt=""/></p>
+<p>而与此同时，随着模型支持的上下文窗口越来越长，又一个新的问题随之出现：长上下文的推理成本为什么如此昂贵？</p>
+<p>这一切都指向了同一个问题：<strong>Transformer 的 Prefill 阶段成本过高。</strong> 为了优化这一问题，业界逐步提出了 KV Cache、PagedAttention、RadixAttention、Prompt Cache 等一系列技术。</p>
+<p>本文将从 Transformer 推理机制出发，追溯从 vLLM 的 PagedAttention 到 SGLang 的 RadixAttention 的演进历程，分析 Prompt Cache 背后的核心架构思想。</p>
+<h2 id="一为什么-llm-推理如此昂贵">一、为什么 LLM 推理如此昂贵？</h2>
+<p>如果要知道为什么需要基于缓存的推理优化机制，则需要先从 Transformer 推理的两个关键阶段讲起。</p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/prefill_decoding.webp" alt=""/></p>
+<h3 id="1-prefill">1. Prefill</h3>
+<p>在 Prefill 阶段，模型需要一次性处理用户输入的全部 Prompt，每个 Token 都要参与 Self-Attention，后面的 Token 会关注前面的所有 Token，而 Attention Matrix 会随着序列长度增长迅速扩大。</p>
+<p>具体而言，Self-Attention 在计算矩阵 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mtext>softmax</mtext><mrow><mo fence="true">(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo fence="true">)</mo></mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">A = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:1.8em;vertical-align:-0.65em"></span><span class="mord text"><span class="mord">softmax</span></span><span class="mspace" style="margin-right:0.1667em"></span><span class="minner"><span class="mopen delimcenter" style="top:0em"><span class="delimsizing size2">(</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0895em"><span style="top:-2.5864em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord sqrt mtight"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8622em"><span class="svg-align" style="top:-3em"><span class="pstrut" style="height:3em"></span><span class="mord mtight" style="padding-left:0.833em"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0315em">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em"><span></span></span></span></span></span></span></span></span><span style="top:-2.8222em"><span class="pstrut" style="height:3em"></span><span class="hide-tail mtight" style="min-width:0.853em;height:1.08em"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1778em"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.4461em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">Q</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0715em">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9191em"><span style="top:-2.931em;margin-right:0.0714em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.1389em">T</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.538em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em"><span class="delimsizing size2">)</span></span></span><span class="mspace" style="margin-right:0.1667em"></span><span class="mord mathnormal" style="margin-right:0.2222em">V</span></span></span></span> 时，需要完成一个大小为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>N</mi></mrow><annotation encoding="application/x-tex">N \times N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em"></span><span class="mord mathnormal" style="margin-right:0.109em">N</span><span class="mspace" style="margin-right:0.2222em"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em"></span></span><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.109em">N</span></span></span></span> 的矩阵乘法，其计算的时间复杂度与输入序列的长度呈平方级正相关。</p>
+<div style="text-align:center"><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Complexity</mtext><mtext>prefill</mtext></msub><mo>=</mo><mi>O</mi><mo stretchy="false">(</mo><msup><mi>N</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{Complexity}_{\text{prefill}} = O(N^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0747em;vertical-align:-0.3802em"></span><span class="mord"><span class="mord text"><span class="mord">Complexity</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.242em"><span style="top:-2.4559em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">prefill</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3802em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.0278em">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.109em">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></p></div>
+<p>当面对长提示词、大规模知识库检索（RAG）或长代码上下文（如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>≥</mo><mn>32</mn><mi>k</mi></mrow><annotation encoding="application/x-tex">N \ge 32k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.136em"></span><span class="mord mathnormal" style="margin-right:0.109em">N</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6944em"></span><span class="mord">32</span><span class="mord mathnormal" style="margin-right:0.0315em">k</span></span></span></span>）的请求时，Prefill 阶段不仅会瞬间吃满 GPU 的 Tensor Core，还会带来极高的首字延迟（Time-to-First-Token, TTFT）。因此，Prefill 阶段通常会成为长上下文推理中的主要算力与带宽瓶颈。</p>
+<h3 id="2-decode">2. Decode</h3>
+<p>Decode 是指模型逐 Token 生成输出的阶段。模型每次会生成一个新的 Token，然后再基于已有状态生成新的 Token。因为历史的 Attention 结果已经存在，所以只需要计算新 Token 对老 Token 的 Attention 即可。</p>
+<p>因此，Decode 阶段一般不是系统性能的瓶颈。</p>
+<h3 id="3-kv-cache">3. KV Cache</h3>
+<p>前面已经提及，Decode 阶段不需要重新计算历史 Attention，是因为 Transformer 引入了 KV Cache。在 Self-Attention 中，每个 Token 都会生成 Query(Q)、Key(K)、Value(V)，其中 K/V 会被后续 Token 持续复用，所以不需要重复计算。
+因此，推理系统会将 K/V 进行保存，后续生成时直接复用，这就是 KV Cache。</p>
+<p>如果没有 KV Cache 会怎样？不妨设想一下下面这个场景。假设模型已经处理了“你好，我是你的助理”，当模型继续生成后续的 Token 时，如果没有 KV Cache，则模型需要重新计算前面所有 Token 的 Attention。
+而有了 KV Cache 之后，历史的 K/V 可以直接复用，这次生成只需要计算新 Token 与 老 Token 之间的关系。因此我们可以认为，KV Cache 本质上是模型推理过程中的一个中间状态缓存。</p>
+<p>但是我们又注意到，传统 KV Cache 的生命周期是单次请求，在请求结束后会被释放，无法实现跨请求共享。然而，在实际生产环境中，大量的请求往往都在共享着一段完全相同的上下文前缀。例如：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="json"><code><span class="line"><span style="color:#6A737D">// 第一次请求</span></span>
+<span class="line"><span style="color:#E1E4E8">messages: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;role&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;system&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;content&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;你是一位乐于助人的助手&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;role&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;user&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;content&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;中国的首都是哪里？&quot;</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 第二次请求</span></span>
+<span class="line"><span style="color:#E1E4E8">messages: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;role&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;system&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;content&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;你是一位乐于助人的助手&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;role&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;user&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;content&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;中国的首都是哪里？&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;role&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;assistant&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;content&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;中国的首都是北京。&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;role&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;user&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;content&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;美国的首都是哪里？&quot;</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span></code></pre>
+<p>可以注意到，两次请求都有相同的前缀，但因为 KV Cache 的生命周期限制，导致第二次请求时需要重新执行 Prefill 并计算相同前缀的 K/V。</p>
+<p>基于上述问题，有一种朴素的想法是：使用某种方式，将本次请求计算得到的 KV Cache 进行存储，当下次遇到相同的上下文前缀时，就可以实现跨请求复用已经完成的 K/V 状态。
+这种方式就是 Prompt Cache，它和既往的所有缓存类系统一样，核心策略都是用空间换时间。当新的请求到来且匹配到相同前缀时，推理引擎直接跳过该前缀的 Prefill 计算，将其 KV Cache 直接载入显存参与后续计算。</p>
+<h2 id="二pagedattention-与动态内存管理">二、PagedAttention 与动态内存管理</h2>
+<p>要实现跨请求的 Prompt Cache，首先需要解决的是 KV Cache 在显存中的高效存储与动态分配问题。我们知道，每个 Token 都需要保存 K/V，且上下文越大，K/V 就越大；多用户并发请求模型时对显存的压力比单用户请求的更大。</p>
+<p>传统的 LLM 推理框架（如早期的 FasterTransformer）在面对动态增长的 KV Cache 时，展现出了极度低效的内存分配特征。</p>
+<h3 id="1-传统分配模式导致内存浪费的根源">1. 传统分配模式导致内存浪费的根源</h3>
+<p>根据论文”Efficient Memory Management for Large Language Model Serving with PagedAttention”的解释，KV Cache 的管理方式成为了决定最大批处理大小（Batch Size）的关键因素。如果管理不当，KV Cache 内存将严重限制批处理大小，并随之降低 LLM 的吞吐量。
+进一步分析可以发现，传统的连续显存分配策略会导致高达60%-80%的显存处于“分配了却无法被有效利用”的浪费状态，且显存的有效利用率最低只有20.4%。这种浪费主要由以下三个维度共同造成：</p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/vllm_fig3.webp" alt=""/></p>
+<ul>
+<li><strong>预留浪费</strong></li>
+</ul>
+<p>由于自回归生成的终止条件（如 [EOS] Token）是由模型运行时动态决定的，系统无法在 Prefill 阶段预知当前请求最终会输出多少个 Token。
+为了防止推理中途发生 OOM，系统不得不按照模型的最大序列长度（例如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mtext>max</mtext></msub><mo>=</mo><mn>2048</mn></mrow><annotation encoding="application/x-tex">L_{\text{max}} = 2048</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6444em"></span><span class="mord">2048</span></span></span></span> 或更长）为每一个请求强行预留一段连续的显存空间。
+如果用户请求在生成第 100 个 Token 时就触发了终止，后续 1948 个 Token 的空间在整个生命周期内都会被完全空置。</p>
+<ul>
+<li><strong>内部碎片</strong></li>
+</ul>
+<p>即使系统尝试采用动态调整的内存碎片（如分级大小的内存块），由于内存管理器的对齐机制（Memory Alignment），分配给特定请求的显存大小与该请求实际所需的字节数之间依然存在差值，这部分差值在请求释放前无法被其他任务复用。</p>
+<ul>
+<li><strong>外部碎片</strong></li>
+</ul>
+<p>随着并发请求的交替交割，显存池中会产生大量不连续的、零碎的空闲空间。当一个需要大段连续空间的新请求到达时，即使空闲显存总量足够，也会因为找不到整块连续显存而导致分配失败。</p>
+<h3 id="2-pagedattention-的虚拟化映射机制">2. PagedAttention 的虚拟化映射机制</h3>
+<p>为了打破“连续存储”这一紧箍咒，vLLM 借鉴了现代操作系统中虚拟内存的分页管理思想。它允许将连续的逻辑 KV Cache 离散地映射到不连续的物理显存块中，请求时通过 Block Table 进行映射。</p>
+<p>在 PagedAttention 架构中，系统预先将整个 GPU 的空闲显存划分为一个统一的物理块（Physical Blocks）。每个物理块可以容纳固定数量 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span></span></span></span> 个 Token 的 KV 状态（在工程实践中，通常取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">B = 16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6444em"></span><span class="mord">16</span></span></span></span>）。
+对于任意一个请求序列，其 KV Cache 在逻辑上被视为一连串逻辑块（Logical Blocks）。当模型在计算第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em"></span><span class="mord mathnormal">t</span></span></span></span> 个 Token 的注意力时，其对应的逻辑索引可以通过以下计算确定：</p>
+<ol>
+<li><strong>逻辑块索引（Logical Block Number, LBN）</strong></li>
+</ol>
+<div style="text-align:center"><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mo stretchy="false">⌊</mo><mfrac><mi>t</mi><mi>B</mi></mfrac><mo stretchy="false">⌋</mo></mrow><annotation encoding="application/x-tex">x = \lfloor \frac{t}{B} \rfloor</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:1.1696em;vertical-align:-0.345em"></span><span class="mopen">⌊</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8246em"><span style="top:-2.655em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0502em">B</span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.394em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌋</span></span></span></span></p></div>
+<ol start="2">
+<li><strong>块内偏移量（Block Offset）</strong></li>
+</ol>
+<div style="text-align:center"><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mo>=</mo><mi>t</mi><mspace></mspace><mspace width="0.4444em"></mspace><mo stretchy="false">(</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mspace width="0.3333em"></mspace><mi>B</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">o = t \pmod B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em"></span><span class="mord mathnormal">o</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6151em"></span><span class="mord mathnormal">t</span><span class="mspace allowbreak"></span><span class="mspace" style="margin-right:0.4444em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord mathrm">mod</span></span></span><span class="mspace" style="margin-right:0.3333em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span><span class="mclose">)</span></span></span></span></p></div>
+<p>推理引擎内部维护着一张 Block Table，记录了每一个逻辑块到物理块的映射关系。在执行 Multi-Head Attention 的 Kernel 时，PagedAttention 会改变标准的显存寻址访存指令。GPU 线程不再通过连续的指针偏移去读取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0715em">K</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.2222em">V</span></span></span></span>，而是首先读取当前序列的 Block Table，根据计算出的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em"></span><span class="mord mathnormal">x</span></span></span></span> 找到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>PBN</mtext></mrow><annotation encoding="application/x-tex">\text{PBN}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord text"><span class="mord">PBN</span></span></span></span></span>，再结合 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi></mrow><annotation encoding="application/x-tex">o</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em"></span><span class="mord mathnormal">o</span></span></span></span> 拼凑出准确的物理显存地址。具体如下图所示。</p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/vllm_fig6.webp" alt=""/></p>
+<p>为什么 PagedAttention 可以终结以往架构的内存碎片问题？首先，物理显存池中所有的块大小完全一致（均为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span></span></span></span> 个 Token 的开销），在分配和回收显存时都以“块”为基本单位，任何被释放的块都可以无缝填补到任何新请求中，因此消除了传统连续分配导致的外部碎片问题；
+其次，在一个序列的生命周期中，一般只有最后一个逻辑块不会被填满，因此每个序列上最多只会浪费 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">B - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span><span class="mspace" style="margin-right:0.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em"></span></span><span class="base"><span class="strut" style="height:0.6444em"></span><span class="mord">1</span></span></span></span> 个 Token 的存储空间，考虑到一般情况下 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">B = 16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6444em"></span><span class="mord">16</span></span></span></span>，因此最多只会浪费 15 个 Token的空间，这在数千甚至数万的长上下文中几乎可以忽略不计；
+最后，系统不再需要为每个请求做 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mtext>max</mtext></msub></mrow><annotation encoding="application/x-tex">L_{\text{max}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span></span></span></span> 的预分配空间，每当自回归生成跨越 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span></span></span></span> 的整数倍时，系统才会动态地从物理块池中弹出一个空闲块并追加到块表中，这解决了预留浪费的问题。</p>
+<h3 id="3-块级显存共享与写时复制copy-on-write-cow机制">3. 块级显存共享与写时复制（Copy On Write, CoW）机制</h3>
+<p>PagedAttention 带来的另一项突破性红利，是它让跨序列的显存共享在物理层面上变得异常廉价。这在并行采样（Parallel Sampling）和束搜索（Beam Search）场景中表现得尤为明显。</p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/vllm_fig8.webp" alt=""/></p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/vllm_fig9.webp" alt=""/></p>
+<p>在 PagedAttention 的控制面中，每一个物理块都内嵌了一个计数器，用于记录当前有多少个逻辑块映射到它。</p>
+<p>假设用户输入了一个长度为 35 的 Prompt，且要求模型并行生成 2 个不同的回答（Sequence A 与 Sequence B）。在块大小 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">B = 16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em"></span><span class="mord mathnormal" style="margin-right:0.0502em">B</span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6444em"></span><span class="mord">16</span></span></span></span> 的配置下：</p>
+<ul>
+<li>Token 0 ~ 15 构成了 Logical Block 0，映射到 Physical Block 0（引用计数 = 2）。</li>
+<li>Token 16 ~ 31 构成了 Logical Block 1，映射到 Physical Block 1（引用计数 = 2）。</li>
+<li>Token 32 ~ 34 构成了 Logical Block 2，映射到 Physical Block 2（引用计数 = 2）。此时该块还有 13 个空闲槽位（Slots）。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.46/img/content/reference_count_vllm.webp" alt=""/></p>
+<p>当模型开始真正执行 Decoding，同时为 Sequence A 和 Sequence B 预测下一个不同的 Token 时，冲突发生了：Sequence A 预测出了 Token_A，而 Sequence B 预测出了 Token_B，它们都需要写入自己的 Logical Block 2 中。</p>
+<p>此时，PagedAttention 的内存管理器会介入并执行以下标准 CoW 流程：</p>
+<ol>
+<li>冲突检测：Sequence A 的推理线程尝试向物理块 Physical Block 2 写入新 Token，引擎检测到该物理块的引用计数 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>Ref_Count</mtext><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\text{Ref\_Count} &gt; 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0044em;vertical-align:-0.31em"></span><span class="mord text"><span class="mord">Ref_Count</span></span><span class="mspace" style="margin-right:0.2778em"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em"></span></span><span class="base"><span class="strut" style="height:0.6444em"></span><span class="mord">1</span></span></span></span>。</li>
+<li>物理块申请：引擎立即暂停对该物理块的写入请求，并向全局物理块池申请一个全新的、干净的空闲块（假设为 Physical Block 4）。</li>
+<li>内存拷贝（Memcpy）：推理引擎触发一次 GPU 内存复制操作，将 Physical Block 2 中已经存在的、属于共享前缀的有效数据（即 Token 32 ~ 34 的 KV 状态）完整复制到新申请的 Physical Block 4 中。</li>
+<li>指针重映射与引用衰减：首先，将 Sequence A 的 Block Table 中 Logical Block 2 的映射指针修改为指向 Physical Block 4；然后，将 Physical Block 4 的引用计数设为 1；最后，将原始 Physical Block 2 的引用计数递减 1（从 2 降为 1）。</li>
+<li>数据写入：Sequence A 将其特有的 Token_A 写入 Physical Block 4 的第 4 个槽位，由于 Physical Block 2 的引用计数此时已降为 1，它已经退化为 Sequence B 的独占块。Sequence B 随后可以直接将 Token_B 写入 Physical Block 2 的第 4 个槽位，而不再触发任何拷贝。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.46/img/content/cow_vllm.webp" alt=""/></p>
+<p>通过这一套极度精密的 CoW 机制，vLLM 确保了在多分支采样中公共前缀部分的显存可以得到最大限度的压榨和复用。
+而这一精细化到“Token 块级别”的动态引用和映射管理，正是下一代技术（如 SGLang 的 RadixAttention）能够将缓存边界横向扩展到全局跨请求长效 Prompt Cache 的基础。</p>
+<h2 id="三从块到树sglang-与-radixattention">三、从“块”到“树”：SGLang 与 RadixAttention</h2>
+<p>为了将缓存的生命周期从“单次请求”拓展到“跨请求的持久化生命周期”，“SGLang: Efficient Execution of Structured Language Model Programs”中提出了 RadixAttention 机制。
+它将 PagedAttention 的底层分页思想提升到了全局拓扑的高度，在推理引擎层面实现了高度自动化的 Prefix Cache 管理。</p>
+<h3 id="1-radix-tree-架构">1. Radix Tree 架构</h3>
+<p>RadixAttention 的核心创新在于：它不再把历史请求的 KV Cache 视为孤立的内存块，而是将它们组织成一棵全局维护在推理引擎状态机中的基数树（Radix Tree）。</p>
+<p><img src="https://cdn.jsdelivr.net/npm/yonagi-blog-repo-img@1.1.44/img/content/sglang_radix.webp" alt=""/></p>
+<p>在这棵树状拓扑结构中：</p>
+<ul>
+<li>边（Edges）：代表特定 Token 序列的子集（如一段 System Prompt 或者是某一轮对话文本）。</li>
+<li>节点（Nodes）：保存着该段 Token 序列所对应的、处于 PagedAttention 状态下的物理 KV Cache 块指针。</li>
+</ul>
+<h3 id="2-请求生命周期">2. 请求生命周期</h3>
+<p>当独立的用户请求交替进入推理系统时，RadixAttention 驱动着一套严密的生命周期管理流程：</p>
+<ol>
+<li>
+<p>树状检索与最大前缀匹配（Prefix Matching）：
+一个全新请求（例如：[System Prompt] + [User Query B]）进入系统。引擎将其 Token 化后，从 Radix Tree 的根节点开始向下搜索，寻找最大公共前缀（Longest Prefix Match）。在此示例中，它将成功匹配到 Node A（即 System Prompt）。</p>
+</li>
+<li>
+<p>节点锁死（Pinning）：
+一旦命中 Node A，引擎会立即将 Node A 所对应的所有物理显存块的引用计数加 1，并打上 Pin（锁死） 标记。这确保了在当前请求执行期间，这些缓存块绝对不会被其他并发请求修改或驱逐。</p>
+</li>
+<li>
+<p>增量预填充（Incremental Prefill）：
+推理引擎直接将 Node A 的物理块指针填入当前请求的 Block Table 中。随后，GPU 仅针对未命中的后缀部分（即 [User Query B]）执行 Prefill 计算。</p>
+</li>
+<li>
+<p>动态剪枝与分支挂载（Insertion）：
+当 [User Query B] 的 Prefill 计算完毕并开始 Decoding 时，系统会在 Node A 下方分叉出一个全新的子节点 Node D，并将新生成的 KV Cache 块挂载进去。</p>
+</li>
+<li>
+<p>解除锁死（Unpinning）与 LRU 淘汰链表：
+当该请求完成全部 Token 输出并退出系统后，Node A 和 Node D 的 Pin 标记被解除。关键点在于：系统并不会销毁这些块，而是将这些节点置于一个全局的 LRU 淘汰链表中。</p>
+</li>
+</ol>
+<h3 id="3-内存驱逐策略">3. 内存驱逐策略</h3>
+<p>随着时间的推移，全局显存（HBM）必然会触及水位线。当显存不足以承载新请求的 Prefill 时，RadixAttention 的 Eviction Manager 开始介入。
+它会沿着 LRU 链表，从后往前选择那些未被 Pin 住且处于叶子节点位置的冷数据进行驱逐（Evict），将其物理块释放回物理块池中。</p>
+<p>通过这种“树状留存、全局 LRU 淘汰”的精妙设计，SGLang 首次让推理系统具备了类似于传统 Web 服务器中 Redis/Memcached 的自适应缓存能力。</p>
+<h2 id="四prompt-cache-的本质">四、Prompt Cache 的本质</h2>
+<p>很多人看到“Prompt Cache”便会望文生义，以为 Prompt Cache 只是缓存了某条 Prompt 对应的输出文本。实际上，Prompt Cache 缓存的是 Transformer 的中间状态，也就是 KV Cache。Prompt Cache 的存在使得 KV Cache 的生命周期实现了跨请求，提升了 LLM Serving 的效率。</p>
+<p>就如同前面提及的案例，对于实际场景下的大部分请求，其前缀都是完全共享的。这些前缀非常长且往往高度重复，但又必须参与 Prefill，因此就出现了重复计算相同前缀的 Prefill 的问题。而 Prompt Cache 的意义就在于将这些重复计算转换为了状态复用。</p>
+<p>而随着 Agent、RAG、长上下文、Tool Calling 等机制越来越普遍，Prompt 的长度也会越来越长，计算成本也会越来越高。由此可见，Prompt Cache（或者说 PagedAttention、RadixAttention等）成为 AI Infra 的重要组成部分。</p>
+<h2 id="五总结">五、总结</h2>
+<p>从 KV Cache 到 PagedAttention、RadixAttention，LLM 推理系统正在逐渐演化为一个“面向状态复用”的计算系统。传统推理系统的核心问题是如何更快地计算，而现代 LLM Infra 更关注的问题则变成了如何通过某种方式避免重复计算，使得Serving的效率提升。而 Prompt Cache 正是这一演化方向中最关键的组成部分之一。</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] Vaswani, Ashish, et al. “Attention is all you need.” Advances in neural information processing systems 30 (2017).</p>
+<p>[2] Kwon, Woosuk, et al. “Efficient memory management for large language model serving with pagedattention.” Proceedings of the 29th symposium on operating systems principles. 2023.</p>
+<p>[3] Zheng, Lianmin, et al. “Sglang: Efficient execution of structured language model programs.” Advances in neural information processing systems 37 (2024): 62557-62583.</p>
+<p>[4] DeepSeek API Docs. Context Caching. <a href="https://api-docs.deepseek.com/guides/kv_cache">https://api-docs.deepseek.com/guides/kv_cache</a></p>
+<p>[5] Claude API Docs. Prompt Caching. <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">https://platform.claude.com/docs/en/build-with-claude/prompt-caching</a></p>
+<p>[6] OpenAI API. Prompt Caching. <a href="https://developers.openai.com/api/docs/guides/prompt-caching">https://developers.openai.com/api/docs/guides/prompt-caching</a></p> </article>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 Yonagi&#39;s Sekai. All rights reserved.
+</div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html>
