@@ -1,0 +1,19 @@
+import{j as t}from"./jsx-runtime.ClP7wGfN.js";import{r as n}from"./index.DK-fsZOb.js";const y={zh:"中文",ja:"日本語",en:"English"},j="zh";function E(r){return`lang:${r}`}function C(r){try{return localStorage.getItem(E(r))}catch{return null}}function S(r,s){try{localStorage.setItem(E(r),s)}catch{}}function A({availableLanguages:r,articleSlug:s,defaultTitle:f,translationTitles:x,readingTimes:m}){const[a,p]=n.useState(j),[o,c]=n.useState(!1),d=n.useRef(null),k=n.useRef(!1),h=n.useRef({});if(f&&(h.current[j]=f),x)try{Object.assign(h.current,JSON.parse(x))}catch{}const b=n.useRef({});if(m)try{Object.assign(b.current,JSON.parse(m))}catch{}const l=n.useCallback(e=>{document.querySelectorAll("[data-lang]").forEach(i=>{i.hidden=i.dataset.lang!==e});const w=h.current[e];w&&(document.title=`${w} | Yonagi's Sekai`);const v=b.current[e];if(v){const i=document.getElementById("reading-time");i&&(i.textContent=v)}},[]);n.useEffect(()=>{if(k.current)return;k.current=!0;const e=C(s);e&&r.includes(e)&&(p(e),l(e))},[s,r,l]),n.useEffect(()=>{if(!o)return;const e=u=>{d.current&&!d.current.contains(u.target)&&c(!1)};return document.addEventListener("mousedown",e),()=>document.removeEventListener("mousedown",e)},[o]),n.useEffect(()=>{if(!o)return;const e=u=>{u.key==="Escape"&&(c(!1),d.current?.querySelector("button")?.focus())};return document.addEventListener("keydown",e),()=>document.removeEventListener("keydown",e)},[o]);const L=n.useCallback(e=>{p(e),S(s,e),l(e),c(!1)},[s,l]);if(r.length<=1)return null;const g=y[a]||a;return t.jsxs("div",{ref:d,className:"language-switcher relative inline-flex items-center",children:[t.jsxs("button",{type:"button",onClick:()=>c(e=>!e),"aria-expanded":o,"aria-haspopup":"listbox","aria-label":`选择语言，当前为${g}`,className:`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm
+                   border border-black/15 dark:border-white/20
+                   bg-transparent
+                   text-black/60 dark:text-white/60
+                   hover:text-black dark:hover:text-white
+                   hover:bg-black/5 dark:hover:bg-white/5
+                   transition-colors duration-300
+                   cursor-pointer select-none`,children:[t.jsxs("svg",{xmlns:"http://www.w3.org/2000/svg",width:"14",height:"14",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"2",strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",children:[t.jsx("circle",{cx:"12",cy:"12",r:"10"}),t.jsx("line",{x1:"2",y1:"12",x2:"22",y2:"12"}),t.jsx("path",{d:"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"})]}),t.jsx("span",{children:g}),t.jsx("svg",{xmlns:"http://www.w3.org/2000/svg",width:"12",height:"12",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"2",strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",style:{transform:o?"rotate(180deg)":"rotate(0deg)",transition:"transform 0.2s ease"},children:t.jsx("polyline",{points:"6 9 12 15 18 9"})})]}),o&&t.jsx("div",{role:"listbox","aria-label":"选择语言",className:`absolute right-0 top-full mt-1.5 z-50
+                     min-w-[120px]
+                     rounded-lg
+                     border border-black/15 dark:border-white/20
+                     bg-zinc-100 dark:bg-zinc-800
+                     shadow-lg
+                     py-1
+                     animate-in fade-in`,children:r.map(e=>t.jsx("button",{role:"option","aria-selected":e===a,onClick:()=>L(e),className:`w-full text-left px-3.5 py-1.5 text-sm
+                         transition-colors duration-150
+                         cursor-pointer select-none
+                         ${e===a?"text-black dark:text-white font-medium bg-black/5 dark:bg-white/10":"text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"}
+              `,children:y[e]||e},e))})]})}export{A as default};
